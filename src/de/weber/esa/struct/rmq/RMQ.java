@@ -44,6 +44,8 @@ public class RMQ {
             }
         }
 
+
+        // ERROR
         for (int j = 0, l = 1; j < END; j = j + 1, l = l * 2) {
             for (int i = 0; i + l * 2 <= SIZE; i = i + 1) {
                 final int a = this.Q[i][j];
