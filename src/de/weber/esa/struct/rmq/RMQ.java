@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 /**
  * Created by Stefan on 22.01.2017.
- *  * <p>
+ * <p>
  * Class for calculating RMQ values for a given array in O(n log(n))
  * <p>Algorithm 4.4 in Scriptum: Algorithmns and Sequences by Prof. Heun</p>
  */
