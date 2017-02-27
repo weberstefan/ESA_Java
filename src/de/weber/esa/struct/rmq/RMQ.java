@@ -37,7 +37,6 @@ public class RMQ {
         this.array = array;
         // remove last entry of lcp array (-1 for computing child table)
         this.array = Arrays.copyOf(this.array, this.array.length - 1);
-        System.out.println(Arrays.toString(this.array));
         this.blockSize = blockSize;
         this.calcMinBetweenTwoBlocks();
     }
@@ -67,8 +66,6 @@ public class RMQ {
                 }
             }
         }
-
-        System.out.println("SIZE=" + SIZE + "\tEND=" + END);
     }
 
     /**
@@ -81,7 +78,6 @@ public class RMQ {
 
         // - 1 due to lcp[0] = -1 = $
         this.minPosBlock = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
-        System.out.println(this.minPosBlock.length);
 
         int curValue = - 1;
 
