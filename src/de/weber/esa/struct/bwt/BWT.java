@@ -24,7 +24,7 @@ public class BWT {
     public final int length;
 
     /**
-     * Represents the OCC(*,*) Function in tyte arrays
+     * Represents the OCC(*,*) Function in byte arrays
      * <p>O(n * n)</p>
      */
     public final byte[][] OCC;
