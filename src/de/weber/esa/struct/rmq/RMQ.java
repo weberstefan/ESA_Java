@@ -9,8 +9,14 @@ import java.util.Arrays;
  */
 public class RMQ {
 
+    /**
+     * Represents the array, which will be used for calculating RMQ
+     */
     private int[] array;
 
+    /**
+     * Represents the block size for RMQ
+     */
     private final int blockSize;
 
     /**
@@ -18,7 +24,10 @@ public class RMQ {
      */
     private byte[] minPosBlock;
 
-    private int[][] Q;
+    /**
+     * Represents internal datastructure Q' in script
+     */
+    private int[][] internalQ;
 
     public RMQ(final int[] array,
                final int blockSize) {
@@ -30,35 +39,40 @@ public class RMQ {
         this.calcMinBetweenTwoBlocks();
     }
 
+    /**
+     * Caclulating the minimum between 2 blocks
+     * <p>
+     * Representing the Q' in the script (RMQ2 - Abbildung 4.4 Page 144)
+     */
     private void calcMinBetweenTwoBlocks() {
         this.calcMinPosPerBlock();
         final int SIZE = this.minPosBlock.length;
         final int END = ESA_Utils.ld(SIZE);
 
-        this.Q = new int[SIZE][END + 1];
+        this.internalQ = new int[SIZE][END + 1];
 
         for (int i = 0; i < SIZE; i = i + 1) {
-            this.Q[i][0] = i;
-            for (int j = 1; j < END; j = j + 1) {
-                this.Q[i][j] = - 1;
+            this.internalQ[i][0] = i;
+        }
+
+        for (int k = 0; k <= END; k = k + 1) {
+            for (int i = 1; i + ESA_Utils.pow(2, k) < SIZE; i = i + 1) {
+                if (this.minPosBlock[this.internalQ[i][k]] <= this.minPosBlock[this.internalQ[i + ESA_Utils.pow(2, k)][k]]) {
+                    this.internalQ[i][k + 1] = this.internalQ[i][k];
+                } else {
+                    this.internalQ[i][k + 1] = this.internalQ[i + ESA_Utils.pow(2, k)][k];
+                }
             }
         }
 
-
-        // ERRORs
-        for (int j = 0, l = 1; j < END; j = j + 1, l = l * 2) {
-            for (int i = 0; i + l * 2 <= SIZE; i = i + 1) {
-                final int a = this.Q[i][j];
-                final int b = this.Q[i + l][j];
-
-                final int posA = this.minPosBlock[a] + a * this.blockSize;
-                final int posB = this.minPosBlock[b] + b * this.blockSize;
-
-                this.Q[i][j + 1] = this.array[posA] <= this.array[posB] ? a : b;
-            }
-        }
+        System.out.println("SIZE=" + SIZE + "\tEND=" + END);
     }
 
+    /**
+     * Calculating the minimum positions per block
+     * <p>
+     * Representing the P' in the script
+     */
     private void calcMinPosPerBlock() {
         final int SIZE = this.array.length;
 
@@ -90,7 +104,7 @@ public class RMQ {
 
     @Override
     public String toString() {
-        return "RMQ:\t" + Arrays.toString(this.minPosBlock) + "\n" + ESA_Utils.printArray(this.Q);
+        return "RMQ:\t" + Arrays.toString(this.minPosBlock) + "\n" + ESA_Utils.printArray(this.internalQ);
     }
 
 }

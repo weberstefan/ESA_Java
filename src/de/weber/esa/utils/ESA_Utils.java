@@ -108,10 +108,11 @@ public class ESA_Utils {
         return log + ( bits >>> 1 );
     }
 
-    public static int pow(final int base, final int pow) {
+    public static int pow(final int base,
+                          final int pow) {
         int tmp = 1;
         for (int i = 0; i < pow; i++) {
-            tmp *= base;
+            tmp = tmp * base;
         }
         return tmp;
     }
