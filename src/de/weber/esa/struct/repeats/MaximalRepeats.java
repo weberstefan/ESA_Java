@@ -54,6 +54,17 @@ public class MaximalRepeats {
             }
             j = j + 1;
         }
+
+//        final StringBuilder sb = new StringBuilder();
+//
+//        for (final int x : this.getMaximalRepeats().keySet()) {
+//            for (int y = 0; y < this.getMaximalRepeats().get(x).size(); y = y + 1) {
+//                sb.append(this.getMaximalRepeats().get(x).get(y).toString() + "\t" + ESA_Utils.getCurrentSuffix(esa, this.getMaximalRepeats().get(x).get(y).getI(), this.getMaximalRepeats().get(x).get(y).getL()));
+//                sb.append("\n");
+//            }
+//        }
+//
+//        System.out.println(sb.toString());
     }
 
     public Map<Integer, List<Repeats>> getMaximalRepeats() { return this.maximalRepeats; }

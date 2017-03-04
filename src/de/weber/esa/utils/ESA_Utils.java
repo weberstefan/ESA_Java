@@ -48,7 +48,11 @@ public class ESA_Utils {
 
         for (int i = 0; i < a.length; i = i + 1) {
             for (int j = 0; j < a[0].length; j = j + 1) {
-                sb.append(a[i][j] + "\t");
+                if (a[i][j] < 0) {
+                    sb.append("-\t");
+                } else {
+                    sb.append(a[i][j] + "\t");
+                }
             }
             sb.append("\n");
         }
@@ -79,7 +83,7 @@ public class ESA_Utils {
     }
 
     /**
-     * receive array as string
+     * receive integer array as string
      * @param a : current array
      * @return : a as string in form of Arrays.toString(a)
      */
@@ -99,22 +103,25 @@ public class ESA_Utils {
         return sb.toString();
     }
 
-    public static int ld(int bits) {
-        int log = 0;
-        if( ( bits & 0xffff0000 ) != 0 ) { bits >>>= 16; log = 16; }
-        if( bits >= 256 ) { bits >>>= 8; log += 8; }
-        if( bits >= 16  ) { bits >>>= 4; log += 4; }
-        if( bits >= 4   ) { bits >>>= 2; log += 2; }
-        return log + ( bits >>> 1 );
-    }
+    /**
+     * receive byte array as string
+     * @param a : current array
+     * @return : a as string in form of Arrays.toString(a)
+     */
+    public static final String arrayToString(final byte[] a) {
+        StringBuilder sb = new StringBuilder(a.length * 3);
 
-    public static int pow(final int base,
-                          final int pow) {
-        int tmp = 1;
-        for (int i = 0; i < pow; i++) {
-            tmp = tmp * base;
+        sb.append("[");
+
+        for (int i = 0; i < a.length - 1; i = i + 1) {
+            if (i == a.length - 2) {
+                sb.append(a[i] + "]");
+            } else {
+                sb.append(a[i] + ", ");
+            }
         }
-        return tmp;
+
+        return sb.toString();
     }
 
 }
