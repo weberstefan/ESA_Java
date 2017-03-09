@@ -10,12 +10,12 @@ import java.util.Objects;
 public class DiscriminatingCharacters {
 
     /**
-     * first discriminating character of Suffix[SA[k - 1]]
+     * Represents the first discriminating character of Suffix[SA[k - 1]] with Suffix[SA[k]]
      */
     public final char first;
 
     /**
-     * first discriminating character of Suffix[SA[k]]
+     * Represents the first discriminating character of Suffix[SA[k]] with Suffix[SA[k - 1]]
      */
     public final char second;
 
