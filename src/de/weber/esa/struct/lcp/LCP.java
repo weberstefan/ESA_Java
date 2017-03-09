@@ -1,7 +1,11 @@
 package de.weber.esa.struct.lcp;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.struct.discriminatingCharacters.DiscriminatingCharacters;
 import de.weber.esa.utils.ESA_Utils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Stefan on 20.01.2017.
@@ -24,6 +28,11 @@ public class LCP {
     public final int[] lcps; // TODO REPRESENT AS BIT ARRAY
 
     /**
+     * Represents the first discriminating characters
+     */
+    public final Map<Integer, DiscriminatingCharacters> discriminatingCharactersMap;
+
+    /**
      * calculate the LCP table for the suffix array
      *
      * @param esa : suffix array for a given string
@@ -36,6 +45,8 @@ public class LCP {
          * the last value is set to -1 for correctly computing the child tables
          */
         this.lcps = new int[this.length + 1];
+
+        this.discriminatingCharactersMap = new HashMap<>(this.length - 1);
 
         //lcps[0] = -1 by definition
         this.lcps[0] = - 1;
@@ -53,6 +64,8 @@ public class LCP {
 
             this.lcps[a] = k;
 
+            this.discriminatingCharactersMap.put(i, new DiscriminatingCharacters(esa.sequence[b + k], esa.sequence[i + k]));
+
             k = Math.max(0, k - 1);
         }
 
@@ -63,7 +76,7 @@ public class LCP {
 
     @Override
     public String toString() {
-        return "LCP:\t" + ESA_Utils.arrayToString(this.lcps);
+        return "LCP:\t" + ESA_Utils.arrayToString(this.lcps) + "\nDC: " + this.discriminatingCharactersMap;
     }
 
 }
