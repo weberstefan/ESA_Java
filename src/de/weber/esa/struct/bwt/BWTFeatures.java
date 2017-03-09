@@ -51,7 +51,7 @@ public class BWTFeatures {
 
     @Override
     public int hashCode() {
-        return Objects.hash(posSequence, posMap);
+        return Objects.hash(this.posSequence, this.posMap);
     }
 
     @Override
