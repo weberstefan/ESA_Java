@@ -12,10 +12,10 @@ import java.util.Stack;
  */
 public class ChildTable2 {
 
-    private int[] DOWN;
-    private int[] UP;
-    private int[] NEXT;
-    private final int[] C;
+    public final int[] DOWN;
+    public final int[] UP;
+    public final int[] NEXT;
+    public final int[] C;
 
     private final int n;
 
@@ -80,16 +80,9 @@ public class ChildTable2 {
         System.out.println("C   : " + Arrays.toString(this.C));
     }
 
-    public int[] getUP() {
-        return this.UP;
-    }
-
-    public int[] getDOWN() {
-        return this.DOWN;
-    }
-
-    public int[] getNEXT() {
-        return this.NEXT;
+    @Override
+    public String toString() {
+        return "DOWN: " + Arrays.toString(this.DOWN) + "\nUP  : " + Arrays.toString(this.UP) + "\nNEXT: " + Arrays.toString(this.NEXT) + "\nC   : " + Arrays.toString(this.C);
     }
 
 }
