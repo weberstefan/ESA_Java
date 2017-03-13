@@ -7,6 +7,8 @@ import de.weber.esa.struct.discriminatingCharacters.DiscriminatingCharacters;
 
 /**
  * Created by Stefan on 13.03.2017.
+ * <p>
+ * Paper: Bitpacking Techniques for indexing genomes II: ESA -> Algorithms 1, 3
  */
 public class FindLongestPrefixMatch {
 
@@ -26,9 +28,7 @@ public class FindLongestPrefixMatch {
         while (c < m) {
             if (i == j) {
                 // singleton lcp interval
-
-                // TODO countMatches
-                c = c; // + this.countMatches();
+                c = c + this.countMatches(esa, s, i, c, m);
                 return new PatternMatchingWrapper(c, i, j);
             } else {
                 // child interval
@@ -46,9 +46,7 @@ public class FindLongestPrefixMatch {
 
                 if (lcpIJ > c) {
                     final int M = Math.min(lcpIJ, m);
-
-                    // TODO countMatches
-                    c = c; // + this.countMatches();
+                    c = c + this.countMatches(esa, s, i, c, M);
 
                     if (c < M || c == m) {
                         return new PatternMatchingWrapper(c, i, j);
@@ -65,6 +63,35 @@ public class FindLongestPrefixMatch {
             }
         }
         return new PatternMatchingWrapper(c, i, j);
+    }
+
+    private int countMatches(final EnhancedSuffixArray esa,
+                             final String s,
+                             final int i,
+                             final int c,
+                             final int m) {
+        final int startSeq = esa.suffices[i] + c;
+        final int endSeq = esa.suffices[i] + m - 1;
+
+        final StringBuilder sbSeq = new StringBuilder();
+
+        for (int x = startSeq; x <= endSeq; x = x + 1) {
+            sbSeq.append(esa.sequence[x]);
+        }
+
+        final StringBuilder sbQuery = new StringBuilder();
+
+        for (int x = c; x <= (m - 1); x = x + 1) {
+            sbQuery.append(s.charAt(x));
+        }
+
+        int matches = 0;
+
+        for (int x = 0; x < Math.max(sbQuery.length(), sbSeq.length()); x = x + 1) {
+            matches = (sbSeq.charAt(x) == sbQuery.charAt(x)) ? matches + 1 : matches;
+        }
+
+        return matches;
     }
 
     private IntervalWrapper getInterval(final EnhancedSuffixArray esa,
@@ -99,7 +126,7 @@ public class FindLongestPrefixMatch {
                 if (p < s2) {
                     return null;
                 }
-                 k = k2;
+                k = k2;
             }
         }
 

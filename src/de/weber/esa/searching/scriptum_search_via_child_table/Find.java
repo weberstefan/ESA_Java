@@ -5,6 +5,8 @@ import de.weber.esa.struct.EnhancedSuffixArray;
 
 /**
  * Created by Stefan on 13.03.2017.
+ * <p>
+ * Scriptum Prof Heun: 5.5
  */
 public class Find {
 
