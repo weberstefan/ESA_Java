@@ -10,7 +10,7 @@ import java.util.Objects;
 /**
  * Created by Stefan on 01.02.2017.
  * <p>
- * This is a wrapper class for all kinds of repeats (maximal, supermaximal)
+ * This is a wrapper class for all kinds of repeats (maximal, supermaximal, ...)
  */
 public class Repeats {
 
