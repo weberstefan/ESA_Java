@@ -23,7 +23,7 @@ public class IntervalWrapper {
         this.j = j;
     }
 
-    public boolean isNullInterval(final int length) {
+    public boolean isNotNullInterval(final int length) {
         return (this.i >= 0 &&
                 this.i < this.j &&
                 this.j <= length);

@@ -19,11 +19,11 @@ public class Find {
                       final String s) {
         final int n = esa.length;
         final int m = s.length();
-        IntervalWrapper iw = new IntervalWrapper(0, n);
+        IntervalWrapper iw = new IntervalWrapper(1, n - 1);
         int p = 0;
         boolean prefix = true;
 
-        while ((! iw.isNullInterval(n)) &&
+        while ((iw.isNotNullInterval(n)) &&
                 p < m &&
                 prefix) {
             if (iw.i < iw.j) {
