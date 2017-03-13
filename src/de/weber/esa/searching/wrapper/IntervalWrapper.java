@@ -4,6 +4,13 @@ import java.util.Objects;
 
 /**
  * Created by Stefan on 13.03.2017.
+ * <p>
+ * Helper class for intervals
+ * <p>
+ * <ul>
+ * <li>i : left position of interval</li>
+ * <li>j : right position of interval</li>
+ * </ul>
  */
 public class IntervalWrapper {
 

@@ -4,6 +4,14 @@ import java.util.Objects;
 
 /**
  * Created by Stefan on 13.03.2017.
+ * <p>
+ * Helper class for pattern matching
+ * <p>
+ * <ul>
+ * <li>c : length of matching pattern</li>
+ * <li>i : target positions SA[i]</li>
+ * <li>j : target positions SA[j]</li>
+ * </ul>
  */
 public class PatternMatchingWrapper {
 
