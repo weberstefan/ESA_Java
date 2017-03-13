@@ -77,9 +77,9 @@ public class Repeats {
         }
 
         final Repeats r = (Repeats) o;
-        return r.i == this.i &&
+        return (r.i == this.i &&
                 r.j == this.j &&
-                r.l == this.l;
+                r.l == this.l);
     }
 
     @Override

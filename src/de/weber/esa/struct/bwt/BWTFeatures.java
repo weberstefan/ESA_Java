@@ -44,9 +44,8 @@ public class BWTFeatures {
 
         final BWTFeatures f = (BWTFeatures) o;
 
-        return
-                f.posSequence == this.posSequence &&
-                        f.posMap == this.posMap;
+        return (f.posSequence == this.posSequence &&
+                f.posMap == this.posMap);
     }
 
     @Override

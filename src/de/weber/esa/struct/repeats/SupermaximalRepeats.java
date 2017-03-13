@@ -70,7 +70,6 @@ public class SupermaximalRepeats {
                 }
             }
 
-//            j = j + 1;
             j = i + 1;
         }
 

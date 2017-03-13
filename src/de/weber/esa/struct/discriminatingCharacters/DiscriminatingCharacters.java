@@ -36,8 +36,8 @@ public class DiscriminatingCharacters {
 
         final DiscriminatingCharacters dc = (DiscriminatingCharacters) o;
 
-        return this.first == dc.first &&
-                this.second == dc.second;
+        return (this.first == dc.first &&
+                this.second == dc.second);
     }
 
     @Override
