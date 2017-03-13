@@ -74,6 +74,16 @@ public class LCP {
         this.lcps[this.length] = - 1;
     }
 
+    /**
+     * receive first discriminating characters at position
+     *
+     * @param pos : position of interest
+     * @return Discriminating Characters at position
+     */
+    public DiscriminatingCharacters getDiscriminatingCharactersAtPosition(final int pos) {
+        return this.discriminatingCharactersMap.get(pos);
+    }
+
     @Override
     public String toString() {
         return "LCP:\t" + ESA_Utils.arrayToString(this.lcps) + "\nDC: " + this.discriminatingCharactersMap;
