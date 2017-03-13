@@ -15,12 +15,13 @@ public class Find {
 
     private void find(final EnhancedSuffixArray esa,
                       final String s) {
-        IntervalWrapper iw = new IntervalWrapper(0, esa.length);
+        final int n = esa.length;
+        final int m = s.length();
+        IntervalWrapper iw = new IntervalWrapper(0, n);
         int p = 0;
-        int m = s.length();
         boolean prefix = true;
 
-        while ((! iw.isNullInterval(esa.length)) &&
+        while ((! iw.isNullInterval(n)) &&
                 p < m &&
                 prefix) {
             if (iw.i < iw.j) {
