@@ -27,23 +27,38 @@ public class Find {
             if (iw.i < iw.j) {
                 // child interval
                 int k = Math.min(this.getLCP(esa, iw.i, iw.j), m);
-
-                // TODO prefix
-                prefix = true;
-
+                prefix = this.isPrefix(esa, s, iw.i, p, k);
                 p = k;
             } else if (iw.i == iw.j) {
                 // singleton
-
-                // TODO prefix
-                prefix = true;
-
+                prefix = this.isPrefix(esa, s, iw.i, p, m);
                 p = m;
             }
             iw = this.getChildIntervalByChar(esa, iw.i, iw.j, s.charAt(p + 1));
         }
 
         System.out.println(prefix + " : " + iw.toString());
+    }
+
+    private boolean isPrefix(final EnhancedSuffixArray esa,
+                             final String s,
+                             final int i,
+                             final int p,
+                             final int km) {
+        final StringBuilder sbSubSeq = new StringBuilder();
+        final int startSeq = esa.suffices[i] + p;
+        final int endSeq = esa.suffices[i] + km - 1;
+
+        for (int x = startSeq; x <= endSeq; x = x + 1) {
+            sbSubSeq.append(esa.sequence[x]);
+        }
+
+        final StringBuilder sbPattern = new StringBuilder();
+        for (int x = (p + 1); x <= km; x = x + 1) {
+            sbPattern.append(s.charAt(x));
+        }
+
+        return (sbPattern.toString().equals(sbSubSeq.toString()));
     }
 
     private IntervalWrapper getChildIntervalByChar(final EnhancedSuffixArray esa,
