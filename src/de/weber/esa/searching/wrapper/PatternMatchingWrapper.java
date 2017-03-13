@@ -1,0 +1,46 @@
+package de.weber.esa.searching.wrapper;
+
+import java.util.Objects;
+
+/**
+ * Created by Stefan on 13.03.2017.
+ */
+public class PatternMatchingWrapper {
+
+    public final int c;
+    public final int i;
+    public final int j;
+
+    public PatternMatchingWrapper(final int c,
+                                  final int i,
+                                  final int j) {
+        this.c = c;
+        this.i = i;
+        this.j = j;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (! (o instanceof PatternMatchingWrapper)) {
+            return false;
+        }
+
+        final PatternMatchingWrapper pmw = (PatternMatchingWrapper) o;
+        return (pmw.c == this.c &&
+                pmw.i == this.i &&
+                pmw.j == this.j);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.c, this.i, this.j);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.c + ", " + this.i + ", " + this.j + ")";
+    }
+}
