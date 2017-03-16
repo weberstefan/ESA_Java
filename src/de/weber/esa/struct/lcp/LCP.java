@@ -64,7 +64,11 @@ public class LCP {
 
             this.lcps[a] = k;
 
-            this.discriminatingCharactersMap.put(i, new DiscriminatingCharacters(esa.sequence[b + k], esa.sequence[i + k]));
+            /*
+                TODO Space efficiently compute discriminating characters
+
+                this.discriminatingCharactersMap.put(i, new DiscriminatingCharacters(esa.sequence[b + k], esa.sequence[i + k]));
+            */
 
             k = Math.max(0, k - 1);
         }
