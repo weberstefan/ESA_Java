@@ -17,7 +17,7 @@ Analyzing efficiency of Java Implementations for Enhanced Suffix Arrays + Applic
 - Applications
 
   - Binary Search: //TODO validate
-  - Find Query of length m using LCP and Child Table in O(|\sum| * m)
+  - Find Query of length m using LCP and Child Table in O(|$ \sum| * m)
     
     
  
