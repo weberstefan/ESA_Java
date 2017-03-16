@@ -6,7 +6,7 @@ import de.weber.esa.struct.bwt.FMIndex;
 /**
  * Created by Stefan on 16.03.2017.
  *
- * Compute the FM-Index for a given ESA and query in O(m)
+ * Compute the FM-Index for a given ESA and query in O(n * m)
  */
 public class FMIndexSearch {
 
