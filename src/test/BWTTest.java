@@ -1,5 +1,6 @@
 package test;
 
+import de.weber.esa.searching.fmIndex.FMIndexSearch;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.bwt.FMIndex;
 import org.junit.Assert;
@@ -21,7 +22,8 @@ public class BWTTest {
         final String query = "NANA";
 
         // l = 12; r = 14
-        final FMIndex fm = esa.bwt.backwardSearch(esa, query);
+        final FMIndexSearch fmIndexSearch = new FMIndexSearch();
+        final FMIndex fm = fmIndexSearch.backwardSearch(esa, query);
         final int l = fm.getL();
         final int r = fm.getR();
         Assert.assertEquals(l, 12);
