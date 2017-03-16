@@ -22,13 +22,13 @@ public class FindLongestPrefixMatch {
         final int n = esa.length;
         final int m = s.length();
         int c = 0;
-        int i = 1;
+        int i = 1; /* correct initiaization? */
         int j = n;
 
         while (c < m) {
             if (i == j) {
                 // singleton lcp interval
-                c = c + this.countMatches(esa, s, i, c, m);
+                c = c + this.countMatches(esa, s, i, c, m); /* correct counting matches? */
                 return new PatternMatchingWrapper(c, i, j);
             } else {
                 // child interval
