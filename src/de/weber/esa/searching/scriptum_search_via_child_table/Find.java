@@ -19,7 +19,7 @@ public class Find {
                       final String s) {
         final int n = esa.length;
         final int m = s.length();
-        IntervalWrapper iw = new IntervalWrapper(1, n - 1);
+        IntervalWrapper iw = new IntervalWrapper(1, n - 1); /* correct initialization?? */
         int p = 0;
         boolean prefix = true;
 
