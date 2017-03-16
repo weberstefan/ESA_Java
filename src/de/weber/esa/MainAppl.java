@@ -1,8 +1,8 @@
 package de.weber.esa;
 
+import de.weber.esa.searching.binarySearch.BinarySearch;
+import de.weber.esa.searching.fmIndex.FMIndexSearch;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.rmq.RMQ;
-import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 
 import java.util.Calendar;
 
@@ -12,9 +12,9 @@ import java.util.Calendar;
 public class MainAppl {
 
     public static void main(String[] args) {
-        final String s = "ACAAACATAT";
+//        final String s = "ACAAACATAT";
 //        final String s = "MISSISSIPPI";
-//        final String s = "BANANA";
+        final String s = "BANANA";
 //        final String s = "AAABAABAB";
 //        final String s = "XABCYABCWABCYZ";
 
@@ -37,11 +37,15 @@ public class MainAppl {
 //                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
 //                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
 //                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
-//        final String testQuery = "AA";
+        final String testQuery = "ANA";
 
-//        FMIndex fm = esa.bwt.backwardSearch(esa, testQuery);
-//        System.out.println(testQuery + ": " + fm.toString());
-//        System.out.println("FM-backward search done: " + Calendar.getInstance().getTime());
+        FMIndexSearch fmIndexSearch = new FMIndexSearch();
+        System.out.println(fmIndexSearch.backwardSearch(esa, testQuery));
+        System.out.println("FM-backward search done: " + Calendar.getInstance().getTime());
+
+
+        new BinarySearch(esa, testQuery);
+        System.out.println("Binary search done: " + Calendar.getInstance().getTime());
 
 //        SupermaximalRepeats sr = new SupermaximalRepeats(esa);
 //        System.out.println("Supermaximal repeats: " + sr.getSupermaximalRepeats());
@@ -51,12 +55,12 @@ public class MainAppl {
 //        System.out.println("Maximal Repeats: " + mr.getMaximalRepeats());
 //        System.out.println("Maximal Repeats built: " + Calendar.getInstance().getTime());
 
-        RMQ rmq = new RMQ(esa.lcp.lcps, 3, true);
+//        RMQ rmq = new RMQ(esa.lcp.lcps, 3, true);
 //        System.out.println(rmq.toString());
 
 
 //        System.out.println(esa.toString());
-        System.out.println(ObjectSizeCalculator.getObjectSize(esa) + "\tESA SIZE");
+//        System.out.println(ObjectSizeCalculator.getObjectSize(esa) + "\tESA SIZE");
     }
 
 }
