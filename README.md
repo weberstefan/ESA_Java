@@ -13,12 +13,10 @@ Analyzing efficiency of Java Implementations for Enhanced Suffix Arrays + Applic
     - Maximal Repeats make use of LCP-Array
     - Supermaximal Repeats make use of pairwise distinct BWT Characters for specific positions and LCP-Array
   - RMQ is built in O(n log(n))
-  
+
 - Applications
   - Searching Queries of length m
   - Binary Search: //TODO validate
   - Find Query of length m using LCP and Child Table in O(|Alphabet| * m) //TODO initialization
   - Find Longest Prefix Match using LCP, Child Table and Discriminating Characters in O(m * n) // TODO initialization
-  - FM-Index using BWT backward search in O(n * m)   
-    
- 
+  - FM-Index using BWT backward search in O(n * m)
