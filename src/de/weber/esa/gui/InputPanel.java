@@ -1,7 +1,7 @@
 package de.weber.esa.gui;
 
+import de.weber.esa.searching.fmIndex.FMIndexSearch;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.bwt.BWT;
 import de.weber.esa.struct.bwt.FMIndex;
 
 import javax.swing.*;
@@ -80,11 +80,8 @@ public class InputPanel extends JPanel {
             if (! query.chars().allMatch(Character::isLetter)) {
                 JOptionPane.showMessageDialog(null, "Query must only contain letters!");
             } else {
-                fm = esa.bwt.backwardSearch(esa, query);
-                if (BWT.charNotInSequence) {
-                    JOptionPane.showMessageDialog(null, "There is a character in your query that is not in the sequence");
-                    BWT.charNotInSequence = false;
-                }
+                FMIndexSearch fmIndexSearch = new FMIndexSearch();
+                fm = fmIndexSearch.backwardSearch(esa, query);
                 isFmIndex = true;
                 redo();
             }
