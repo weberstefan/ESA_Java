@@ -20,7 +20,7 @@ public class BinarySearch {
      * binary search for pattern query
      * @param esa : current enhanced suffix array for sequence of interest
      * @param query : pattern to search for
-     * @return if sequence of interest contains pattern
+     * @return (query, SA[i..j]) iff sequence of interest contains pattern
      */
     private BinarySearchWrapper binarySearch(final EnhancedSuffixArray esa,
                                              final String query) {
