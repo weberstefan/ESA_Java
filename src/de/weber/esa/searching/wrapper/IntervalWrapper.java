@@ -14,7 +14,14 @@ import java.util.Objects;
  */
 public class IntervalWrapper {
 
+    /**
+     * Represents starting index of interval
+     */
     public final int i;
+
+    /**
+     * Represens ending index of interval
+     */
     public final int j;
 
     public IntervalWrapper(final int i,

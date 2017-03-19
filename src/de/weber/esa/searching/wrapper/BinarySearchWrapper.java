@@ -9,8 +9,19 @@ import java.util.Objects;
  */
 public class BinarySearchWrapper {
 
+    /**
+     * Represents query pattern
+     */
     public final String query;
+
+    /**
+     * Represents most left position in SA that matches query
+     */
     public final int positionSuffixArrayLeft;
+
+    /**
+     * Represents most right position in SA that matches query
+     */
     public final int positionSuffixArrayRight;
 
     public BinarySearchWrapper(final String query,

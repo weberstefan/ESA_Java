@@ -15,8 +15,19 @@ import java.util.Objects;
  */
 public class PatternMatchingWrapper {
 
+    /**
+     * Represents the length of matching pattern's prefix
+     */
     public final int c;
+
+    /**
+     * Represents target's most left position in SA
+     */
     public final int i;
+
+    /**
+     * Represents target's most right position in SA
+     */
     public final int j;
 
     public PatternMatchingWrapper(final int c,
