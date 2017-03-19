@@ -1,4 +1,4 @@
-package de.weber.esa.struct.repeats;
+package de.weber.esa.repeats;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.bwt.BWT;
@@ -20,14 +20,21 @@ public class SupermaximalRepeats {
     private Map<Integer, List<Repeats>> supermaximalRepeats;
 
     /**
-     * Computing all supermaximal repeats in O(n);
+     * empty constructor for call
+     */
+    public SupermaximalRepeats() {
+    }
+
+    /**
+     * Computing all supermaximal repeats in O(n + |supermaximal repeats|);
      * <p>
      * - [i..j] is a local maximum in the lcp table
      * - characters bwt[i], bwt[i+1], ..., bwt[j] are pairwise distinct
      *
      * @param esa : enhanced suffix array for given sequence
+     * @return map of all supermaximal repeats with key: length; value: (i, j, l)
      */
-    public SupermaximalRepeats(final EnhancedSuffixArray esa) {
+    public Map<Integer, List<Repeats>> computeSupermaximalRepeats(final EnhancedSuffixArray esa) {
         final int n = esa.length - 1;
 
         this.supermaximalRepeats = new HashMap<>();
@@ -81,6 +88,9 @@ public class SupermaximalRepeats {
                 }
             }
         }
+
+
+        return this.supermaximalRepeats;
     }
 
     /**

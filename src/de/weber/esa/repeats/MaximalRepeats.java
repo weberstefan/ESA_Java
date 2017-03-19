@@ -1,4 +1,4 @@
-package de.weber.esa.struct.repeats;
+package de.weber.esa.repeats;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 
@@ -8,23 +8,32 @@ import java.util.Map;
 
 /**
  * Created by Stefan on 02.02.2017.
+ * <p>
+ * Computing all maximal repeats for a given sequence
  */
 public class MaximalRepeats {
 
     /**
-     * use of child table?? (UP, DOWN, NEXT, CHILD)
+     * Map storing all supermaximal repeapts (i, j, l) as list with key: length of supermaximal repeat
      */
-
-
     private Map<Integer, List<Repeats>> maximalRepeats;
 
-    public MaximalRepeats(final EnhancedSuffixArray esa) {
+    /**
+     * empty constructor for call
+     */
+    public MaximalRepeats() {
+    }
+
+    /**
+     * compute all maximal repeats using LCP
+     *
+     * @param esa : enhanced suffix array for given sequence
+     * @return map of all supermaximal repeats with key: length; value: (i, j, l)
+     */
+    public Map<Integer, List<Repeats>> computeMaximalRepeats(final EnhancedSuffixArray esa) {
         final int n = esa.length - 1;
 
         int j = 1; // 0 = $
-        int i = - 1;
-
-        int l = - 1;
         int seqPosI = - 1;
         int seqPosJ = - 1;
 
@@ -38,13 +47,11 @@ public class MaximalRepeats {
                     seqPosI = j;
                     seqPosJ = j + 1;
                     Repeats.fillMap(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.lcps[j + 1]);
-//                    System.out.println("(" + seqPosI + ", " + seqPosJ + ", " + esa.lcp.lcps[j + 1] + ")");
 
                     while (seqPosJ < n &&
                             esa.lcp.lcps[seqPosJ] < esa.lcp.lcps[seqPosJ + 1] &&
                             esa.lcp.lcps[seqPosJ + 1] > esa.lcp.lcps[seqPosJ + 2]) {
                         if (esa.bwt.bwt[seqPosJ + 1] != esa.bwt.bwt[j]) {
-//                            System.out.println("(" + seqPosI + ", " + (seqPosJ + 1) + ", " + esa.lcp.lcps[seqPosI + 1] + ")");
                             Repeats.fillMap(this.maximalRepeats, esa, seqPosI, (seqPosJ + 1), esa.lcp.lcps[seqPosI + 1]);
                         }
                         seqPosJ = seqPosJ + 1;
@@ -55,17 +62,10 @@ public class MaximalRepeats {
             j = j + 1;
         }
 
-//        final StringBuilder sb = new StringBuilder();
-//
-//        for (final int x : this.getMaximalRepeats().keySet()) {
-//            for (int y = 0; y < this.getMaximalRepeats().get(x).size(); y = y + 1) {
-//                sb.append(this.getMaximalRepeats().get(x).get(y).toString() + "\t" + ESA_Utils.getCurrentSuffix(esa, this.getMaximalRepeats().get(x).get(y).getI(), this.getMaximalRepeats().get(x).get(y).getL()));
-//                sb.append("\n");
-//            }
-//        }
-//
-//        System.out.println(sb.toString());
+        return this.maximalRepeats;
     }
 
-    public Map<Integer, List<Repeats>> getMaximalRepeats() { return this.maximalRepeats; }
+    public Map<Integer, List<Repeats>> getMaximalRepeats() {
+        return this.maximalRepeats;
+    }
 }

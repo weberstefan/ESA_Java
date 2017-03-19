@@ -1,4 +1,4 @@
-package de.weber.esa.struct.repeats;
+package de.weber.esa.repeats;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 
@@ -11,6 +11,12 @@ import java.util.Objects;
  * Created by Stefan on 01.02.2017.
  * <p>
  * This is a wrapper class for all kinds of repeats (maximal, supermaximal, ...)
+ * <p>
+ * <ul>
+ * <li>starting position of first appearance in sequence</li>
+ * <li>starting position of second appearance in sequence</li>
+ * <li>length of current repeat</li>
+ * </ul>
  */
 public class Repeats {
 
