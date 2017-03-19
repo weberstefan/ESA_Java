@@ -11,7 +11,7 @@ import de.weber.esa.struct.bwt.FMIndex;
 public class FMIndexSearch {
 
     /**
-     * empty constructor
+     * empty constructor for call
      */
     public FMIndexSearch() {
     }
