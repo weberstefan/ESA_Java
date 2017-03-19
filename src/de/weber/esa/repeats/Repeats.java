@@ -13,15 +13,26 @@ import java.util.Objects;
  * This is a wrapper class for all kinds of repeats (maximal, supermaximal, ...)
  * <p>
  * <ul>
- * <li>starting position of first appearance in sequence</li>
- * <li>starting position of second appearance in sequence</li>
- * <li>length of current repeat</li>
+ * <li>i: starting position of first appearance in sequence</li>
+ * <li>j: starting position of second appearance in sequence</li>
+ * <li>l: length of current repeat</li>
  * </ul>
  */
 public class Repeats {
 
+    /**
+     * Represents the starting position of first sequence's appearance of current repeat
+     */
     private final int i;
+
+    /**
+     * Represents the starting position of second sequence's appearance of current repeat
+     */
     private final int j;
+
+    /**
+     * Represents the length of current repeat
+     */
     private final int l;
 
     public Repeats(final int i,
