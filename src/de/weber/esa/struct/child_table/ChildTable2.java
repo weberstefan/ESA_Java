@@ -74,10 +74,10 @@ public class ChildTable2 {
             }
         }
 
-        System.out.println("DOWN: " + Arrays.toString(this.DOWN));
-        System.out.println("UP  : " + Arrays.toString(this.UP));
-        System.out.println("NEXT: " + Arrays.toString(this.NEXT));
-        System.out.println("C   : " + Arrays.toString(this.C));
+//        System.out.println("DOWN: " + Arrays.toString(this.DOWN));
+//        System.out.println("UP  : " + Arrays.toString(this.UP));
+//        System.out.println("NEXT: " + Arrays.toString(this.NEXT));
+//        System.out.println("C   : " + Arrays.toString(this.C));
     }
 
     @Override
