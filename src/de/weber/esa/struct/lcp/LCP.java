@@ -10,7 +10,8 @@ import java.util.Map;
 /**
  * Created by Stefan on 20.01.2017.
  * <p>
- * Class for calculating LCP values for a given suffix array in O(n)
+ * Class for calculating LCP values and corresponding first discriminating characters
+ * for a given suffix array in O(n)
  * <p>Theorem 5.24 in Scriptum: Algorithmns and Sequences by Prof. Heun</p>
  */
 public class LCP {
