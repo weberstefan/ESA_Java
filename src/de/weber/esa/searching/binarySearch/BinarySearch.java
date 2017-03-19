@@ -1,54 +1,27 @@
 package de.weber.esa.searching.binarySearch;
 
-import de.weber.esa.io.Reader;
 import de.weber.esa.searching.wrapper.BinarySearchWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 
-import java.io.File;
-import java.util.Calendar;
-
 /**
  * Created by Stefan on 13.03.2017.
- *
- * //TODO VALIDATE
+ * <p>
+ * Binary search for a pattern; retrieves suffix arrays start and end position of found pattern
  */
 public class BinarySearch {
 
-    public static void main(String[] args) {
-//        final String s = "ACAAACATAT";
-        System.out.println("Start: " + Calendar.getInstance().getTime());
-        final File file = new File("res/test/english.50MB");
-        final String s = Reader.readFile(file);
-        System.out.println("Sequence read in: " + Calendar.getInstance().getTime());
-
-        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
-
-        System.out.println("ESA built: " + Calendar.getInstance().getTime());
-
-        final String query = "AAA";
-
-        final String testQuery = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
-                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
-                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
-                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
-                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
-                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
-                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
-
-//        System.out.println(esa.toString());
-
-//        final int left = esa.bwtCMap.get(query.charAt(0)).getPosMap();
-
-        new BinarySearch(esa, testQuery);
-
-        System.out.println("Query binary search: " + Calendar.getInstance().getTime());
+    /**
+     * empty constructor for call
+     */
+    public BinarySearch() {
     }
 
-    public BinarySearch(final EnhancedSuffixArray esa,
-                        final String query) {
-        System.out.println(this.binarySearch(esa, query).toString());
-    }
-
+    /**
+     * binary search for pattern query
+     * @param esa : current enhanced suffix array for sequence of interest
+     * @param query : pattern to search for
+     * @return if sequence of interest contains pattern
+     */
     private BinarySearchWrapper binarySearch(final EnhancedSuffixArray esa,
                                              final String query) {
         // queries first letter is not inside the suffix array string
@@ -60,37 +33,61 @@ public class BinarySearch {
         int mid;
         int left = esa.bwtCMap.get(query.charAt(0)).getPosSequence();
         int right = esa.length - 1;
-        int posChar = 1;
+        int posChar = 0;
 
-        try {
-            while (left <= right && posChar < query.length()) {
-                mid = left + ((right - left) / 2);
-                final int p = esa.suffices[mid];
+        while (left <= right && posChar < query.length()) {
+            mid = left + ((right - left) / 2);
+            final int p = esa.suffices[mid];
 
-                if (query.charAt(posChar) == esa.sequence[p + posChar]) {
+            if (query.charAt(posChar) == esa.sequence[p + posChar]) {
+                if (posChar != query.length()) {
+                    posChar = posChar + 1;
                     if (posChar == query.length()) {
-                        return new BinarySearchWrapper(query, mid, esa.suffices[mid]);
-                    } else {
-                        posChar = posChar + 1;
-                        if (posChar == query.length()) {
-                            return new BinarySearchWrapper(query, mid, esa.suffices[mid]);
+                        int up = mid + 1;
+                        boolean isUp = false;
+
+                        /*
+                            as long as LCP[mid++] greater than or equal to number of already matching characters
+                            their SA entries also match the query
+                         */
+                        while (esa.lcp.lcps[up] >= posChar) {
+                            up = up + 1;
+                            isUp = true;
                         }
-                    }
-                } else {
-                    if (! esa.bwtCMap.containsKey(query.charAt(posChar))) {
-                        // query contains letter, that is not inside the suffix array string
-                        System.out.println(query.charAt(posChar) + " is not inside the suffix array");
-                        return new BinarySearchWrapper(query, - 1, - 1);
-                    } else if (query.charAt(posChar) < esa.sequence[p + posChar]) {
-                        right = mid - 1;
-                    } else {
-                        left = mid + 1;
+
+                        int down = mid - 1;
+                        boolean isDown = false;
+
+                        /*
+                            iff LCP[mid] greater than or equal to number of already matching characters
+                            LCP[mid--] can match query --> iff LCP[mid--] greater than or equal to 0
+                         */
+                        if (esa.lcp.lcps[mid] >= posChar) {
+                            while (esa.lcp.lcps[down] >= 0) {
+                                isDown = true;
+                                if (esa.lcp.lcps[down] <= 0) {
+                                    break;
+                                }
+                                down = down - 1;
+                            }
+                        }
+
+                        return new BinarySearchWrapper(query, isDown ? down : mid, isUp ? (up - 1) : mid);
                     }
                 }
+            } else {
+                if (! esa.bwtCMap.containsKey(query.charAt(posChar))) {
+                    // query contains letter, that is not inside the suffix array string
+                    System.out.println(query.charAt(posChar) + " is not inside the suffix array");
+                    return new BinarySearchWrapper(query, - 1, - 1);
+                } else if (query.charAt(posChar) < esa.sequence[p + posChar]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return new BinarySearchWrapper(query, - 1, - 1);
         }
+
         return new BinarySearchWrapper(query, - 1, - 1);
     }
 
