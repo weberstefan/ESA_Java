@@ -10,15 +10,15 @@ import java.util.Objects;
 public class BinarySearchWrapper {
 
     public final String query;
-    public final int positionSuffixArray;
-    public final int positionSequence;
+    public final int positionSuffixArrayLeft;
+    public final int positionSuffixArrayRight;
 
     public BinarySearchWrapper(final String query,
-                               final int positionSuffixArray,
-                               final int positionSequence) {
+                               final int positionSuffixArrayLeft,
+                               final int positionSuffixArrayRight) {
         this.query = query;
-        this.positionSuffixArray = positionSuffixArray;
-        this.positionSequence = positionSequence;
+        this.positionSuffixArrayLeft = positionSuffixArrayLeft;
+        this.positionSuffixArrayRight = positionSuffixArrayRight;
     }
 
     @Override
@@ -32,25 +32,26 @@ public class BinarySearchWrapper {
 
         final BinarySearchWrapper bsw = (BinarySearchWrapper) o;
         return (bsw.query.equals(this.query) &&
-                bsw.positionSuffixArray == this.positionSuffixArray &&
-                bsw.positionSequence == this.positionSequence);
+                bsw.positionSuffixArrayLeft == this.positionSuffixArrayLeft &&
+                bsw.positionSuffixArrayRight == this.positionSuffixArrayRight);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.query, this.positionSuffixArray, this.positionSequence);
+        return Objects.hash(this.query, this.positionSuffixArrayLeft, this.positionSuffixArrayRight);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (this.positionSuffixArray < 0) {
-            sb.append("Not found query: \"");
+        StringBuilder sb = new StringBuilder(this.query.length() + 18);
+        sb.append(this.query + "");
+        if (this.positionSuffixArrayLeft < 0 || this.positionSuffixArrayRight < 0) {
+            sb.append(" not found.");
         } else {
-            sb.append("Found at SA[" + this.positionSuffixArray + "] -> Position in Sequence: (" + this.positionSequence + "); query:\"");
+            sb.append(" found at SA[" + this.positionSuffixArrayLeft + ".." + this.positionSuffixArrayRight + "]");
         }
-        sb.append(this.query + "\"");
         return sb.toString();
+//        return this.query + "\t" + this.positionSuffixArrayLeft + "\t" + this.positionSuffixArrayRight;
     }
 
 }
