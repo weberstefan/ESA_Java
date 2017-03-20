@@ -74,7 +74,8 @@ public class ESA_Utils {
         StringBuilder sb = new StringBuilder();
 //        final int p = esa.suffices[i];
         int k = 0;
-        while (k < l) {
+        while (k < l &&
+                (i + k) < esa.length) {
             sb.append(esa.sequence[i + k]);
             k = k + 1;
         }
