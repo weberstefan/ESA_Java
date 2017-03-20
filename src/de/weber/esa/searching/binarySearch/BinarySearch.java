@@ -2,6 +2,7 @@ package de.weber.esa.searching.binarySearch;
 
 import de.weber.esa.searching.wrapper.BinarySearchWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.utils.ESA_Utils;
 
 /**
  * Created by Stefan on 13.03.2017.
@@ -22,72 +23,63 @@ public class BinarySearch {
      * @param query : pattern to search for
      * @return (query, SA[i..j]) iff sequence of interest contains pattern
      */
-    private BinarySearchWrapper binarySearch(final EnhancedSuffixArray esa,
-                                             final String query) {
+    public BinarySearchWrapper search(final EnhancedSuffixArray esa,
+                                      final String query) {
         // queries first letter is not inside the suffix array string
         if (! esa.bwtCMap.containsKey(query.charAt(0))) {
             System.out.println(query.charAt(0) + " is not inside the suffix array");
             return new BinarySearchWrapper(query, - 1, - 1);
         }
+        final int m = query.length();
+        final int n = esa.length;
+        int l = esa.bwtCMap.get(query.charAt(0)).getPosSequence();
+        int r = n - 1;
 
-        int mid;
-        int left = esa.bwtCMap.get(query.charAt(0)).getPosSequence();
-        int right = esa.length - 1;
-        int posChar = 0;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
 
-        while (left <= right && posChar < query.length()) {
-            mid = left + ((right - left) / 2);
             final int p = esa.suffices[mid];
+            final String currentSuffixSubstring = ESA_Utils.getCurrentSuffix(esa, p, m);
 
-            if (query.charAt(posChar) == esa.sequence[p + posChar]) {
-                if (posChar != query.length()) {
-                    posChar = posChar + 1;
-                    if (posChar == query.length()) {
-                        int up = mid + 1;
-                        boolean isUp = false;
+            int res = query.compareTo(currentSuffixSubstring);
 
-                        /*
-                            as long as LCP[mid++] greater than or equal to number of already matching characters
-                            their SA entries also match the query
-                         */
-                        while (esa.lcp.lcps[up] >= posChar) {
-                            up = up + 1;
-                            isUp = true;
-                        }
+            if (res == 0) {
 
-                        int down = mid - 1;
-                        boolean isDown = false;
-
-                        /*
-                            iff LCP[mid] greater than or equal to number of already matching characters
-                            LCP[mid--] can match query --> iff LCP[mid--] greater than or equal to 0
-                         */
-                        if (esa.lcp.lcps[mid] >= posChar) {
-                            while (esa.lcp.lcps[down] >= 0) {
-                                isDown = true;
-                                if (esa.lcp.lcps[down] <= 0) {
-                                    break;
-                                }
-                                down = down - 1;
-                            }
-                        }
-
-                        return new BinarySearchWrapper(query, isDown ? down : mid, isUp ? (up - 1) : mid);
-                    }
+                int up = mid + 1;
+                boolean isUp = false;
+                /*
+                    as long as LCP[mid++] is greater than or equal to length of query
+                    their SA entries also match the query
+                */
+                while (esa.lcp.lcps[up] >= m) {
+                    up = up + 1;
+                    isUp = true;
                 }
+
+                int down = mid - 1;
+                boolean isDown = false;
+                int downP = esa.suffices[down];
+                String suffixDown = ESA_Utils.getCurrentSuffix(esa, downP, m);
+                /*
+                    iff LCP[mid] greater than or equal to length of query
+                    LCP[mid--] can match query --> iff LCP[mid--] greater than or equal to 0
+                */
+                while (query.compareTo(suffixDown) == 0) {
+                    down = down - 1;
+                    isDown = true;
+                    downP = esa.suffices[down];
+                    suffixDown = ESA_Utils.getCurrentSuffix(esa, downP, m);
+                }
+
+                return new BinarySearchWrapper(query, isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
+            } else if (res < 0) {
+                r = mid - 1;
+            } else if (res > 0) {
+                l = mid + 1;
             } else {
-                if (! esa.bwtCMap.containsKey(query.charAt(posChar))) {
-                    // query contains letter, that is not inside the suffix array string
-                    System.out.println(query.charAt(posChar) + " is not inside the suffix array");
-                    return new BinarySearchWrapper(query, - 1, - 1);
-                } else if (query.charAt(posChar) < esa.sequence[p + posChar]) {
-                    right = mid - 1;
-                } else {
-                    left = mid + 1;
-                }
+                throw new RuntimeException("Should never reach here");
             }
         }
-
         return new BinarySearchWrapper(query, - 1, - 1);
     }
 

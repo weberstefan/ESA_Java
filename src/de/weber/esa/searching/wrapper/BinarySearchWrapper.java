@@ -57,7 +57,7 @@ public class BinarySearchWrapper {
         StringBuilder sb = new StringBuilder(this.query.length() + 18);
         sb.append(this.query + "");
         if (this.positionSuffixArrayLeft < 0 || this.positionSuffixArrayRight < 0) {
-            sb.append(" not found.");
+            sb.append(" was not found.");
         } else {
             sb.append(" found at SA[" + this.positionSuffixArrayLeft + ".." + this.positionSuffixArrayRight + "]");
         }
