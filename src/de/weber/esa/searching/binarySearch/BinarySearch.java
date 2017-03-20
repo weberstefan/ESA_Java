@@ -32,8 +32,14 @@ public class BinarySearch {
         }
         final int m = query.length();
         final int n = esa.length;
-        int l = esa.bwtCMap.get(query.charAt(0)).getPosSequence();
+        int l = esa.bwtCMap.get(query.charAt(0)).getPosSequence(); // O(1)
+        // get r in O(|Alphabet(query)|)
         int r = n - 1;
+        for (final char c : esa.bwtCMap.keySet()) {
+            if (esa.bwtCMap.get(c).getPosMap() == esa.bwtCMap.get(query.charAt(0)).getPosMap() + 1) {
+                r = (esa.bwtCMap.get(c).getPosSequence() - 1);
+            }
+        }
 
         while (l <= r) {
             int mid = l + (r - l) / 2;
