@@ -5,9 +5,8 @@ import de.weber.esa.repeats.MaximalRepeats;
 import de.weber.esa.repeats.SupermaximalRepeats;
 import de.weber.esa.searching.binarySearch.BinarySearch;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.utils.ESA_Utils;
 
-import java.io.*;
+import java.io.File;
 import java.util.Calendar;
 
 /**
@@ -72,33 +71,6 @@ public class MainAppl {
 
 //        System.out.println(esa.toString());
 //        System.out.println(ObjectSizeCalculator.getObjectSize(esa) + "\tESA SIZE");
-
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(new File("C:/Users/Stefan/Desktop/OUTPUT_1.txt")))) {
-            wr.write(ESA_Utils.getCurrentSuffix(esa, esa.suffices[17391038], testQuery.length() + 1));
-            wr.newLine();
-        } catch(FileNotFoundException eFNF) {
-            eFNF.printStackTrace();
-        } catch (IOException eIO) {
-            eIO.printStackTrace();
-        }
-
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(new File("C:/Users/Stefan/Desktop/OUTPUT_2.txt")))) {
-            wr.write(ESA_Utils.getCurrentSuffix(esa, esa.suffices[17391039], testQuery.length() + 1));
-            wr.close();
-        } catch(FileNotFoundException eFNF) {
-            eFNF.printStackTrace();
-        } catch (IOException eIO) {
-            eIO.printStackTrace();
-        }
-
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(new File("C:/Users/Stefan/Desktop/OUTPUT_3.txt")))) {
-            wr.write(ESA_Utils.getCurrentSuffix(esa, esa.suffices[17391043], testQuery.length() + 1));
-            wr.close();
-        } catch(FileNotFoundException eFNF) {
-            eFNF.printStackTrace();
-        } catch (IOException eIO) {
-            eIO.printStackTrace();
-        }
     }
 
 }
