@@ -18,6 +18,22 @@ public class ESA_Utils {
         return unique.length();
     }
 
+
+    public static final int getCharEndPosSA(final EnhancedSuffixArray esa,
+                                            final char charOfInterest) {
+        for (final char c : esa.bwtCMap.keySet()) {
+            if (esa.bwtCMap.get(c).getPosMap() == esa.bwtCMap.get(charOfInterest).getPosMap() + 1) {
+                return (esa.bwtCMap.get(c).getPosSequence() - 1);
+            }
+        }
+
+        // it is the last character
+        if (esa.bwtCMap.containsKey(charOfInterest)) {
+            return esa.length - 1;
+        } else
+            throw new RuntimeException("Yout Character of interest is not inside your sequence, hence, not inside the Enhanced Suffix Array.");
+    }
+
     /**
      * represents the byte array for the BWT OCC(*,*) Function
      *
@@ -85,6 +101,7 @@ public class ESA_Utils {
 
     /**
      * receive integer array as string
+     *
      * @param a : current array
      * @return : a as string in form of Arrays.toString(a)
      */
@@ -106,6 +123,7 @@ public class ESA_Utils {
 
     /**
      * receive byte array as string
+     *
      * @param a : current array
      * @return : a as string in form of Arrays.toString(a)
      */

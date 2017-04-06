@@ -55,7 +55,7 @@ public class BinarySearchWrapper {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(this.query.length() + 18);
-        sb.append(this.query + "");
+        sb.append("Query ");
         if (this.positionSuffixArrayLeft < 0 || this.positionSuffixArrayRight < 0) {
             sb.append(" was not found.");
         } else {

@@ -47,8 +47,10 @@ public class SupermaximalRepeats {
 
         while (j < n) {
             i = j;
+            // only get supermaximal repeats of length > 1
             while (j < n &&
-                    esa.lcp.lcps[j] <= esa.lcp.lcps[j + 1]) {
+                    esa.lcp.lcps[j] <= esa.lcp.lcps[j + 1] &&
+                    esa.lcp.lcps[j + 1] > 1) {
                 if (j < n &&
                         (esa.lcp.lcps[j] == 0 &&
                                 esa.lcp.lcps[j + 1] == 0) ||
@@ -80,15 +82,7 @@ public class SupermaximalRepeats {
             j = i + 1;
         }
 
-        for (int k : this.supermaximalRepeats.keySet()) {
-            for (int p = 0; p < this.supermaximalRepeats.get(k).size(); p = p + 1) {
-                if ((p + 1) < this.supermaximalRepeats.get(k).size() &&
-                        this.supermaximalRepeats.get(k).get(p).getJ() == this.supermaximalRepeats.get(k).get(+ 1).getI()) {
-                    this.supermaximalRepeats.get(k).add(new Repeats(this.supermaximalRepeats.get(k).get(p).getI(), this.supermaximalRepeats.get(k).get(p + 1).getJ(), k));
-                }
-            }
-        }
-
+        Repeats.getRemainingRepeats(this.supermaximalRepeats);
 
         return this.supermaximalRepeats;
     }

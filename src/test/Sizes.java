@@ -6,10 +6,10 @@ import org.junit.Test;
 /**
  * Created by Stefan on 22.01.2017.
  */
-public class SizeTest {
+public class Sizes {
 
     @Test
-    public void sizeTesting() {
+    public void sizes() {
         final int[] x = new int[12];
 
         System.out.println(ObjectSizeCalculator.getObjectSize(x));

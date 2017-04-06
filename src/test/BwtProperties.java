@@ -9,9 +9,9 @@ import org.junit.Test;
 /**
  * Created by Stefan on 20.01.2017.
  *
- * Test BWT with a given sequence and its FM index
+ * Check BWT with a given sequence and its FM index
  */
-public class BWTTest {
+public class BwtProperties {
 
     @Test
     public void testBWT() {

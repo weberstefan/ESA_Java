@@ -40,8 +40,9 @@ public class MaximalRepeats {
         this.maximalRepeats = new HashMap<>();
 
         while (j < n) {
-
-            if (esa.lcp.lcps[j] < esa.lcp.lcps[j + 1]) {
+            // only get maximal repeats of length > 1
+            if (esa.lcp.lcps[j] < esa.lcp.lcps[j + 1] &&
+                    esa.lcp.lcps[j + 1] > 1) {
                 // left character different
                 if (esa.bwt.bwt[j] != esa.bwt.bwt[j + 1]) {
                     seqPosI = j;
@@ -61,6 +62,8 @@ public class MaximalRepeats {
             }
             j = j + 1;
         }
+
+        Repeats.getRemainingRepeats(this.maximalRepeats);
 
         return this.maximalRepeats;
     }

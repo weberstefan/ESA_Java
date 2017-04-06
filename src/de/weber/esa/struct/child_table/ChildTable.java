@@ -24,6 +24,9 @@ public class ChildTable {
      */
     public final int[] cld; // TODO REPRESENT AS BIT ARRAY
 
+    public final boolean[] down;
+    public final boolean[] next;
+
     /**
      * Compute the child table for a given suffix array and its corresponding LCP table
      *
@@ -32,43 +35,50 @@ public class ChildTable {
     public ChildTable(final LCP lcp) {
         // set the length N
         this.length = lcp.length;
-        // initialize the child array
+        // initialize the arrays
         this.cld = new int[this.length];
+        this.down = new boolean[this.length];
+//        this.up = new boolean[this.length];
+        this.next = new boolean[this.length];
 
         Stack<Integer> S = new Stack();
         S.push(0);
         int last = - 1;
 
-        for (int i = 1; i <= this.length; i = i + 1) {
-            while (lcp.lcps[i] < lcp.lcps[S.lastElement()]) {
+        for (int k = 1; k <= this.length; k = k + 1) {
+            while (lcp.lcps[k] < lcp.lcps[S.lastElement()]) {
                 last = S.pop();
-                if (lcp.lcps[i] < lcp.lcps[S.lastElement()] &&
-                        lcp.lcps[S.lastElement()] != lcp.lcps[last]) {
-                    cld[S.lastElement()] = last;
+                if (lcp.lcps[k] <= lcp.lcps[S.lastElement()] &&
+                        lcp.lcps[S.lastElement()] != lcp.lcps[last]
+                        && S.lastElement() != 0) {
+                    this.cld[S.lastElement()] = last; /* DOWN */
+                    this.down[S.lastElement()] = true;
                 }
             }
 
             if (last != - 1) {
-                cld[i - 1] = last;
+                this.cld[k - 1] = last;
                 last = - 1;
             }
 
-            if (lcp.lcps[S.lastElement()] == lcp.lcps[i] &&
+            if (lcp.lcps[S.lastElement()] == lcp.lcps[k] &&
                     S.lastElement() != 0 /* there is none for $ [first entry in suffix array] */) {
-                cld[S.lastElement()] = i;
+                this.cld[S.lastElement()] = k;
+                this.next[S.lastElement()] = true;
             }
-            S.push(i);
+            S.push(k);
         }
 
         S.removeAllElements();
-
-
 
     }
 
     @Override
     public String toString() {
-        return "Child:\t" + Arrays.toString(this.cld);
+        return "Child:\t" + Arrays.toString(this.cld) +
+                "\nDOWN: " + Arrays.toString(this.down) +
+//                "\nUP:   " + Arrays.toString(this.up) +
+                "\nNext: " + Arrays.toString(this.next);
     }
 
 }

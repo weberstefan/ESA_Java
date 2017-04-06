@@ -14,21 +14,23 @@ import java.util.Arrays;
 public class RMQ {
 
     public static void main(String[] args) {
-        final int[] a = new int[]{
-                0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0
-        };
 
-//        final int[] a = new int[] {
-//                0, 2, 1, 3, 1, 2, 0, 2, 0, 1
-//        };
+        final int[] a = new int[]{
+//                0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0
+                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1
+        };
 
         System.out.println(a.length + " long");
 
-        RMQ rmq = new RMQ(a, 5, false);
+        RMQ rmq = new RMQ(a, 3, true);
         System.out.println(rmq.toString());
 
-        System.out.println(rmq.sequentialMinimum(16, 30));
-        System.out.println(rmq.rmqQuery(0 , 3));
+//        System.out.println("seq min : " + rmq.sequentialMinimum(16, 30));
+//        System.out.println("rmqquery: " + rmq.rmqQuery(1, 4));
+//        System.out.println("query   : " + rmq.query(13, 30));
+//        int i = 1;
+//        int j = 3;
+//        System.out.println("Query(" + i + ", " + j + ") = " + rmq.rmqQuery(i, j));
     }
 
     /**
@@ -54,17 +56,14 @@ public class RMQ {
     /**
      * Represents internal datastructure Q' in script
      */
-    private int[][] internalQ;
+    public int[][] internalQ;
 
     public RMQ(final int[] array,
                final int blockSize,
                final boolean isLCP) {
         this.array = array;
+//        this.blockSize = ((int) Math.log(array.length) >= 4) ? (int) Math.log(array.length) / 4 : (int) Math.log(array.length); // blockSize;
         this.blockSize = blockSize;
-        if (isLCP) {
-            // remove last entry of lcp array (-1 for computing child table)
-            this.array = Arrays.copyOf(this.array, this.array.length - 1);
-        }
         this.calcQ(isLCP);
     }
 
@@ -72,8 +71,7 @@ public class RMQ {
                         final int j) {
         final int k = MathUtils.ld(j - i + 1);
         /* 2^k <= j - i + 1 < 2^(k+1) */
-
-        System.out.println("k=" + k);
+        System.out.println("k = " + k);
 
         int r = this.internalQ[i][k];
         int s = this.internalQ[j - MathUtils.pow(2, k) + 1][k];
@@ -85,7 +83,7 @@ public class RMQ {
      * Calculate the minimum position between from and to
      *
      * @param from : starting position
-     * @param to : ending position
+     * @param to   : ending position
      * @return position of minimum entry in array
      */
     public int sequentialMinimum(int from,
@@ -101,7 +99,7 @@ public class RMQ {
         }
 
         int min = Integer.MAX_VALUE;
-        int minPos= - 1;
+        int minPos = - 1;
 
         for (int i = from; i <= to; i = i + 1) {
             if (this.array[i] < min) {
@@ -112,6 +110,41 @@ public class RMQ {
 
         return minPos;
     }
+
+    public int query(int from, int to) {
+        if (from == to) {
+            return from;
+        }
+
+        if (to < from) {
+            int swap = from;
+            from = to;
+            to = swap;
+        }
+
+        int minBlock = from / this.blockSize;
+        int maxBlock = to / this.blockSize;
+
+        final int outerLeftPosition = this.sequentialMinimum(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
+        final int outerRightPosition = this.sequentialMinimum(Math.max(maxBlock * this.blockSize, from), to);
+
+        // If true there are blocks between left and right block
+        if (minBlock + 1 < maxBlock) {
+            minBlock++;
+            maxBlock--;
+            final int k = MathUtils.ld(maxBlock - minBlock + 1);
+            final int r = this.internalQ[minBlock][k];
+            final int s = this.internalQ[maxBlock - MathUtils.pow(2, k) + 1][k];
+            final int rAbsolute = this.minPosBlock[r] + r * this.blockSize;
+            final int sAbsolute = this.minPosBlock[s] + s * this.blockSize;
+            final int minMiddlePosition = this.array[rAbsolute] <= this.array[sAbsolute] ? rAbsolute : sAbsolute;
+            int left = this.array[outerLeftPosition] <= this.array[minMiddlePosition] ? outerLeftPosition : minMiddlePosition;
+            return this.array[left] <= this.array[outerRightPosition] ? left : outerRightPosition;
+        }
+
+        return this.array[outerLeftPosition] <= this.array[outerRightPosition] ? outerLeftPosition : outerRightPosition;
+    }
+
 
     /**
      * Caclulating the minimum between 2 blocks
@@ -190,6 +223,10 @@ public class RMQ {
             this.minPosBlock[i / this.blockSize] = (byte) minPos;
             this.F[i / this.blockSize] = (byte) min;
         }
+    }
+
+    public int getBlockSize() {
+        return this.blockSize;
     }
 
     @Override

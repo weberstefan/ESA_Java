@@ -36,7 +36,7 @@ public class FMIndex {
         if (l >= 0 && r >= 0) {
             return " [" + this.getL() + ", " + this.getR() + "]";
         }
-        return " not found";
+        return "Not found";
     }
 
 

@@ -2,87 +2,19 @@ package test;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.bwt.BWTFeatures;
-import de.weber.esa.struct.repeats.MaximalRepeats;
-import de.weber.esa.struct.repeats.SupermaximalRepeats;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 /**
  * Created by Stefan on 20.01.2017.
  * <p>
- * Test the Enhanced Suffix Array Properties
+ * Check the Enhanced Suffix Array Properties
  */
-public class ESATest {
-
-    @Test
-    public void testChildTableProperties() {
-//        final String s = "wood would a woodchuck chuck".replaceAll("\\s*", "").toUpperCase();
-//        final String s = "BANANA";
-//        final String s = "ACAAACATAT";
-//        final String s = "ABAABABA";
-        final String s = "MISSISSIPPI";
-//        final String s = "XABCYABCWABCYZ";
-//        final String s = "AAAAAAAAAAAAAAAAAAAA";
-//        final String s = "TAGAGATAGAATGGGTCCAGAGTTTTGTAATTTCCATGGGTCCAGAGTTTTGTAATTTATTATATAGAGATAGAATGGGTCCAGAGTTTTGTAATTTCCATGGGTCCAGAGTTTTGTAATTTAT";
-
-        System.out.println("Start: " + Calendar.getInstance().getTime());
-
-//        final File file = new File("res/test/english.50MB");
-//        final String s = Reader.readFile(file);
-//        System.out.println("Read in: " + Calendar.getInstance().getTime());
-//        System.out.println("Sequence length = " + (s.length() + 1));
-
-        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
-        System.out.println("ESArray built: " + Calendar.getInstance().getTime());
-
-//        System.out.println(esa.toString());
-
-//        System.out.println("\nThree arrays Child Table Computing");
-//        ChildTable2 child = new ChildTable2(esa.lcp);
-
-        SupermaximalRepeats sr = new SupermaximalRepeats(esa);
-//        System.out.println(sr.getSupermaximalRepeats().size());
-//        for (int i : sr.getSupermaximalRepeats().keySet()) {
-//            List<Repeats> r = sr.getSupermaximalRepeats().get(i);
-//            for (Repeats rep : r) {
-//                System.out.println(rep.toString() + "\t" + ESA_Utils.getCurrentSuffix(esa, rep.getI(), rep.getL()));
-//            }
-//        }
-        System.out.println(sr.getSupermaximalRepeats().size());
-        System.out.println("Supermaximal Repeats built: " + Calendar.getInstance().getTime());
-
-        MaximalRepeats mr = new MaximalRepeats(esa);
-//        for (int i : mr.getMaximalRepeats().keySet()) {
-//            List<Repeats> r = mr.getMaximalRepeats().get(i);
-//            for (Repeats rep : r) {
-//                System.out.println(rep.toString() + "\t" + ESA_Utils.getCurrentSuffix(esa, rep.getI(), rep.getL()));
-//            }
-//        }
-        System.out.println(mr.getMaximalRepeats().size());
-        System.out.println("Maximal Repeats built: " + Calendar.getInstance().getTime());
-
-//        System.out.println(esa.toString());
-//
-//        for (int i = 0; i < esa.length; i = i + 1) {
-//            StringBuilder sb = new StringBuilder();
-//            final int p = esa.suffices[i];
-//            int k = p;
-//            while (k != esa.length) {
-//                sb.append(esa.sequence[k]);
-//                k = k + 1;
-//            }
-//
-//            if (i < 10) {
-//                System.out.print(" ");
-//            }
-//            System.out.println(i + " : " + sb.toString() + " - " + esa.lcp.lcps[i] + "\t" + esa.bwt.bwt[i]);
-//        }
-    }
+public class EsaPropreties {
 
 
     @Test
@@ -178,6 +110,9 @@ public class ESATest {
                 sb.append(esa.sequence[k]);
                 k = k + 1;
             }
+
+            System.out.println(sb.toString());
+
             assert (correctSuffixesSA_I[i].equals(sb.toString()));
 
             // test for correct LCP

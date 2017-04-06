@@ -1,9 +1,13 @@
 package de.weber.esa;
 
+import de.weber.esa.io.Reader;
+import de.weber.esa.repeats.MaximalRepeats;
+import de.weber.esa.repeats.SupermaximalRepeats;
 import de.weber.esa.searching.binarySearch.BinarySearch;
-import de.weber.esa.searching.fmIndex.FMIndexSearch;
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.utils.ESA_Utils;
 
+import java.io.*;
 import java.util.Calendar;
 
 /**
@@ -14,15 +18,16 @@ public class MainAppl {
     public static void main(String[] args) {
 //        final String s = "ACAAACATAT";
 //        final String s = "MISSISSIPPI";
-        final String s = "BANANA";
+//        final String s = "BANANA";
 //        final String s = "AAABAABAB";
 //        final String s = "XABCYABCWABCYZ";
 
         System.out.println("Start: " + Calendar.getInstance().getTime());
 
 //        final File file = new File("res/test/english.50MB");
-//        final String s = Reader.readFile(file);
-//        System.out.println("Sequence read in: " + Calendar.getInstance().getTime());
+        final File file = new File("res/test/english.50MB");
+        final String s = Reader.readFile(file);
+        System.out.println("Sequence read in: " + Calendar.getInstance().getTime());
 
         final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
         System.out.println("ESArray built: " + Calendar.getInstance().getTime());
@@ -30,30 +35,36 @@ public class MainAppl {
 
 //        System.out.println(esa.toString());
 
-//        final String testQuery = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
-//                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
-//                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
-//                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
-//                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
-//                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
-//                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
-        final String testQuery = "ANA";
+        final String testQuery = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
+                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
+                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
+                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
+                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
+                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
+                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
+//        final String testQuery = "ANA";
 
-        FMIndexSearch fmIndexSearch = new FMIndexSearch();
-        System.out.println(fmIndexSearch.backwardSearch(esa, testQuery));
-        System.out.println("FM-backward search done: " + Calendar.getInstance().getTime());
+//        FMIndexSearch fmIndexSearch = new FMIndexSearch();
+//        System.out.println(fmIndexSearch.backwardSearch(esa, testQuery).toString());
+//        System.out.println("FM-backward search done: " + Calendar.getInstance().getTime());
 
-
-        new BinarySearch(esa, testQuery);
+        BinarySearch binarySearch = new BinarySearch();
+        System.out.println(binarySearch.search(esa, testQuery).toString());
         System.out.println("Binary search done: " + Calendar.getInstance().getTime());
 
-//        SupermaximalRepeats sr = new SupermaximalRepeats(esa);
-//        System.out.println("Supermaximal repeats: " + sr.getSupermaximalRepeats());
-//        System.out.println("Supermaximal Repeats built: " + Calendar.getInstance().getTime());
 
-//        MaximalRepeats mr = new MaximalRepeats(esa);
-//        System.out.println("Maximal Repeats: " + mr.getMaximalRepeats());
-//        System.out.println("Maximal Repeats built: " + Calendar.getInstance().getTime());
+//        new BinarySearch(esa, testQuery);
+//        System.out.println("Binary search done: " + Calendar.getInstance().getTime());
+
+        SupermaximalRepeats sr = new SupermaximalRepeats();
+        sr.computeSupermaximalRepeats(esa);
+        System.out.println("Supermaximal repeats: " + sr.getSupermaximalRepeats().size());
+        System.out.println("Supermaximal Repeats built: " + Calendar.getInstance().getTime());
+
+        MaximalRepeats mr = new MaximalRepeats();
+        mr.computeMaximalRepeats(esa);
+        System.out.println("Maximal Repeats: " + mr.getMaximalRepeats().size());
+        System.out.println("Maximal Repeats built: " + Calendar.getInstance().getTime());
 
 //        RMQ rmq = new RMQ(esa.lcp.lcps, 3, true);
 //        System.out.println(rmq.toString());
@@ -61,6 +72,33 @@ public class MainAppl {
 
 //        System.out.println(esa.toString());
 //        System.out.println(ObjectSizeCalculator.getObjectSize(esa) + "\tESA SIZE");
+
+        try (BufferedWriter wr = new BufferedWriter(new FileWriter(new File("C:/Users/Stefan/Desktop/OUTPUT_1.txt")))) {
+            wr.write(ESA_Utils.getCurrentSuffix(esa, esa.suffices[17391038], testQuery.length() + 1));
+            wr.newLine();
+        } catch(FileNotFoundException eFNF) {
+            eFNF.printStackTrace();
+        } catch (IOException eIO) {
+            eIO.printStackTrace();
+        }
+
+        try (BufferedWriter wr = new BufferedWriter(new FileWriter(new File("C:/Users/Stefan/Desktop/OUTPUT_2.txt")))) {
+            wr.write(ESA_Utils.getCurrentSuffix(esa, esa.suffices[17391039], testQuery.length() + 1));
+            wr.close();
+        } catch(FileNotFoundException eFNF) {
+            eFNF.printStackTrace();
+        } catch (IOException eIO) {
+            eIO.printStackTrace();
+        }
+
+        try (BufferedWriter wr = new BufferedWriter(new FileWriter(new File("C:/Users/Stefan/Desktop/OUTPUT_3.txt")))) {
+            wr.write(ESA_Utils.getCurrentSuffix(esa, esa.suffices[17391043], testQuery.length() + 1));
+            wr.close();
+        } catch(FileNotFoundException eFNF) {
+            eFNF.printStackTrace();
+        } catch (IOException eIO) {
+            eIO.printStackTrace();
+        }
     }
 
 }

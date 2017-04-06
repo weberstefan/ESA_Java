@@ -2,7 +2,7 @@ package de.weber.esa.struct;
 
 import de.weber.esa.struct.bwt.BWT;
 import de.weber.esa.struct.bwt.BWTFeatures;
-import de.weber.esa.struct.child_table.ChildTable2;
+import de.weber.esa.struct.child_table.ChildTable;
 import de.weber.esa.struct.lcp.LCP;
 import de.weber.esa.utils.ESA_Utils;
 import external.sais;
@@ -66,7 +66,7 @@ public class EnhancedSuffixArray {
     /**
      * Represents the Child table
      */
-    public final ChildTable2 child;
+    public final ChildTable child;
 
     /**
      * Number of distinct characters in the sequence
@@ -129,7 +129,7 @@ public class EnhancedSuffixArray {
 //        this.inverse = null;
 
         // compute the child table
-        this.child = new ChildTable2(this.lcp);
+        this.child = new ChildTable(this.lcp);
 
         // compute the BWT tables
         this.bwt = new BWT(this);

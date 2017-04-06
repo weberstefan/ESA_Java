@@ -72,6 +72,19 @@ public class Repeats {
         return map;
     }
 
+    public static Map<Integer, List<Repeats>> getRemainingRepeats(Map<Integer, List<Repeats>> map) {
+        for (int k : map.keySet()) {
+            for (int p = 0; p < map.get(k).size(); p = p + 1) {
+                if ((p + 1) < map.get(k).size() &&
+                        map.get(k).get(p).getJ() == map.get(k).get(+ 1).getI()) {
+                    map.get(k).add(new Repeats(map.get(k).get(p).getI(), map.get(k).get(p + 1).getJ(), k));
+                }
+            }
+        }
+
+        return map;
+    }
+
     public final int getI() {
         return this.i;
     }

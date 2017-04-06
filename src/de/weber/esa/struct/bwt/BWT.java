@@ -41,7 +41,7 @@ public class BWT {
             final int p = esa.suffices[i];
             this.bwt[i] = (p - 1 < 0) ? esa.sequence[this.length - 1] : esa.sequence[p - 1];
             final int pos = esa.bwtCMap.get(this.bwt[i]).getPosMap();
-            this.OCC[i][pos] = 1;
+            this.OCC[i][pos] = (byte) 1;
         }
     }
 

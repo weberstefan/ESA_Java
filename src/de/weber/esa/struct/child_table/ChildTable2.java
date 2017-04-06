@@ -1,5 +1,6 @@
 package de.weber.esa.struct.child_table;
 
+import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.lcp.LCP;
 
 import java.util.Arrays;
@@ -12,6 +13,14 @@ import java.util.Stack;
  */
 public class ChildTable2 {
 
+    public static void main(String[] args) {
+        final String s = "ACAAACATAT";
+        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
+        final ChildTable2 c = new ChildTable2(esa.lcp);
+
+        System.out.println(c.toString());
+    }
+
     public final int[] DOWN;
     public final int[] UP;
     public final int[] NEXT;
@@ -21,10 +30,12 @@ public class ChildTable2 {
 
     public ChildTable2(final LCP lcp) {
         this.n = lcp.length + 1;
-        this.UP = new int[this.n];
-        this.DOWN = new int[this.n];
-        this.NEXT = new int[this.n];
+        this.NEXT = new int[this.n - 1];
         this.C = new int[this.n - 1];
+
+        final int[] TMP_DOWN = new int[this.n];
+        final int[] TMP_UP = new int[this.n];
+
 
         int last = - 1;
         Stack<Integer> S = new Stack<>();
@@ -36,13 +47,13 @@ public class ChildTable2 {
                 if ((lcp.lcps[k] <= lcp.lcps[S.lastElement()]) &&
                         (lcp.lcps[S.lastElement()] < lcp.lcps[last]) &&
                         S.lastElement() != 0 /* there is none for $ [first entry in suffix array] */ ) {
-                    this.DOWN[S.lastElement()] = last;
+                    TMP_DOWN[S.lastElement()] = last;
                 }
             }
 
             // Now lcp[k] >= lcp[S.top()]
             if (last != - 1) {
-                this.UP[k] = last;
+                TMP_UP[k] = last;
                 last = - 1;
             }
 
@@ -67,12 +78,18 @@ public class ChildTable2 {
         for (int i = 0; i < this.n - 1; i = i + 1) {
             if (this.NEXT[i] != 0) {
                 this.C[i] = this.NEXT[i];
-            } else if (this.DOWN[i] != 0) {
-                this.C[i] = this.DOWN[i];
+            } else if (TMP_DOWN[i] != 0) {
+                this.C[i] = TMP_DOWN[i];
             } else {
-                this.C[i] = this.UP[i + 1];
+                this.C[i] = TMP_UP[i + 1];
             }
         }
+
+        this.UP = new int[this.n - 1];
+        this.DOWN = new int[this.n - 1];
+
+        System.arraycopy(TMP_UP, 0, this.UP, 0,this.UP.length);
+        System.arraycopy(TMP_DOWN, 0, this.DOWN, 0, this.DOWN.length);
 
 //        System.out.println("DOWN: " + Arrays.toString(this.DOWN));
 //        System.out.println("UP  : " + Arrays.toString(this.UP));

@@ -6,131 +6,183 @@ import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.discriminatingCharacters.DiscriminatingCharacters;
 
 /**
- * Created by Stefan on 13.03.2017.
- * <p>
- * Paper: Bitpacking Techniques for indexing genomes II: ESA -> Algorithms 1, 3
+ * Created by Stefan on 01.04.2017.
  */
 public class FindLongestPrefixMatch {
 
-    public FindLongestPrefixMatch(final EnhancedSuffixArray esa,
-                                  final String s) {
-        System.out.println(this.find(esa, s));
+    public FindLongestPrefixMatch() {
+
     }
 
-    private PatternMatchingWrapper find(final EnhancedSuffixArray esa,
-                                        final String s) {
-        final int n = esa.length;
-        final int m = s.length();
+    public PatternMatchingWrapper matching(final EnhancedSuffixArray esa,
+                                           final char[] P) {
         int c = 0;
-        int i = 1; /* correct initiaization? */
-        int j = n;
+        final int n = esa.length - 1;
+        final int m = P.length;
+        IntervalWrapper iw = new IntervalWrapper(1, n);
 
         while (c < m) {
-            if (i == j) {
-                // singleton lcp interval
-                c = c + this.countMatches(esa, s, i, c, m); /* correct counting matches? */
-                return new PatternMatchingWrapper(c, i, j);
+            if (iw.i == iw.j) {
+                c = c + this.countMatches(esa, P, esa.suffices[iw.i] + c, esa.suffices[iw.i] + m - 1, c, m - 1);
+                return new PatternMatchingWrapper(c, iw.i, iw.j);
             } else {
-                // child interval
-                int k1 = 1;
-                try {
-                    k1 = esa.child.UP[j + 1];
-                } catch (ArrayIndexOutOfBoundsException eAIOOB) {
+                int k1 = 0;
+                if (iw.j <= n) {
+                    if (! esa.child.down[iw.j]) {
+                        k1 = esa.child.cld[iw.j];
+                    } else {
+                        k1 = esa.child.cld[iw.j + 1];
+                    }
                 }
 
-                if (k1 <= i || k1 > j) {
-                    k1 = esa.child.DOWN[i];
+                if (k1 <= iw.i || k1 > iw.j) {
+                    k1 = esa.child.cld[iw.i];
                 }
 
                 final int lcpIJ = esa.lcp.lcps[k1];
 
                 if (lcpIJ > c) {
                     final int M = Math.min(lcpIJ, m);
-                    c = c + this.countMatches(esa, s, i, c, M);
-
+                    c = c + this.countMatches(esa, P, esa.suffices[iw.i] + c, esa.suffices[iw.i] + M - 1, c, M - 1);
                     if (c < M || c == m) {
-                        return new PatternMatchingWrapper(c, i, j);
+                        return new PatternMatchingWrapper(c, iw.i, iw.j);
                     }
                 }
 
-                final IntervalWrapper iw = this.getInterval(esa, i, j, lcpIJ, k1, s.charAt(c));
-                if (iw == null) {
-                    return new PatternMatchingWrapper(c, i, j);
+                IntervalWrapper iw2 = this.getInterval(esa, iw, lcpIJ, k1, P[c]);
+                if (iw2 == null) {
+                    return new PatternMatchingWrapper(c, iw.i, iw.j);
                 }
                 c = c + 1;
-                i = iw.i;
-                j = iw.j;
+                iw = iw2;
             }
         }
-        return new PatternMatchingWrapper(c, i, j);
+        return new PatternMatchingWrapper(c, iw.i, iw.j);
     }
 
-    private int countMatches(final EnhancedSuffixArray esa,
-                             final String s,
-                             final int i,
-                             final int c,
-                             final int m) {
-        final int startSeq = esa.suffices[i] + c;
-        final int endSeq = esa.suffices[i] + m - 1;
-
-        final StringBuilder sbSeq = new StringBuilder();
-
-        for (int x = startSeq; x <= endSeq; x = x + 1) {
-            sbSeq.append(esa.sequence[x]);
-        }
-
-        final StringBuilder sbQuery = new StringBuilder();
-
-        for (int x = c; x <= (m - 1); x = x + 1) {
-            sbQuery.append(s.charAt(x));
-        }
-
-        int matches = 0;
-
-        for (int x = 0; x < Math.max(sbQuery.length(), sbSeq.length()); x = x + 1) {
-            matches = (sbSeq.charAt(x) == sbQuery.charAt(x)) ? matches + 1 : matches;
-        }
-
-        return matches;
-    }
-
-    private IntervalWrapper getInterval(final EnhancedSuffixArray esa,
-                                        final int i,
-                                        final int j,
-                                        final int lcpIJ,
-                                        final int k1,
-                                        final char p) {
+    /**
+     *
+     * @param esa
+     * @param iw
+     * @param lcpIJ
+     * @param k1
+     * @param p
+     * @return next child interval using Discriminating Characters
+     */
+    private IntervalWrapper getIntervalDC(final EnhancedSuffixArray esa,
+                                          final IntervalWrapper iw,
+                                          final int lcpIJ,
+                                          int k1,
+                                          final char p) {
         DiscriminatingCharacters dc = esa.lcp.getDiscriminatingCharactersAtPosition(k1);
 
         char s1 = dc.first;
         char s2 = dc.second;
-
         if (p < s1) {
             return null;
         } else if (p == s1) {
-            return new IntervalWrapper(i, (k1 - 1));
+            return new IntervalWrapper(iw.i, k1 - 1);
         } else if (p < s2) {
             return null;
         }
 
-        int k = k1;
-        while (k < j && esa.lcp.lcps[k] == lcpIJ) {
-            int k2 = esa.child.NEXT[k];
+        while (k1 <= iw.j && esa.lcp.lcps[k1] == lcpIJ) {
+            int k2 = (esa.child.next[k1]) ? esa.child.cld[k1] : (iw.j < esa.length) ? iw.j + 1 : iw.j;
             if (p == s2) {
-                return new IntervalWrapper(k, (k2 - 1));
+                return new IntervalWrapper(k1, k2 - 1);
             } else {
                 dc = esa.lcp.getDiscriminatingCharactersAtPosition(k2);
-                // s1 not necessary anymore
+                s1 = dc.first;
                 s2 = dc.second;
 
                 if (p < s2) {
                     return null;
                 }
-                k = k2;
+                k1 = k2;
             }
         }
 
-        return (p == s2) ? new IntervalWrapper(k, j) : null;
+        return (p == s2) ? new IntervalWrapper(k1, iw.j) : null;
+    }
+
+    /**
+     *
+     * @param esa
+     * @param iw
+     * @param lcpIJ
+     * @param k1
+     * @param p
+     * @return next child interval
+     */
+    private IntervalWrapper getInterval(final EnhancedSuffixArray esa,
+                                        final IntervalWrapper iw,
+                                        final int lcpIJ,
+                                        int k1,
+                                        final char p) {
+        char s = esa.sequence[esa.suffices[iw.i] + lcpIJ];
+        if (p < s) {
+            return null;
+        } else if (p == s) {
+            return new IntervalWrapper(iw.i, k1 - 1);
+        }
+
+        while (k1 < iw.j && esa.lcp.lcps[k1] == lcpIJ) {
+            int k2 = (esa.child.next[k1]) ? esa.child.cld[k1] : (iw.j < esa.length) ? iw.j + 1 : iw.j;
+            s = esa.sequence[esa.suffices[k1] + lcpIJ];
+            if (p < s) {
+                return null;
+            } else if (p == s) {
+                return new IntervalWrapper(k1, k2 - 1);
+            } else {
+                k1 = k2;
+            }
+        }
+
+        s = esa.sequence[esa.suffices[k1] + lcpIJ];
+        return (p == s) ? new IntervalWrapper(k1, iw.j) : null;
+    }
+
+    /**
+     *
+     * @param esa
+     * @param p
+     * @param startSeq
+     * @param endSeq
+     * @param startPattern
+     * @param endPattern
+     * @return number of matching positions in sequence at specified position with pattern
+     */
+    private int countMatches(final EnhancedSuffixArray esa,
+                             final char[] p,
+                             int startSeq,
+                             final int endSeq,
+                             int startPattern,
+                             final int endPattern) {
+        final StringBuilder sbSeq = new StringBuilder();
+        while (startSeq <= endSeq) {
+            sbSeq.append(esa.sequence[startSeq]);
+            startSeq = startSeq + 1;
+        }
+
+        final StringBuilder sbPattern = new StringBuilder();
+        while (startPattern <= endPattern &&
+                startPattern <= p.length) {
+            sbPattern.append(p[startPattern]);
+            startPattern = startPattern + 1;
+        }
+
+        final char[] seq = sbSeq.toString().toCharArray();
+        final char[] pat = sbPattern.toString().toCharArray();
+
+        final int min = Math.min(seq.length, pat.length);
+
+        int matches = 0;
+
+        for (int i = 0; i < min; i = i + 1) {
+            matches = matches + ((seq[i] == pat[i]) ? 1 : 0);
+        }
+
+        return matches;
     }
 
 }
