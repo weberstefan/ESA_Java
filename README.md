@@ -15,8 +15,8 @@ Analyzing efficiency of Java Implementations for Enhanced Suffix Arrays + Applic
 
   - Binary Search
   - Find Query of length m in O(|Alphabet| * m) using LCP and Child Table either with boolean next, down OR int next, up, down
-  - Find Longest Prefix Match using LCP, Child Table and Discriminating Characters in O(m * n)
-  - FM-Index using BWT backward search
+  - Find Longest Prefix Match using LCP, Child Table and Discriminating Characters //TODO evaluate complexity
+  - FM-Index using BWT backward search in O( * m)
   - Maximal and Supermaximal Repeats are built in O(n)
     - Maximal Repeats make use of LCP-Array
     - Supermaximal Repeats make use of pairwise distinct BWT Characters for specific positions and LCP-Array
