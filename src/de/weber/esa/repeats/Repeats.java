@@ -2,9 +2,7 @@ package de.weber.esa.repeats;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -46,43 +44,21 @@ public class Repeats {
     /**
      * insert repeat into map at key=length
      *
-     * @param map : repeats map
-     * @param esa : current esa for given sequence
-     * @param i   : first chracater position of "left" repeat in sequence
-     * @param j   : first character position of "right" repeat in sequence
-     * @return updated repeat map
+     * @param list : repeats list
+     * @param esa  : current esa for given sequence
+     * @param i    : first chracater position of "left" repeat in sequence
+     * @param j    : first character position of "right" repeat in sequence
+     * @return updated repeat list
      */
-    public static Map<Integer, List<Repeats>> fillMap(Map<Integer, List<Repeats>> map,
-                                                      final EnhancedSuffixArray esa,
-                                                      final int i,
-                                                      final int j,
-                                                      final int l) {
+    public static List<Repeats> fillList(List<Repeats> list,
+                                         final EnhancedSuffixArray esa,
+                                         final int i,
+                                         final int j,
+                                         final int l) {
         int seqPosI = Math.min(esa.suffices[i], esa.suffices[j]);
         int seqPosJ = Math.max(esa.suffices[i], esa.suffices[j]);
-
-        List<Repeats> r = null;
-
-        if (map.containsKey(l)) {
-            r = map.get(l);
-        } else {
-            r = new ArrayList<>();
-        }
-        r.add(new Repeats(seqPosI, seqPosJ, l));
-        map.put(l, r);
-        return map;
-    }
-
-    public static Map<Integer, List<Repeats>> getRemainingRepeats(Map<Integer, List<Repeats>> map) {
-        for (int k : map.keySet()) {
-            for (int p = 0; p < map.get(k).size(); p = p + 1) {
-                if ((p + 1) < map.get(k).size() &&
-                        map.get(k).get(p).getJ() == map.get(k).get(+ 1).getI()) {
-                    map.get(k).add(new Repeats(map.get(k).get(p).getI(), map.get(k).get(p + 1).getJ(), k));
-                }
-            }
-        }
-
-        return map;
+        list.add(new Repeats(seqPosI, seqPosJ, l));
+        return list;
     }
 
     public final int getI() {

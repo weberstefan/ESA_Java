@@ -3,9 +3,8 @@ package de.weber.esa.repeats;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.bwt.BWT;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Stefan on 01.02.2017.
@@ -15,9 +14,9 @@ import java.util.Map;
 public class SupermaximalRepeats {
 
     /**
-     * Map storing all supermaximal repeapts (i, j, l) as list with key: length of supermaximal repeat
+     * List storing all supermaximal repeapts (i, j, l) with l = length of supermaximal repeat
      */
-    private Map<Integer, List<Repeats>> supermaximalRepeats;
+    private List<Repeats> supermaximalRepeats;
 
     /**
      * empty constructor for call
@@ -34,10 +33,10 @@ public class SupermaximalRepeats {
      * @param esa : enhanced suffix array for given sequence
      * @return map of all supermaximal repeats with key: length; value: (i, j, l)
      */
-    public Map<Integer, List<Repeats>> computeSupermaximalRepeats(final EnhancedSuffixArray esa) {
+    public List<Repeats> computeSupermaximalRepeats(final EnhancedSuffixArray esa) {
         final int n = esa.length - 1;
 
-        this.supermaximalRepeats = new HashMap<>();
+        this.supermaximalRepeats = new ArrayList<>();
 
         // lcp[0] = -1 == $ --> not necessary
         int j = 1;
@@ -67,7 +66,7 @@ public class SupermaximalRepeats {
                     i2 = i;
                     j2 = j;
                     if (this.isBWTPairwiseDistinct(esa.bwt, i2, j2)) {
-                        Repeats.fillMap(this.supermaximalRepeats, esa, i2, j2, esa.lcp.lcps[j2]);
+                        Repeats.fillList(this.supermaximalRepeats, esa, i2, j2, esa.lcp.lcps[j2]);
                     }
                     i = j - 1;
                 }
@@ -75,14 +74,12 @@ public class SupermaximalRepeats {
 
             if (i2 != i || j2 != j) {
                 if (this.isBWTPairwiseDistinct(esa.bwt, i, j)) {
-                    Repeats.fillMap(this.supermaximalRepeats, esa, i, j, esa.lcp.lcps[j]);
+                    Repeats.fillList(this.supermaximalRepeats, esa, i, j, esa.lcp.lcps[j]);
                 }
             }
 
             j = i + 1;
         }
-
-        Repeats.getRemainingRepeats(this.supermaximalRepeats);
 
         return this.supermaximalRepeats;
     }
@@ -110,7 +107,7 @@ public class SupermaximalRepeats {
         return true;
     }
 
-    public Map<Integer, List<Repeats>> getSupermaximalRepeats() {
+    public List<Repeats> getSupermaximalRepeats() {
         return this.supermaximalRepeats;
     }
 
