@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 /**
  * Created by Stefan on 20.03.2017.
- *
+ * <p>
  * Find pattern p in enhanced suffix array using child table UP, NEXT, DOWN and CHILD
  */
 public class Find_2 {
@@ -117,13 +117,14 @@ public class Find_2 {
     }
 
     private int LCP(EnhancedSuffixArray esa, int i, int j) {
-        if (i == 0)
-            return 0;
-        else if (j == esa.length - 1)
-            return 0;
-        else
-            return (this.isInInterval(this.c.DOWN[i], i, j)) ?
-                    esa.lcp.lcps[this.c.DOWN[i]] : esa.lcp.lcps[this.c.UP[j + 1]];
+        return (i == 0 || j == esa.length - 1) ?
+                0 : (this.isInInterval(this.c.DOWN[i], i, j)) ?
+                esa.lcp.lcps[this.c.DOWN[i]] : esa.lcp.lcps[this.c.UP[j + 1]];
+//        if (i == 0 || j == esa.length - 1)
+//            return 0;
+//        else
+//            return (this.isInInterval(this.c.DOWN[i], i, j)) ?
+//                    esa.lcp.lcps[this.c.DOWN[i]] : esa.lcp.lcps[this.c.UP[j + 1]];
     }
 
     private boolean isInInterval(final int k,

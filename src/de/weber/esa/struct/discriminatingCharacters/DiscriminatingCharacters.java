@@ -1,53 +1,53 @@
 package de.weber.esa.struct.discriminatingCharacters;
 
-import java.util.Objects;
+import de.weber.esa.struct.EnhancedSuffixArray;
 
 /**
- * Created by Stefan on 04.03.2017.
- * <p>
- * Wrapper class for the first discriminating characters of Suffix[SA[k]] and Suffix[SA[k - 1]]
+ * Created by Stefan on 21.04.2017.
  */
 public class DiscriminatingCharacters {
 
     /**
      * Represents the first discriminating character of Suffix[SA[k - 1]] with Suffix[SA[k]]
      */
-    public final char first;
+    private final char[] first;
 
     /**
      * Represents the first discriminating character of Suffix[SA[k]] with Suffix[SA[k - 1]]
      */
-    public final char second;
+    private final char[] second;
 
-    public DiscriminatingCharacters(final char first,
-                                    final char second) {
-        this.first = first;
-        this.second = second;
+    public DiscriminatingCharacters(final EnhancedSuffixArray esa) {
+        this.first = new char[esa.length - 1];
+        this.second = new char[esa.length - 1];
+
+        for (int i = 1; i < esa.lcp.length; i = i + 1) {
+            first[i - 1] = esa.sequence[esa.suffices[i - 1] + esa.lcp.lcps[i]];
+            second[i - 1] = esa.sequence[esa.suffices[i] + esa.lcp.lcps[i]];
+        }
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (! (o instanceof DiscriminatingCharacters)) {
-            return false;
-        }
-
-        final DiscriminatingCharacters dc = (DiscriminatingCharacters) o;
-
-        return (this.first == dc.first &&
-                this.second == dc.second);
+    public char getFirst(final int p) {
+        return this.first[p - 1];
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.first, this.second);
+    public char getSecond(final int p) {
+        return this.second[p - 1];
     }
 
     @Override
     public String toString() {
-        return this.first + "" + this.second;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < first.length; i = i + 1) {
+            sb.append(first[i] + "" + second[i]);
+            if (i < first.length - 1) {
+                sb.append(", ");
+            } else {
+                sb.append("]");
+            }
+        }
+        return sb.toString();
     }
 
 }

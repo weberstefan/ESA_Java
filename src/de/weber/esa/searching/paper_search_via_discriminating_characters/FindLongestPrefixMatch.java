@@ -10,12 +10,15 @@ import de.weber.esa.struct.discriminatingCharacters.DiscriminatingCharacters;
  */
 public class FindLongestPrefixMatch {
 
-    public FindLongestPrefixMatch() {
-
+    public FindLongestPrefixMatch(final EnhancedSuffixArray esa) {
+        this.dc = new DiscriminatingCharacters(esa);
     }
 
+    private DiscriminatingCharacters dc;
+
     public PatternMatchingWrapper matching(final EnhancedSuffixArray esa,
-                                           final char[] P) {
+                                           final char[] P,
+                                           final boolean isDC) {
         int c = 0;
         final int n = esa.length - 1;
         final int m = P.length;
@@ -49,7 +52,7 @@ public class FindLongestPrefixMatch {
                     }
                 }
 
-                IntervalWrapper iw2 = this.getInterval(esa, iw, lcpIJ, k1, P[c]);
+                IntervalWrapper iw2 = (isDC) ? this.getIntervalDC(esa, iw, lcpIJ, k1, P[c]) : this.getInterval(esa, iw, lcpIJ, k1, P[c]);
                 if (iw2 == null) {
                     return new PatternMatchingWrapper(c, iw.i, iw.j);
                 }
@@ -61,7 +64,6 @@ public class FindLongestPrefixMatch {
     }
 
     /**
-     *
      * @param esa
      * @param iw
      * @param lcpIJ
@@ -74,10 +76,8 @@ public class FindLongestPrefixMatch {
                                           final int lcpIJ,
                                           int k1,
                                           final char p) {
-        DiscriminatingCharacters dc = esa.lcp.getDiscriminatingCharactersAtPosition(k1);
-
-        char s1 = dc.first;
-        char s2 = dc.second;
+        char s1 = this.dc.getFirst(k1);
+        char s2 = this.dc.getSecond(k1);
         if (p < s1) {
             return null;
         } else if (p == s1) {
@@ -91,9 +91,8 @@ public class FindLongestPrefixMatch {
             if (p == s2) {
                 return new IntervalWrapper(k1, k2 - 1);
             } else {
-                dc = esa.lcp.getDiscriminatingCharactersAtPosition(k2);
-                s1 = dc.first;
-                s2 = dc.second;
+                s1 = this.dc.getFirst(k2);
+                s2 = this.dc.getSecond(k2);
 
                 if (p < s2) {
                     return null;
@@ -103,10 +102,10 @@ public class FindLongestPrefixMatch {
         }
 
         return (p == s2) ? new IntervalWrapper(k1, iw.j) : null;
+
     }
 
     /**
-     *
      * @param esa
      * @param iw
      * @param lcpIJ
@@ -143,7 +142,6 @@ public class FindLongestPrefixMatch {
     }
 
     /**
-     *
      * @param esa
      * @param p
      * @param startSeq

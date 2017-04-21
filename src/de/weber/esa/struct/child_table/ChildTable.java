@@ -75,10 +75,10 @@ public class ChildTable {
 
     @Override
     public String toString() {
-        return "Child:\t" + Arrays.toString(this.cld) +
-                "\nDOWN: " + Arrays.toString(this.down) +
-//                "\nUP:   " + Arrays.toString(this.up) +
-                "\nNext: " + Arrays.toString(this.next);
+        return "Child:\t" + Arrays.toString(this.cld);
+//                + "\nDOWN: " + Arrays.toString(this.down) +
+////                "\nUP:   " + Arrays.toString(this.up) +
+//                "\nNext: " + Arrays.toString(this.next);
     }
 
 }

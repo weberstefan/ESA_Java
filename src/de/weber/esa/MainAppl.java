@@ -1,10 +1,9 @@
 package de.weber.esa;
 
 import de.weber.esa.io.Reader;
-import de.weber.esa.repeats.MaximalRepeats;
-import de.weber.esa.repeats.SupermaximalRepeats;
-import de.weber.esa.searching.binarySearch.BinarySearch;
+import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.utils.ESA_Utils;
 
 import java.io.File;
 import java.util.Calendar;
@@ -23,8 +22,8 @@ public class MainAppl {
 
         System.out.println("Start: " + Calendar.getInstance().getTime());
 
-//        final File file = new File("res/test/english.50MB");
         final File file = new File("res/test/english.50MB");
+//        final File file = new File("res/test/long_string.txt");
         final String s = Reader.readFile(file);
         System.out.println("Sequence read in: " + Calendar.getInstance().getTime());
 
@@ -34,43 +33,56 @@ public class MainAppl {
 
 //        System.out.println(esa.toString());
 
-        final String testQuery = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
+        final String q = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
                 "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
                 "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
                 "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
                 "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
                 "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
                 "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
-//        final String testQuery = "ANA";
+//        final String q = "NORDERTOMAKEASEPARATEPEACEWIT";
 
-//        FMIndexSearch fmIndexSearch = new FMIndexSearch();
-//        System.out.println(fmIndexSearch.backwardSearch(esa, testQuery).toString());
-//        System.out.println("FM-backward search done: " + Calendar.getInstance().getTime());
-
-        BinarySearch binarySearch = new BinarySearch();
-        System.out.println(binarySearch.search(esa, testQuery).toString());
-        System.out.println("Binary search done: " + Calendar.getInstance().getTime());
+        FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
 
 
-//        new BinarySearch(esa, testQuery);
-//        System.out.println("Binary search done: " + Calendar.getInstance().getTime());
+        long start = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, q.toCharArray(), false) + " flpm NOT DC");
+        long end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
 
-        SupermaximalRepeats sr = new SupermaximalRepeats();
-        sr.computeSupermaximalRepeats(esa);
-        System.out.println("Supermaximal repeats: " + sr.getSupermaximalRepeats().size());
-        System.out.println("Supermaximal Repeats built: " + Calendar.getInstance().getTime());
 
-        MaximalRepeats mr = new MaximalRepeats();
-        mr.computeMaximalRepeats(esa);
-        System.out.println("Maximal Repeats: " + mr.getMaximalRepeats().size());
-        System.out.println("Maximal Repeats built: " + Calendar.getInstance().getTime());
+        long startFour = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, q.toCharArray(), true) + " flpm DC");
+        long endFur = System.currentTimeMillis();
+        System.out.println("DONE in " + (endFur - startFour));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
 
-//        RMQ rmq = new RMQ(esa.lcp.lcps, 3, true);
-//        System.out.println(rmq.toString());
+        final String qq = ESA_Utils.getCurrentSuffix(esa, 17391043, esa.length);
+
+        start = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, qq.toCharArray(), false) + " flpm NOT DC");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+
+        startFour = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, qq.toCharArray(), true) + " flpm DC");
+        endFur = System.currentTimeMillis();
+        System.out.println("DONE in " + (endFur - startFour));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+        int max = 0;
+        for (int i = 0; i < esa.lcp.length; i = i + 1) {
+
+        }
 
 
 //        System.out.println(esa.toString());
 //        System.out.println(ObjectSizeCalculator.getObjectSize(esa) + "\tESA SIZE");
+//        System.out.println(ObjectSizeCalculator.getObjectSize(esa.lcp.dc) + "\tDC SIZE");
+//        System.out.println(ObjectSizeCalculator.getObjectSize(esa.child) + "\tCT SIZE");
     }
 
 }
