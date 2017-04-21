@@ -10,11 +10,6 @@ import java.util.Objects;
 public class BinarySearchWrapper {
 
     /**
-     * Represents query pattern
-     */
-    public final String query;
-
-    /**
      * Represents most left position in SA that matches query
      */
     public final int positionSuffixArrayLeft;
@@ -24,10 +19,8 @@ public class BinarySearchWrapper {
      */
     public final int positionSuffixArrayRight;
 
-    public BinarySearchWrapper(final String query,
-                               final int positionSuffixArrayLeft,
+    public BinarySearchWrapper(final int positionSuffixArrayLeft,
                                final int positionSuffixArrayRight) {
-        this.query = query;
         this.positionSuffixArrayLeft = positionSuffixArrayLeft;
         this.positionSuffixArrayRight = positionSuffixArrayRight;
     }
@@ -42,19 +35,18 @@ public class BinarySearchWrapper {
         }
 
         final BinarySearchWrapper bsw = (BinarySearchWrapper) o;
-        return (bsw.query.equals(this.query) &&
-                bsw.positionSuffixArrayLeft == this.positionSuffixArrayLeft &&
+        return (                bsw.positionSuffixArrayLeft == this.positionSuffixArrayLeft &&
                 bsw.positionSuffixArrayRight == this.positionSuffixArrayRight);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.query, this.positionSuffixArrayLeft, this.positionSuffixArrayRight);
+        return Objects.hash(this.positionSuffixArrayLeft, this.positionSuffixArrayRight);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(this.query.length() + 18);
+        StringBuilder sb = new StringBuilder();
         sb.append("Query ");
         if (this.positionSuffixArrayLeft < 0 || this.positionSuffixArrayRight < 0) {
             sb.append(" was not found.");

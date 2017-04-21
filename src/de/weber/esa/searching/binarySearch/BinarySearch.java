@@ -28,7 +28,7 @@ public class BinarySearch {
         // queries first letter is not inside the suffix array string
         if (! esa.bwtCMap.containsKey(query.charAt(0))) {
             System.out.println(query.charAt(0) + " is not inside the suffix array");
-            return new BinarySearchWrapper(query, - 1, - 1);
+            return new BinarySearchWrapper(- 1, - 1);
         }
         final int m = query.length();
         final int n = esa.length;
@@ -72,7 +72,7 @@ public class BinarySearch {
                     suffixDown = ESA_Utils.getCurrentSuffix(esa, downP, m);
                 }
 
-                return new BinarySearchWrapper(query, isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
+                return new BinarySearchWrapper(isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
             } else if (res < 0) {
                 r = mid - 1;
             } else if (res > 0) {
@@ -81,7 +81,7 @@ public class BinarySearch {
                 throw new RuntimeException("Should never reach here");
             }
         }
-        return new BinarySearchWrapper(query, - 1, - 1);
+        return new BinarySearchWrapper(- 1, - 1);
     }
 
 

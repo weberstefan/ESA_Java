@@ -5,8 +5,6 @@ import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.child_table.ChildTable2;
 
-import java.util.Arrays;
-
 /**
  * Created by Stefan on 20.03.2017.
  * <p>
@@ -21,7 +19,7 @@ public class Find_2 {
 
     private ChildTable2 c;
 
-    private BinarySearchWrapper find(final EnhancedSuffixArray esa,
+    public BinarySearchWrapper find(final EnhancedSuffixArray esa,
                                      final char[] s) {
         final int n = esa.length - 1;
         final int m = s.length;
@@ -58,7 +56,7 @@ public class Find_2 {
             }
         }
         return (prefix) ?
-                new BinarySearchWrapper(Arrays.toString(s), iw.i, iw.j) : new BinarySearchWrapper(Arrays.toString(s), - 1, - 1);
+                new BinarySearchWrapper(iw.i, iw.j) : new BinarySearchWrapper(- 1, - 1);
     }
 
     private boolean isPrefix(EnhancedSuffixArray esa, char[] s, int startSeq, int endSeq, int startPattern, int endPattern) {
@@ -66,20 +64,16 @@ public class Find_2 {
             return true; // empty strings
         }
 
-        final StringBuilder sbSeq = new StringBuilder();
-        while (startSeq <= endSeq) {
-            sbSeq.append(esa.sequence[startSeq]);
-            startSeq = startSeq + 1;
-        }
-
-        final StringBuilder sbPattern = new StringBuilder();
-        while (startPattern <= endPattern &&
+        while (startSeq <= endSeq &&
+                startPattern <= endPattern &&
                 startPattern <= s.length) {
-            sbPattern.append(s[startPattern - 1]);
+            if (esa.sequence[startSeq] != s[startPattern - 1]) {
+                return false;
+            }
+            startSeq = startSeq + 1;
             startPattern = startPattern + 1;
         }
-
-        return sbPattern.toString().equals(sbSeq.toString());
+        return true;
     }
 
     private IntervalWrapper getChildIntervalByChar(EnhancedSuffixArray esa, int i, int j, char c, int turn) {

@@ -1,10 +1,9 @@
 package de.weber.esa.searching.scriptum_search_via_child_table;
 
+import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
 import de.weber.esa.searching.wrapper.BinarySearchWrapper;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
-
-import java.util.Arrays;
 
 /**
  * Created by Stefan on 13.03.2017.
@@ -21,12 +20,17 @@ public class Find {
         final String testQuery = "ACA";
 
         Find f = new Find();
+        Find_2 f2 = new Find_2(esa);
+        FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
 
 //        System.out.println(f.find(esa, testQuery.toCharArray()));
 
         for (int i = 0; i < s.length(); i = i + 1) {
             for (int c = 1; c <= s.length() - i; c = c + 1) {
-                System.out.println((s.substring(i, i + c)) + " : " + f.find(esa, s.substring(i, i + c).toCharArray()));
+                System.out.println("F : " + (s.substring(i, i + c)) + " : " + f.find(esa, s.substring(i, i + c).toCharArray()));
+                System.out.println("F2: " + (s.substring(i, i + c)) + " : " + f2.find(esa, s.substring(i, i + c).toCharArray()));
+                System.out.println("DC: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), true));
+                System.out.println("NO: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), false));
             }
         }
 
@@ -69,7 +73,7 @@ public class Find {
             }
         }
         return (prefix) ?
-                new BinarySearchWrapper(Arrays.toString(s), iw.i, iw.j) : new BinarySearchWrapper(Arrays.toString(s), - 1, - 1);
+                new BinarySearchWrapper(iw.i, iw.j) : new BinarySearchWrapper(- 1, - 1);
     }
 
     private IntervalWrapper getChildIntervalByChar(final EnhancedSuffixArray esa,
@@ -139,19 +143,15 @@ public class Find {
             return true; // empty strings
         }
 
-        final StringBuilder sbSeq = new StringBuilder();
-        while (startSeq <= endSeq) {
-            sbSeq.append(esa.sequence[startSeq]);
-            startSeq = startSeq + 1;
-        }
-
-        final StringBuilder sbPattern = new StringBuilder();
-        while (startPattern <= endPattern &&
+        while (startSeq <= endSeq &&
+                startPattern <= endPattern &&
                 startPattern <= s.length) {
-            sbPattern.append(s[startPattern - 1]);
+            if (esa.sequence[startSeq] != s[startPattern - 1]) {
+                return false;
+            }
+            startSeq = startSeq + 1;
             startPattern = startPattern + 1;
         }
-
-        return sbPattern.toString().equals(sbSeq.toString());
+        return true;
     }
 }

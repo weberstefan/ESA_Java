@@ -156,28 +156,16 @@ public class FindLongestPrefixMatch {
                              final int endSeq,
                              int startPattern,
                              final int endPattern) {
-        final StringBuilder sbSeq = new StringBuilder();
-        while (startSeq <= endSeq) {
-            sbSeq.append(esa.sequence[startSeq]);
-            startSeq = startSeq + 1;
-        }
-
-        final StringBuilder sbPattern = new StringBuilder();
-        while (startPattern <= endPattern &&
-                startPattern <= p.length) {
-            sbPattern.append(p[startPattern]);
-            startPattern = startPattern + 1;
-        }
-
-        final char[] seq = sbSeq.toString().toCharArray();
-        final char[] pat = sbPattern.toString().toCharArray();
-
-        final int min = Math.min(seq.length, pat.length);
-
         int matches = 0;
 
-        for (int i = 0; i < min; i = i + 1) {
-            matches = matches + ((seq[i] == pat[i]) ? 1 : 0);
+        while (startSeq <= endSeq &&
+                startPattern <= endPattern &&
+                startPattern <= p.length) {
+            if (esa.sequence[startSeq] == p[startPattern]) {
+                matches = matches + 1;
+            }
+            startSeq = startSeq + 1;
+            startPattern = startPattern + 1;
         }
 
         return matches;
