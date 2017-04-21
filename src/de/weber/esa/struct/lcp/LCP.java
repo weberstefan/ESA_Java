@@ -4,8 +4,8 @@ import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.discriminatingCharacters.DiscriminatingCharacters;
 import de.weber.esa.utils.ESA_Utils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  * Created by Stefan on 20.01.2017.
@@ -31,7 +31,9 @@ public class LCP {
     /**
      * Represents the first discriminating characters
      */
-    public final Map<Integer, DiscriminatingCharacters> discriminatingCharactersMap;
+//    public final ArrayList<DiscriminatingCharacters> discriminatingCharacterses;
+    public final DiscriminatingCharacters[] dc;
+//    public HashMap<Integer, DiscriminatingCharacters> discriminatingCharactersHashMap;
 
     /**
      * calculate the LCP table for the suffix array
@@ -47,7 +49,9 @@ public class LCP {
          */
         this.lcps = new int[this.length + 1];
 
-        this.discriminatingCharactersMap = new HashMap<>(this.length - 1);
+        this.dc = new DiscriminatingCharacters[this.length - 1];
+//        this.discriminatingCharacterses = new ArrayList<>(this.length - 1);
+//        this.discriminatingCharactersHashMap = new HashMap<>(this.length - 1);
 
         //lcps[0] = -1 by definition
         this.lcps[0] = - 1;
@@ -65,16 +69,21 @@ public class LCP {
 
             this.lcps[a] = k;
 
-            /*
-                TODO Space efficiently compute discriminating characters
-            */
-
-//            final DiscriminatingCharacters dc = new DiscriminatingCharacters(esa.sequence[b + k], esa.sequence[i + k]);
-//            this.discriminatingCharactersMap.put(a, dc);
-
-
             k = Math.max(0, k - 1);
         }
+
+        System.out.println(Calendar.getInstance().getTime() + "  now DC");
+
+        // compute discriminating characters array in O(n)
+        for (int i = 1; i < this.length; i = i + 1) {
+            this.dc[i - 1] = new DiscriminatingCharacters(esa.sequence[esa.suffices[i - 1] + this.lcps[i]], esa.sequence[esa.suffices[i] + this.lcps[i]]);
+//            this.discriminatingCharacterses.add(new DiscriminatingCharacters(esa.sequence[esa.suffices[i - 1] + this.lcps[i]], esa.sequence[esa.suffices[i] + this.lcps[i]]));
+//            this.discriminatingCharactersHashMap.put(i - 1, new DiscriminatingCharacters(esa.sequence[esa.suffices[i - 1] + this.lcps[i]], esa.sequence[esa.suffices[i] + this.lcps[i]]));
+        }
+
+//        System.out.println("SIZE OF DC ARRAY[] : " + ObjectSizeCalculator.getObjectSize(this.dc));
+//        System.out.println("SIZE OF DC LIST    : " + ObjectSizeCalculator.getObjectSize(this.discriminatingCharacterses));
+//        System.out.println("SIZE OF HASHMAP DC : " + ObjectSizeCalculator.getObjectSize(this.discriminatingCharactersHashMap));
 
         // for getting correct child properties
         // set lcp[length + 1] = -1
@@ -88,12 +97,12 @@ public class LCP {
      * @return Discriminating Characters at position
      */
     public DiscriminatingCharacters getDiscriminatingCharactersAtPosition(final int pos) {
-        return this.discriminatingCharactersMap.get(pos);
+        return this.dc[pos - 1];
     }
 
     @Override
     public String toString() {
-        return "LCP:\t" + ESA_Utils.arrayToString(this.lcps) + "\nDC: " + this.discriminatingCharactersMap;
+        return "LCP:\t" + ESA_Utils.arrayToString(this.lcps) + "\nDC: " + Arrays.toString(this.dc);
     }
 
 }
