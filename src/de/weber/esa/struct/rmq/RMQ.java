@@ -16,21 +16,17 @@ public class RMQ {
     public static void main(String[] args) {
 
         final int[] a = new int[]{
-//                0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0
-                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1
+                0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0
+//                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1
         };
 
         System.out.println(a.length + " long");
 
-        RMQ rmq = new RMQ(a, 3, true);
+        RMQ rmq = new RMQ(a,3, true);
         System.out.println(rmq.toString());
 
-//        System.out.println("seq min : " + rmq.sequentialMinimum(16, 30));
-//        System.out.println("rmqquery: " + rmq.rmqQuery(1, 4));
-//        System.out.println("query   : " + rmq.query(13, 30));
-//        int i = 1;
-//        int j = 3;
-//        System.out.println("Query(" + i + ", " + j + ") = " + rmq.rmqQuery(i, j));
+        System.out.println("seq min : " + rmq.sequentialMinimum(16, 30));
+        System.out.println("query   : " + rmq.query(13, 30));
     }
 
     /**
@@ -65,18 +61,6 @@ public class RMQ {
 //        this.blockSize = ((int) Math.log(array.length) >= 4) ? (int) Math.log(array.length) / 4 : (int) Math.log(array.length); // blockSize;
         this.blockSize = blockSize;
         this.calcQ(isLCP);
-    }
-
-    public int rmqQuery(final int i,
-                        final int j) {
-        final int k = MathUtils.ld(j - i + 1);
-        /* 2^k <= j - i + 1 < 2^(k+1) */
-        System.out.println("k = " + k);
-
-        int r = this.internalQ[i][k];
-        int s = this.internalQ[j - MathUtils.pow(2, k) + 1][k];
-
-        return this.F[r] <= this.F[s] ? r : s;
     }
 
     /**
@@ -128,7 +112,7 @@ public class RMQ {
         final int outerLeftPosition = this.sequentialMinimum(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
         final int outerRightPosition = this.sequentialMinimum(Math.max(maxBlock * this.blockSize, from), to);
 
-        // If true there are blocks between left and right block
+        // blocks between left and right block
         if (minBlock + 1 < maxBlock) {
             minBlock++;
             maxBlock--;

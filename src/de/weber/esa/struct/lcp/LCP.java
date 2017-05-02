@@ -1,7 +1,11 @@
 package de.weber.esa.struct.lcp;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.utils.ESA_Utils;
+import de.weber.esa.utils.MathUtils;
+import org.junit.Assert;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Created by Stefan on 20.01.2017.
@@ -19,10 +23,21 @@ public class LCP {
     public final int length;
 
     /**
+     * Represents the border for which Lcp Values will be stored in the exception array
+     * <p>Either Byte or Short border</p>
+     * <p>16 bit</p>
+     */
+    public final int BORDER_FOR_EXCEPTION = MathUtils.SHORT_MAXIMUM_LCP;
+
+    /**
      * Represents the LCP table
      * <p>12 + (N * 4[bytes per int]) -> Round up to next multiple of 8</p>
      */
-    public final int[] lcps; // TODO REPRESENT AS BIT ARRAY
+    public final short[] lcps; // TODO REPRESENT AS BIT ARRAY
+
+//    public final THashMap<Integer, Integer> lcpExceptionMap;
+
+    public final LcpException[] lcpExceptionArray;
 
     /**
      * calculate the LCP table for the suffix array
@@ -36,12 +51,16 @@ public class LCP {
          * initialize the lcp array
          * the last value is set to -1 for correctly computing the child tables
          */
-        this.lcps = new int[this.length + 1];
+        this.lcps = new short[this.length + 1];
+
+
+        int numberOfExceptions = 0;
 
         //lcps[0] = -1 by definition
         this.lcps[0] = - 1;
         // calculating the lcp array
         int k = 0;
+
         for (int i = 0; i < this.length - 1; i = i + 1) {
             final int a = esa.inverse[i];
             final int b = esa.suffices[a - 1];
@@ -52,19 +71,103 @@ public class LCP {
                 k = k + 1;
             }
 
-            this.lcps[a] = k;
+            if (k >= this.BORDER_FOR_EXCEPTION) {
+                this.lcps[a] = (short) this.BORDER_FOR_EXCEPTION;
+                numberOfExceptions = numberOfExceptions + 1;
+            } else {
+                this.lcps[a] = (short) k;
+            }
 
             k = Math.max(0, k - 1);
         }
+
+
+//        this.lcpExceptionMap = new THashMap<>(numberOfExceptions, .75f);
+        this.lcpExceptionArray = new LcpException[numberOfExceptions];
+        int pos = 0;
+
+        for (int i = 0; i < this.length - 1; i = i + 1) {
+            final int a = esa.inverse[i];
+            final int b = esa.suffices[a - 1];
+
+            while ((i + k) < this.length &&
+                    (b + k) < this.length &&
+                    esa.sequence[i + k] == esa.sequence[b + k]) {
+                k = k + 1;
+            }
+
+            if (k >= this.BORDER_FOR_EXCEPTION) {
+                this.lcpExceptionArray[pos] = new LcpException(a, k);
+//                this.lcpExceptionMap.put(a, k);
+                pos = pos + 1;
+            }
+
+            k = Math.max(0, k - 1);
+        }
+
+        System.out.println(numberOfExceptions + ":" + pos);
+        Assert.assertEquals(numberOfExceptions, pos);
+        System.out.println("Length: " + this.lcpExceptionArray.length);
+
+
+        // sort lcp exception array for binary search in ascending order of their positions in the lcp array
+//        Arrays.sort(this.lcpExceptionArray, (o1, o2) -> Integer.compare(o1.lcpPosition, o2.lcpPosition));
+
+        Arrays.sort(this.lcpExceptionArray, new Comparator<LcpException>() {
+            @Override
+            public int compare(LcpException o1, LcpException o2) {
+                return Integer.compare(o1.lcpPosition, o2.lcpPosition);
+            }
+        });
 
         // for getting correct child properties
         // set lcp[length + 1] = -1
         this.lcps[this.length] = - 1;
     }
 
+//    /**
+//     * get the current Lcp value as Integer from either lcp array or exception map
+//     *
+//     * @param position : position in Lcp array
+//     * @return current Lcp value
+//     */
+//    public int getCurrentLcpValue(final int position) {
+//        return this.lcps[position] == MathUtils.BYTE_MAXIMUM_LCP ? this.lcpExceptionMap.get(position) : (int) this.lcps[position];
+//    }
+
+    /**
+     * get the current Lcp value as integer from either lcp array or exception array
+     *
+     * @param pos: position in Lcp array
+     * @return current Lcp value
+     */
+    public int getCurrentLcpValue(final int pos) {
+        if (this.lcps[pos] < this.BORDER_FOR_EXCEPTION) {
+            return (int) this.lcps[pos];
+        }
+        int l = 0;
+        int r = this.lcpExceptionArray.length - 1;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (this.lcpExceptionArray[mid].lcpPosition == pos) {
+                return this.lcpExceptionArray[mid].lcpValue;
+            } else if (this.lcpExceptionArray[mid].lcpPosition < pos) {
+                l = mid + 1;
+            } else if (this.lcpExceptionArray[mid].lcpPosition > pos) {
+                r = mid - 1;
+            } else {
+                throw new RuntimeException("Should not reach here (Binary Search Lcp Exception Array)");
+            }
+        }
+        return - 1;
+    }
+
     @Override
     public String toString() {
-        return "LCP:\t" + ESA_Utils.arrayToString(this.lcps);
+        return "LCP:\t" + Arrays.toString(this.lcps) +
+//                "\nExcMap:\t " + this.lcpExceptionMap +
+                "\nEcArray:\t" + Arrays.toString(this.lcpExceptionArray);
     }
 
 }

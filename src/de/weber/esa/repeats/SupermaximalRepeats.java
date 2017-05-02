@@ -48,25 +48,25 @@ public class SupermaximalRepeats {
             i = j;
             // only get supermaximal repeats of length > 1
             while (j < n &&
-                    esa.lcp.lcps[j] <= esa.lcp.lcps[j + 1] &&
-                    esa.lcp.lcps[j + 1] > 1) {
+                    esa.lcp.getCurrentLcpValue(j) <= esa.lcp.getCurrentLcpValue(j + 1) &&
+                    esa.lcp.getCurrentLcpValue(j + 1) > 1) {
                 if (j < n &&
-                        (esa.lcp.lcps[j] == 0 &&
-                                esa.lcp.lcps[j + 1] == 0) ||
-                        (j < n - 1 && esa.lcp.lcps[i] < esa.lcp.lcps[j + 1] &&
-                                esa.lcp.lcps[j + 1] < esa.lcp.lcps[j + 2])) {
+                        (esa.lcp.getCurrentLcpValue(j) == 0 &&
+                                esa.lcp.getCurrentLcpValue(j + 1) == 0) ||
+                        (j < n - 1 && esa.lcp.getCurrentLcpValue(i) < esa.lcp.getCurrentLcpValue(j + 1) &&
+                                esa.lcp.getCurrentLcpValue(j + 1) < esa.lcp.getCurrentLcpValue(j + 2))) {
                     i = j + 1;
                 }
                 j = j + 1;
                 if (j < n &&
-                        (esa.lcp.lcps[j] == esa.lcp.lcps[j + 1] &&
-                                esa.lcp.lcps[j] != 0) ||
-                        (esa.lcp.lcps[j - 1] == esa.lcp.lcps[j - 2] &&
-                                esa.lcp.lcps[j - 1] != 0)) {
+                        (esa.lcp.getCurrentLcpValue(j) == esa.lcp.getCurrentLcpValue(j + 1) &&
+                                esa.lcp.getCurrentLcpValue(j) != 0) ||
+                        (esa.lcp.getCurrentLcpValue(j - 1) == esa.lcp.getCurrentLcpValue(j - 2) &&
+                                esa.lcp.getCurrentLcpValue(j - 1) != 0)) {
                     i2 = i;
                     j2 = j;
                     if (this.isBWTPairwiseDistinct(esa.bwt, i2, j2)) {
-                        Repeats.fillList(this.supermaximalRepeats, esa, i2, j2, esa.lcp.lcps[j2]);
+                        Repeats.fillList(this.supermaximalRepeats, esa, i2, j2, esa.lcp.getCurrentLcpValue(j2));
                     }
                     i = j - 1;
                 }
@@ -74,7 +74,7 @@ public class SupermaximalRepeats {
 
             if (i2 != i || j2 != j) {
                 if (this.isBWTPairwiseDistinct(esa.bwt, i, j)) {
-                    Repeats.fillList(this.supermaximalRepeats, esa, i, j, esa.lcp.lcps[j]);
+                    Repeats.fillList(this.supermaximalRepeats, esa, i, j, esa.lcp.getCurrentLcpValue(j));
                 }
             }
 

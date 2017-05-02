@@ -1,6 +1,5 @@
 package de.weber.esa.struct.child_table;
 
-import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.lcp.LCP;
 
 import java.util.Arrays;
@@ -13,13 +12,9 @@ import java.util.Stack;
  */
 public class ChildTable2 {
 
-    public static void main(String[] args) {
-        final String s = "ACAAACATAT";
-        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
-        final ChildTable2 c = new ChildTable2(esa.lcp);
-
-        System.out.println(c.toString());
-    }
+    /*
+        Computing the Child Table with THashMap for LCP Exception
+     */
 
     public final int[] DOWN;
     public final int[] UP;
@@ -42,11 +37,11 @@ public class ChildTable2 {
         S.push(0);
 
         for (int k = 1; k < this.n; k = k + 1) {
-            while (lcp.lcps[k] < lcp.lcps[S.lastElement()]) {
+            while (lcp.getCurrentLcpValue(k) < lcp.getCurrentLcpValue(S.lastElement())) {
                 last = S.pop();
-                if ((lcp.lcps[k] <= lcp.lcps[S.lastElement()]) &&
-                        (lcp.lcps[S.lastElement()] < lcp.lcps[last]) &&
-                        S.lastElement() != 0 /* there is none for $ [first entry in suffix array] */ ) {
+
+                if (lcp.getCurrentLcpValue(k) <= lcp.getCurrentLcpValue(S.lastElement()) &&
+                        lcp.getCurrentLcpValue(S.lastElement()) != lcp.getCurrentLcpValue(last)) {
                     TMP_DOWN[S.lastElement()] = last;
                 }
             }
@@ -63,10 +58,10 @@ public class ChildTable2 {
         S.removeAllElements();
         S.push(0);
         for (int k = 0; k < this.n; k = k + 1) {
-            while (lcp.lcps[k] < lcp.lcps[S.lastElement()]) {
+            while (lcp.getCurrentLcpValue(k) < lcp.getCurrentLcpValue(S.lastElement())) {
                 S.pop();
             }
-            if (lcp.lcps[k] == lcp.lcps[S.lastElement()]) {
+            if (lcp.getCurrentLcpValue(k) == lcp.getCurrentLcpValue(S.lastElement())) {
                 last = S.pop();
                 if (last != 0 /* there is none for $ [first entry in suffix array] */ ) {
                     this.NEXT[last] = k;

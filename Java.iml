@@ -17,5 +17,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="trove-3.0.2" level="project" />
+    <orderEntry type="library" name="guava-19.0" level="project" />
   </component>
 </module>

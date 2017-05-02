@@ -12,6 +12,10 @@ import java.util.Stack;
  */
 public class ChildTable {
 
+    /*
+        Computing the Child Table with THashMap for LCP Exception
+     */
+
     /**
      * The length of the child table
      * <p>16 bit</p>
@@ -46,11 +50,11 @@ public class ChildTable {
         int last = - 1;
 
         for (int k = 1; k <= this.length; k = k + 1) {
-            while (lcp.lcps[k] < lcp.lcps[S.lastElement()]) {
+            while (lcp.getCurrentLcpValue(k) < lcp.getCurrentLcpValue(S.lastElement())) {
                 last = S.pop();
-                if (lcp.lcps[k] <= lcp.lcps[S.lastElement()] &&
-                        lcp.lcps[S.lastElement()] != lcp.lcps[last]
-                        && S.lastElement() != 0) {
+
+                if (lcp.getCurrentLcpValue(k) <= lcp.getCurrentLcpValue(S.lastElement()) &&
+                        lcp.getCurrentLcpValue(S.lastElement()) != lcp.getCurrentLcpValue(last)) {
                     this.cld[S.lastElement()] = last; /* DOWN */
                     this.down[S.lastElement()] = true;
                 }
@@ -61,11 +65,12 @@ public class ChildTable {
                 last = - 1;
             }
 
-            if (lcp.lcps[S.lastElement()] == lcp.lcps[k] &&
-                    S.lastElement() != 0 /* there is none for $ [first entry in suffix array] */) {
+            if (lcp.getCurrentLcpValue(S.lastElement()) == lcp.getCurrentLcpValue(k) &&
+                    S.lastElement() != 0 /* there is none for $ (first entry in suffix array */) {
                 this.cld[S.lastElement()] = k;
                 this.next[S.lastElement()] = true;
             }
+
             S.push(k);
         }
 
@@ -75,10 +80,10 @@ public class ChildTable {
 
     @Override
     public String toString() {
-        return "Child:\t" + Arrays.toString(this.cld);
-//                + "\nDOWN: " + Arrays.toString(this.down) +
-////                "\nUP:   " + Arrays.toString(this.up) +
-//                "\nNext: " + Arrays.toString(this.next);
+        return "Child:\t" + Arrays.toString(this.cld)
+                + "\nDOWN: " + Arrays.toString(this.down) +
+//                "\nUP:   " + Arrays.toString(this.up) +
+                "\nNext: " + Arrays.toString(this.next);
     }
 
 }

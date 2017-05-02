@@ -1,7 +1,6 @@
 package de.weber.esa.searching.scriptum_search_via_child_table;
 
 import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
-import de.weber.esa.searching.wrapper.BinarySearchWrapper;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 
@@ -39,7 +38,7 @@ public class Find {
     public Find() {
     }
 
-    public BinarySearchWrapper find(final EnhancedSuffixArray esa,
+    public IntervalWrapper find(final EnhancedSuffixArray esa,
                                     final char[] s) {
         final int n = esa.length - 1;
         final int m = s.length;
@@ -73,7 +72,7 @@ public class Find {
             }
         }
         return (prefix) ?
-                new BinarySearchWrapper(iw.i, iw.j) : new BinarySearchWrapper(- 1, - 1);
+                new IntervalWrapper(iw.i, iw.j) : new IntervalWrapper(- 1, - 1);
     }
 
     private IntervalWrapper getChildIntervalByChar(final EnhancedSuffixArray esa,
@@ -124,7 +123,7 @@ public class Find {
             return 0;
         else
             return (esa.child.down[i] && this.isInterval(esa.child.cld[i], i, j)) ?
-                    esa.lcp.lcps[esa.child.cld[i]] : esa.lcp.lcps[esa.child.cld[j]];
+                    esa.lcp.getCurrentLcpValue(esa.child.cld[i]) : esa.lcp.getCurrentLcpValue(esa.child.cld[j]);
     }
 
     private boolean isInterval(final int k,

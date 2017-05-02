@@ -40,18 +40,18 @@ public class MaximalRepeats {
 
         while (j < n) {
 
-            if (esa.lcp.lcps[j] < esa.lcp.lcps[j + 1]) {
+            if (esa.lcp.getCurrentLcpValue(j) < esa.lcp.getCurrentLcpValue(j + 1)) {
                 // left character different
                 if (esa.bwt.bwt[j] != esa.bwt.bwt[j + 1]) {
                     seqPosI = j;
                     seqPosJ = j + 1;
-                    Repeats.fillList(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.lcps[j + 1]);
+                    Repeats.fillList(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.getCurrentLcpValue(j + 1));
 
                     while (seqPosJ < n &&
-                            esa.lcp.lcps[seqPosJ] < esa.lcp.lcps[seqPosJ + 1] &&
-                            esa.lcp.lcps[seqPosJ + 1] > esa.lcp.lcps[seqPosJ + 2]) {
+                            esa.lcp.getCurrentLcpValue(seqPosJ) < esa.lcp.getCurrentLcpValue(seqPosJ + 1) &&
+                            esa.lcp.getCurrentLcpValue(seqPosJ + 2) < esa.lcp.getCurrentLcpValue(seqPosJ + 1)) {
                         if (esa.bwt.bwt[seqPosJ + 1] != esa.bwt.bwt[j]) {
-                            Repeats.fillList(this.maximalRepeats, esa, seqPosI, (seqPosJ + 1), esa.lcp.lcps[seqPosI + 1]);
+                            Repeats.fillList(this.maximalRepeats, esa, seqPosI, (seqPosJ + 1), esa.lcp.getCurrentLcpValue(seqPosI + 1));
                         }
                         seqPosJ = seqPosJ + 1;
                     }

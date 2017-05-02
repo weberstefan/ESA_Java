@@ -1,6 +1,6 @@
 package de.weber.esa.searching.binarySearch;
 
-import de.weber.esa.searching.wrapper.BinarySearchWrapper;
+import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
 
@@ -23,12 +23,12 @@ public class BinarySearch {
      * @param query : pattern to search for
      * @return (query, SA[i..j]) iff sequence of interest contains pattern
      */
-    public BinarySearchWrapper search(final EnhancedSuffixArray esa,
+    public IntervalWrapper search(final EnhancedSuffixArray esa,
                                       final String query) {
         // queries first letter is not inside the suffix array string
         if (! esa.bwtCMap.containsKey(query.charAt(0))) {
             System.out.println(query.charAt(0) + " is not inside the suffix array");
-            return new BinarySearchWrapper(- 1, - 1);
+            return new IntervalWrapper(- 1, - 1);
         }
         final int m = query.length();
         final int n = esa.length;
@@ -52,7 +52,7 @@ public class BinarySearch {
                     as long as LCP[mid++] is greater than or equal to length of query
                     their SA entries also match the query
                 */
-                while (esa.lcp.lcps[up] >= m) {
+                while (esa.lcp.getCurrentLcpValue(up) >= m) {
                     up = up + 1;
                     isUp = true;
                 }
@@ -72,7 +72,7 @@ public class BinarySearch {
                     suffixDown = ESA_Utils.getCurrentSuffix(esa, downP, m);
                 }
 
-                return new BinarySearchWrapper(isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
+                return new IntervalWrapper(isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
             } else if (res < 0) {
                 r = mid - 1;
             } else if (res > 0) {
@@ -81,7 +81,7 @@ public class BinarySearch {
                 throw new RuntimeException("Should never reach here");
             }
         }
-        return new BinarySearchWrapper(- 1, - 1);
+        return new IntervalWrapper(- 1, - 1);
     }
 
 

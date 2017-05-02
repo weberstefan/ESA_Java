@@ -138,7 +138,7 @@ public class EnhancedSuffixArray {
     @Override
     public String toString() {
         return "Sequence:\t" + Arrays.toString(this.sequence) + "\n" +
-                "SA[Seq[i]]:\t" + ESA_Utils.arrayToString(this.suffices) + "\n" +
+                "SA[Seq[i]]:\t" + Arrays.toString(this.suffices) + "\n" +
                 "Inverse:\t" + Arrays.toString(this.inverse) + "\n" +
                 this.lcp + "\n" +
                 this.child + "\n" + this.bwt;

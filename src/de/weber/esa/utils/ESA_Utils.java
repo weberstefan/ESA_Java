@@ -99,48 +99,4 @@ public class ESA_Utils {
         return sb.toString();
     }
 
-    /**
-     * receive integer array as string
-     *
-     * @param a : current array
-     * @return : a as string in form of Arrays.toString(a)
-     */
-    public static final String arrayToString(final int[] a) {
-        StringBuilder sb = new StringBuilder(a.length * 3);
-
-        sb.append("[");
-
-        for (int i = 0; i < a.length - 1; i = i + 1) {
-            if (i == a.length - 2) {
-                sb.append(a[i] + "]");
-            } else {
-                sb.append(a[i] + ", ");
-            }
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * receive byte array as string
-     *
-     * @param a : current array
-     * @return : a as string in form of Arrays.toString(a)
-     */
-    public static final String arrayToString(final byte[] a) {
-        StringBuilder sb = new StringBuilder(a.length * 3);
-
-        sb.append("[");
-
-        for (int i = 0; i < a.length - 1; i = i + 1) {
-            if (i == a.length - 2) {
-                sb.append(a[i] + "]");
-            } else {
-                sb.append(a[i] + ", ");
-            }
-        }
-
-        return sb.toString();
-    }
-
 }

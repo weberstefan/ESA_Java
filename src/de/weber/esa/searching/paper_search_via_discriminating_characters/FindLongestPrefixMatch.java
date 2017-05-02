@@ -42,7 +42,7 @@ public class FindLongestPrefixMatch {
                     k1 = esa.child.cld[iw.i];
                 }
 
-                final int lcpIJ = esa.lcp.lcps[k1];
+                final int lcpIJ = esa.lcp.getCurrentLcpValue(k1);
 
                 if (lcpIJ > c) {
                     final int M = Math.min(lcpIJ, m);
@@ -86,7 +86,7 @@ public class FindLongestPrefixMatch {
             return null;
         }
 
-        while (k1 <= iw.j && esa.lcp.lcps[k1] == lcpIJ) {
+        while (k1 <= iw.j && esa.lcp.getCurrentLcpValue(k1) == lcpIJ) {
             int k2 = (esa.child.next[k1]) ? esa.child.cld[k1] : (iw.j < esa.length) ? iw.j + 1 : iw.j;
             if (p == s2) {
                 return new IntervalWrapper(k1, k2 - 1);
@@ -125,7 +125,7 @@ public class FindLongestPrefixMatch {
             return new IntervalWrapper(iw.i, k1 - 1);
         }
 
-        while (k1 < iw.j && esa.lcp.lcps[k1] == lcpIJ) {
+        while (k1 < iw.j && esa.lcp.getCurrentLcpValue(k1) == lcpIJ) {
             int k2 = (esa.child.next[k1]) ? esa.child.cld[k1] : (iw.j < esa.length) ? iw.j + 1 : iw.j;
             s = esa.sequence[esa.suffices[k1] + lcpIJ];
             if (p < s) {

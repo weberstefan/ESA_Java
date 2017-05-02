@@ -5,6 +5,9 @@ package de.weber.esa.utils;
  */
 public class MathUtils {
 
+    public static final int SHORT_MAXIMUM_LCP = 32767;
+    public static final int BYTE_MAXIMUM_LCP = 127;
+
     /*
         http://stackoverflow.com/a/3305710
      */

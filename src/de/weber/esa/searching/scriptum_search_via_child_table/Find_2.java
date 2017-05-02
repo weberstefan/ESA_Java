@@ -1,6 +1,5 @@
 package de.weber.esa.searching.scriptum_search_via_child_table;
 
-import de.weber.esa.searching.wrapper.BinarySearchWrapper;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.child_table.ChildTable2;
@@ -19,8 +18,8 @@ public class Find_2 {
 
     private ChildTable2 c;
 
-    public BinarySearchWrapper find(final EnhancedSuffixArray esa,
-                                     final char[] s) {
+    public IntervalWrapper find(final EnhancedSuffixArray esa,
+                                    final char[] s) {
         final int n = esa.length - 1;
         final int m = s.length;
         IntervalWrapper iw = new IntervalWrapper(0, n);
@@ -56,7 +55,7 @@ public class Find_2 {
             }
         }
         return (prefix) ?
-                new BinarySearchWrapper(iw.i, iw.j) : new BinarySearchWrapper(- 1, - 1);
+                new IntervalWrapper(iw.i, iw.j) : new IntervalWrapper(- 1, - 1);
     }
 
     private boolean isPrefix(EnhancedSuffixArray esa, char[] s, int startSeq, int endSeq, int startPattern, int endPattern) {
@@ -113,12 +112,7 @@ public class Find_2 {
     private int LCP(EnhancedSuffixArray esa, int i, int j) {
         return (i == 0 || j == esa.length - 1) ?
                 0 : (this.isInInterval(this.c.DOWN[i], i, j)) ?
-                esa.lcp.lcps[this.c.DOWN[i]] : esa.lcp.lcps[this.c.UP[j + 1]];
-//        if (i == 0 || j == esa.length - 1)
-//            return 0;
-//        else
-//            return (this.isInInterval(this.c.DOWN[i], i, j)) ?
-//                    esa.lcp.lcps[this.c.DOWN[i]] : esa.lcp.lcps[this.c.UP[j + 1]];
+                esa.lcp.getCurrentLcpValue(this.c.DOWN[i]) : esa.lcp.getCurrentLcpValue(this.c.UP[j + 1]);
     }
 
     private boolean isInInterval(final int k,

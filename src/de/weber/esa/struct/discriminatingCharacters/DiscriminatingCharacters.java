@@ -22,8 +22,8 @@ public class DiscriminatingCharacters {
         this.second = new char[esa.length - 1];
 
         for (int i = 1; i < esa.lcp.length; i = i + 1) {
-            first[i - 1] = esa.sequence[esa.suffices[i - 1] + esa.lcp.lcps[i]];
-            second[i - 1] = esa.sequence[esa.suffices[i] + esa.lcp.lcps[i]];
+            first[i - 1] = esa.sequence[esa.suffices[i - 1] + esa.lcp.getCurrentLcpValue(i)];
+            second[i - 1] = esa.sequence[esa.suffices[i] + esa.lcp.getCurrentLcpValue(i)];
         }
     }
 
