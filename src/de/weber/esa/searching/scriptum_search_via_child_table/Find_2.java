@@ -2,7 +2,8 @@ package de.weber.esa.searching.scriptum_search_via_child_table;
 
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.child_table.ChildTable2;
+import de.weber.esa.struct.childtable.ChildTable2;
+import de.weber.esa.utils.ESA_Utils;
 
 /**
  * Created by Stefan on 20.03.2017.
@@ -22,7 +23,8 @@ public class Find_2 {
                                     final char[] s) {
         final int n = esa.length - 1;
         final int m = s.length;
-        IntervalWrapper iw = new IntervalWrapper(0, n);
+//        IntervalWrapper iw = new IntervalWrapper(0, n);
+        IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(s[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, s[0]));
         int p = 0;
         boolean prefix = true;
         int turn = 0;
@@ -55,7 +57,7 @@ public class Find_2 {
             }
         }
         return (prefix) ?
-                new IntervalWrapper(iw.i, iw.j) : new IntervalWrapper(- 1, - 1);
+                iw : new IntervalWrapper(- 1, - 1);
     }
 
     private boolean isPrefix(EnhancedSuffixArray esa, char[] s, int startSeq, int endSeq, int startPattern, int endPattern) {

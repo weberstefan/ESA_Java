@@ -2,7 +2,6 @@ package de.weber.esa.struct.lcp;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.MathUtils;
-import org.junit.Assert;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -104,10 +103,6 @@ public class LCP {
 
             k = Math.max(0, k - 1);
         }
-
-        System.out.println(numberOfExceptions + ":" + pos);
-        Assert.assertEquals(numberOfExceptions, pos);
-        System.out.println("Length: " + this.lcpExceptionArray.length);
 
 
         // sort lcp exception array for binary search in ascending order of their positions in the lcp array

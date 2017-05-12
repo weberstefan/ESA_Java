@@ -1,4 +1,4 @@
-package de.weber.esa.struct.child_table;
+package de.weber.esa.struct.childtable;
 
 import de.weber.esa.struct.lcp.LCP;
 

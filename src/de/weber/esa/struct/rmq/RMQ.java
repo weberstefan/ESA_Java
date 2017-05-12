@@ -15,29 +15,30 @@ public class RMQ {
 
     public static void main(String[] args) {
 
-        final int[] a = new int[]{
-                0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0
-//                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1
+        final short[] a = new short[]{
+//                - 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, - 1
+                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1, - 1
+//                -1, 0, 1, 1, 2, 0, 2, 3, 1, 0, 3, 1, 0, 1, -1
         };
 
         System.out.println(a.length + " long");
 
-        RMQ rmq = new RMQ(a,3, true);
-        System.out.println(rmq.toString());
-
-        System.out.println("seq min : " + rmq.sequentialMinimum(16, 30));
-        System.out.println("query   : " + rmq.query(13, 30));
+        RMQ rmq = new RMQ(a);
+//        System.out.println(rmq.toString());
+//
+//        System.out.println("seq min : " + rmq.sequentialMinimum(2, 10));
+        System.out.println("query   : " + rmq.query(2, 6));
     }
 
     /**
      * Represents the array, which will be used for calculating RMQ
      */
-    private int[] array;
+    private short[] array;
 
     /**
      * Represents the block size for RMQ
      */
-    private final int blockSize;
+    public final int blockSize;
 
     /**
      * Represents P' in script
@@ -45,26 +46,26 @@ public class RMQ {
     private byte[] minPosBlock;
 
     /**
-     * Represents F' in script
-     */
-    private byte[] F;
-
-    /**
      * Represents internal datastructure Q' in script
      */
-    public int[][] internalQ;
+    public byte[][] internalQ;
 
-    public RMQ(final int[] array,
-               final int blockSize,
-               final boolean isLCP) {
+    public RMQ(final short[] array) {
+        this(array, MathUtils.ld(array.length) - 1);
+        System.out.println(this.blockSize + " = block size");
+    }
+
+    public RMQ(final short[] array,
+               final int blockSize) {
         this.array = array;
-//        this.blockSize = ((int) Math.log(array.length) >= 4) ? (int) Math.log(array.length) / 4 : (int) Math.log(array.length); // blockSize;
         this.blockSize = blockSize;
-        this.calcQ(isLCP);
+        this.calcQ();
     }
 
     /**
      * Calculate the minimum position between from and to
+     * <p>
+     * This method is symmetrical
      *
      * @param from : starting position
      * @param to   : ending position
@@ -95,6 +96,15 @@ public class RMQ {
         return minPos;
     }
 
+    /**
+     * Calculate the minimum position between from and to
+     * <p>
+     * This method is symmetrical
+     *
+     * @param from : starting position
+     * @param to   : ending position
+     * @return position of minimum entry in array
+     */
     public int query(int from, int to) {
         if (from == to) {
             return from;
@@ -112,10 +122,10 @@ public class RMQ {
         final int outerLeftPosition = this.sequentialMinimum(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
         final int outerRightPosition = this.sequentialMinimum(Math.max(maxBlock * this.blockSize, from), to);
 
-        // blocks between left and right block
+        // blocks between left block and right block
         if (minBlock + 1 < maxBlock) {
-            minBlock++;
-            maxBlock--;
+            minBlock = minBlock + 1;
+            maxBlock = maxBlock - 1;
             final int k = MathUtils.ld(maxBlock - minBlock + 1);
             final int r = this.internalQ[minBlock][k];
             final int s = this.internalQ[maxBlock - MathUtils.pow(2, k) + 1][k];
@@ -129,23 +139,22 @@ public class RMQ {
         return this.array[outerLeftPosition] <= this.array[outerRightPosition] ? outerLeftPosition : outerRightPosition;
     }
 
-
     /**
      * Caclulating the minimum between 2 blocks
      * <p>
      * Representing the Q' in the script (RMQ2 - Abbildung 4.4 Page 144)
      *
-     * @param isLCP : necessary for calculating minimal positions per block
+     * @return Q'
      */
-    private void calcQ(final boolean isLCP) {
-        this.calcMinPosPerBlock(isLCP);
+    private byte[][] calcQ() {
+        this.calcMinPosPerBlock();
         final int SIZE = this.minPosBlock.length;
         final int END = MathUtils.ld(SIZE);
 
-        this.internalQ = new int[SIZE][END + 1];
+        this.internalQ = new byte[SIZE][END + 1];
 
         for (int i = 0; i < SIZE; i = i + 1) {
-            this.internalQ[i][0] = i;
+            this.internalQ[i][0] = (byte) i;
             // init all other entries with -1 due to LCA not found there
             for (int j = 1; j <= END; j = j + 1) {
                 this.internalQ[i][j] = - 1;
@@ -160,9 +169,11 @@ public class RMQ {
                 final int posA = this.minPosBlock[a] + a * this.blockSize;
                 final int posB = this.minPosBlock[b] + b * this.blockSize;
 
-                this.internalQ[i][k + 1] = (this.array[posA] <= this.array[posB]) ? a : b;
+                this.internalQ[i][k + 1] = (this.array[posA] <= this.array[posB]) ? (byte) a : (byte) b;
             }
         }
+
+        return this.internalQ;
     }
 
     /**
@@ -170,29 +181,16 @@ public class RMQ {
      * <p>
      * Representing the P' in the script
      *
-     * @param isLCP : if RMQ with LCP, do not take first lcp-value into account
+     * @return minimum positions per block
      */
-    private void calcMinPosPerBlock(final boolean isLCP) {
-        final int SIZE = this.array.length;
-        int i = 0;
-
-        if (isLCP) {
-            // - 1 due to lcp[0] = -1 = $
-            // set starting point i = 1
-            this.minPosBlock = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
-            i = 1;
-        } else {
-            this.minPosBlock = new byte[(this.blockSize + SIZE) / this.blockSize];
-        }
-
-        this.F = new byte[this.minPosBlock.length];
-
+    private byte[] calcMinPosPerBlock() {
+        final int SIZE = this.array.length - 1;
+        this.minPosBlock = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
         int curValue = - 1;
 
-        for (; i < SIZE; i = i + this.blockSize) {
+        for (int i = 1; i < SIZE; i = i + this.blockSize) {
             // are we out of array length?
             final int END = Math.min(i + this.blockSize, SIZE);
-
             int min = Integer.MAX_VALUE;
             int minPos = - 1;
 
@@ -203,19 +201,18 @@ public class RMQ {
                     minPos = j - i;
                 }
             }
-
             this.minPosBlock[i / this.blockSize] = (byte) minPos;
-            this.F[i / this.blockSize] = (byte) min;
+            System.out.print(min + "\t");
         }
-    }
-
-    public int getBlockSize() {
-        return this.blockSize;
+        System.out.println();
+        return this.minPosBlock;
     }
 
     @Override
     public String toString() {
-        return "RMQ\nP': " + Arrays.toString(this.minPosBlock) + "\nF': " + Arrays.toString(this.F) + "\n" + ESA_Utils.printArray(this.internalQ);
+        return "RMQ\nA': " + Arrays.toString(this.array)
+                + "\nP': " + Arrays.toString(this.minPosBlock)
+                + "\n" + ESA_Utils.printArray(this.internalQ);
     }
 
 }

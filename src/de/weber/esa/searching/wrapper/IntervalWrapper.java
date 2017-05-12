@@ -36,6 +36,11 @@ public class IntervalWrapper {
                 this.j <= length);
     }
 
+    public boolean isFirstInterval(final int length) {
+        return (this.i == 1 &&
+                this.j == length);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (o == this) {

@@ -1,4 +1,4 @@
-package de.weber.esa.struct.discriminatingCharacters;
+package de.weber.esa.struct.discriminatingcharacters;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 

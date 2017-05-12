@@ -3,7 +3,8 @@ package de.weber.esa.searching.paper_search_via_discriminating_characters;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.discriminatingCharacters.DiscriminatingCharacters;
+import de.weber.esa.struct.discriminatingcharacters.DiscriminatingCharacters;
+import de.weber.esa.utils.ESA_Utils;
 
 /**
  * Created by Stefan on 01.04.2017.
@@ -22,7 +23,9 @@ public class FindLongestPrefixMatch {
         int c = 0;
         final int n = esa.length - 1;
         final int m = P.length;
-        IntervalWrapper iw = new IntervalWrapper(1, n);
+//        IntervalWrapper iw = new IntervalWrapper(1, n);
+        IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(P[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, P[0]));
+
 
         while (c < m) {
             if (iw.i == iw.j) {

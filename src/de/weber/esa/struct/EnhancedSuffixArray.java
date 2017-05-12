@@ -2,7 +2,7 @@ package de.weber.esa.struct;
 
 import de.weber.esa.struct.bwt.BWT;
 import de.weber.esa.struct.bwt.BWTFeatures;
-import de.weber.esa.struct.child_table.ChildTable;
+import de.weber.esa.struct.childtable.ChildTable;
 import de.weber.esa.struct.lcp.LCP;
 import de.weber.esa.utils.ESA_Utils;
 import external.sais;

@@ -1,4 +1,4 @@
-package de.weber.esa.searching.fmIndex;
+package de.weber.esa.searching.fimindex;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.struct.bwt.FMIndex;

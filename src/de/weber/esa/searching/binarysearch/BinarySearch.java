@@ -1,4 +1,4 @@
-package de.weber.esa.searching.binarySearch;
+package de.weber.esa.searching.binarysearch;
 
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
