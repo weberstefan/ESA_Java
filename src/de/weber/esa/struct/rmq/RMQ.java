@@ -51,7 +51,7 @@ public class RMQ {
     public byte[][] internalQ;
 
     public RMQ(final short[] array) {
-        this(array, MathUtils.ld(array.length) - 1);
+        this(array, MathUtils.ld(array.length));
         System.out.println(this.blockSize + " = block size");
     }
 
