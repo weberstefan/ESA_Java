@@ -1,7 +1,7 @@
 package de.weber.esa.searching.fimindex;
 
+import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.bwt.FMIndex;
 
 /**
  * Created by Stefan on 16.03.2017.
@@ -25,8 +25,8 @@ public class FMIndexSearch {
      * @param query : pattern to be searched whether it is inside the string and if so at what suffix array positions
      * @return left and right indices in suffix array for query pattern
      */
-    public FMIndex backwardSearch(final EnhancedSuffixArray esa,
-                                  final String query) {
+    public PatternMatchingWrapper backwardSearch(final EnhancedSuffixArray esa,
+                                                 final String query) {
         final int m = query.length();
         final int n = esa.length - 1;
 
@@ -40,17 +40,17 @@ public class FMIndexSearch {
                 posP = esa.bwtCMap.get(p).getPosSequence();
             } catch (NullPointerException eNP) {
                 System.err.println(p + " is not in the sequence, so no pattern will be found..");
-                return new FMIndex(- 1, - 1);
+                return new PatternMatchingWrapper(0, - 1, - 1);
             }
             l = posP + this.getOCCValue(esa, p, l - 1);
             r = posP + this.getOCCValue(esa, p, r) - 1;
 
             if (l > r) {
-                return new FMIndex(- 1, - 1);
+                return new PatternMatchingWrapper(0, - 1, - 1);
             }
         }
 
-        return new FMIndex(l, r);
+        return new PatternMatchingWrapper(query.length(), l, r);
     }
 
     /**

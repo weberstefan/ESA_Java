@@ -1,8 +1,8 @@
 package de.weber.esa.gui;
 
-import de.weber.esa.searching.fmIndex.FMIndexSearch;
+import de.weber.esa.searching.fimindex.FMIndexSearch;
+import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.bwt.FMIndex;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class InputPanel extends JPanel {
     private JLabel resultLabel;
 
     private JButton fmIndexButton;
-    private FMIndex fm;
+    private PatternMatchingWrapper fm;
     private boolean isFmIndex = false;
 
     private EnhancedSuffixArray esa;

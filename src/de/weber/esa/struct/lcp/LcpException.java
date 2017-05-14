@@ -38,4 +38,5 @@ public class LcpException {
     public String toString() {
         return this.lcpPosition + ":" + this.lcpValue;
     }
+
 }

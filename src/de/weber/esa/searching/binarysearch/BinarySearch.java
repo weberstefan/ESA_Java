@@ -1,6 +1,6 @@
 package de.weber.esa.searching.binarysearch;
 
-import de.weber.esa.searching.wrapper.IntervalWrapper;
+import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
 
@@ -19,16 +19,17 @@ public class BinarySearch {
 
     /**
      * binary search for pattern query
-     * @param esa : current enhanced suffix array for sequence of interest
+     *
+     * @param esa   : current enhanced suffix array for sequence of interest
      * @param query : pattern to search for
      * @return (query, SA[i..j]) iff sequence of interest contains pattern
      */
-    public IntervalWrapper search(final EnhancedSuffixArray esa,
-                                      final String query) {
+    public PatternMatchingWrapper search(final EnhancedSuffixArray esa,
+                                         final String query) {
         // queries first letter is not inside the suffix array string
         if (! esa.bwtCMap.containsKey(query.charAt(0))) {
             System.out.println(query.charAt(0) + " is not inside the suffix array");
-            return new IntervalWrapper(- 1, - 1);
+            return new PatternMatchingWrapper(0, - 1, - 1);
         }
         final int m = query.length();
         final int n = esa.length;
@@ -72,7 +73,7 @@ public class BinarySearch {
                     suffixDown = ESA_Utils.getCurrentSuffix(esa, downP, m);
                 }
 
-                return new IntervalWrapper(isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
+                return new PatternMatchingWrapper(query.length(), isDown ? (down + 1) : mid, isUp ? (up - 1) : mid);
             } else if (res < 0) {
                 r = mid - 1;
             } else if (res > 0) {
@@ -81,7 +82,7 @@ public class BinarySearch {
                 throw new RuntimeException("Should never reach here");
             }
         }
-        return new IntervalWrapper(- 1, - 1);
+        return new PatternMatchingWrapper(0, - 1, - 1);
     }
 
 

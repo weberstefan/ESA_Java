@@ -1,5 +1,6 @@
 package test;
 
+import de.weber.esa.struct.EnhancedSuffixArray;
 import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 import org.junit.Test;
 
@@ -10,15 +11,15 @@ public class Sizes {
 
     @Test
     public void sizes() {
-        final int[] x = new int[12];
+        String s = "ACAAACATAT";
+        for (int i = 0; i < 10; i = i + 1) {
+            s += "ACAAACATAT";
+        }
+        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
 
-        System.out.println(ObjectSizeCalculator.getObjectSize(x));
+        System.out.println("Length: " + esa.length);
 
-
-        // ((
-        final int[][] xx = new int[8][15];
-
-        System.out.println(ObjectSizeCalculator.getObjectSize(xx));
+        System.out.println(ObjectSizeCalculator.getObjectSize(esa.lcp));
     }
 
 }

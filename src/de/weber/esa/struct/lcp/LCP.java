@@ -4,7 +4,7 @@ import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.MathUtils;
 
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Calendar;
 
 /**
  * Created by Stefan on 20.01.2017.
@@ -34,9 +34,7 @@ public class LCP {
      */
     public final short[] lcps; // TODO REPRESENT AS BIT ARRAY
 
-//    public final THashMap<Integer, Integer> lcpExceptionMap;
-
-    public final LcpException[] lcpExceptionArray;
+    public LcpException[] lcpExceptionArray;
 
     /**
      * calculate the LCP table for the suffix array
@@ -51,6 +49,8 @@ public class LCP {
          * the last value is set to -1 for correctly computing the child tables
          */
         this.lcps = new short[this.length + 1];
+
+        System.out.println("Starting Lcp: " + Calendar.getInstance().getTime());
 
 
         int numberOfExceptions = 0;
@@ -80,55 +80,42 @@ public class LCP {
             k = Math.max(0, k - 1);
         }
 
+        System.out.println("Now fill Exception Array: " + Calendar.getInstance().getTime() + "\tnumberOfExceptions = " + numberOfExceptions);
 
+        if (numberOfExceptions > 0) {
 //        this.lcpExceptionMap = new THashMap<>(numberOfExceptions, .75f);
-        this.lcpExceptionArray = new LcpException[numberOfExceptions];
-        int pos = 0;
+            this.lcpExceptionArray = new LcpException[numberOfExceptions];
+            int pos = 0;
 
-        for (int i = 0; i < this.length - 1; i = i + 1) {
-            final int a = esa.inverse[i];
-            final int b = esa.suffices[a - 1];
+            for (int i = 0; i < this.length - 1; i = i + 1) {
+                final int a = esa.inverse[i];
+                final int b = esa.suffices[a - 1];
 
-            while ((i + k) < this.length &&
-                    (b + k) < this.length &&
-                    esa.sequence[i + k] == esa.sequence[b + k]) {
-                k = k + 1;
+                while ((i + k) < this.length &&
+                        (b + k) < this.length &&
+                        esa.sequence[i + k] == esa.sequence[b + k]) {
+                    k = k + 1;
+                }
+
+                if (k >= this.BORDER_FOR_EXCEPTION) {
+                    this.lcpExceptionArray[pos] = new LcpException(a, k);
+                    pos = pos + 1;
+                }
+
+                k = Math.max(0, k - 1);
             }
 
-            if (k >= this.BORDER_FOR_EXCEPTION) {
-                this.lcpExceptionArray[pos] = new LcpException(a, k);
-//                this.lcpExceptionMap.put(a, k);
-                pos = pos + 1;
-            }
 
-            k = Math.max(0, k - 1);
+            // sort lcp exception array for binary search in ascending order of their positions in the lcp array
+            Arrays.sort(this.lcpExceptionArray, (o1, o2) -> Integer.compare(o1.lcpPosition, o2.lcpPosition));
         }
 
-
-        // sort lcp exception array for binary search in ascending order of their positions in the lcp array
-//        Arrays.sort(this.lcpExceptionArray, (o1, o2) -> Integer.compare(o1.lcpPosition, o2.lcpPosition));
-
-        Arrays.sort(this.lcpExceptionArray, new Comparator<LcpException>() {
-            @Override
-            public int compare(LcpException o1, LcpException o2) {
-                return Integer.compare(o1.lcpPosition, o2.lcpPosition);
-            }
-        });
+        System.out.println("DONE Lcp: " + Calendar.getInstance().getTime());
 
         // for getting correct child properties
         // set lcp[length + 1] = -1
         this.lcps[this.length] = - 1;
     }
-
-//    /**
-//     * get the current Lcp value as Integer from either lcp array or exception map
-//     *
-//     * @param position : position in Lcp array
-//     * @return current Lcp value
-//     */
-//    public int getCurrentLcpValue(final int position) {
-//        return this.lcps[position] == MathUtils.BYTE_MAXIMUM_LCP ? this.lcpExceptionMap.get(position) : (int) this.lcps[position];
-//    }
 
     /**
      * get the current Lcp value as integer from either lcp array or exception array
@@ -158,11 +145,11 @@ public class LCP {
         return - 1;
     }
 
+
     @Override
     public String toString() {
         return "LCP:\t" + Arrays.toString(this.lcps) +
-//                "\nExcMap:\t " + this.lcpExceptionMap +
-                "\nEcArray:\t" + Arrays.toString(this.lcpExceptionArray);
+                ((this.lcpExceptionArray != null) ? "\nEcArray:\t" + this.lcpExceptionArray.toString() : "");
     }
 
 }

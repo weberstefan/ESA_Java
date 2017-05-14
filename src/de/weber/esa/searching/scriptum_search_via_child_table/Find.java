@@ -2,6 +2,7 @@ package de.weber.esa.searching.scriptum_search_via_child_table;
 
 import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
+import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
 
@@ -39,8 +40,8 @@ public class Find {
     public Find() {
     }
 
-    public IntervalWrapper find(final EnhancedSuffixArray esa,
-                                    final char[] s) {
+    public PatternMatchingWrapper find(final EnhancedSuffixArray esa,
+                                       final char[] s) {
         final int n = esa.length - 1;
         final int m = s.length;
 //        IntervalWrapper iw = new IntervalWrapper(0, n);
@@ -74,7 +75,7 @@ public class Find {
             }
         }
         return (prefix) ?
-                iw : new IntervalWrapper(- 1, - 1);
+                new PatternMatchingWrapper(s.length, iw.i, iw.j) : new PatternMatchingWrapper(0, - 1, - 1);
     }
 
     private IntervalWrapper getChildIntervalByChar(final EnhancedSuffixArray esa,
