@@ -1,11 +1,15 @@
 package de.weber.esa.gui;
 
+import de.weber.esa.searching.binarysearch.BinarySearch;
 import de.weber.esa.searching.fimindex.FMIndexSearch;
+import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
+import de.weber.esa.searching.scriptum_search_via_child_table.Find;
 import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Created by Stefan on 11.02.2017.
@@ -22,9 +26,16 @@ public class InputPanel extends JPanel {
     private JTextArea resultsTextArea;
     private JLabel resultLabel;
 
-    private JButton fmIndexButton;
     private PatternMatchingWrapper fm;
+
+    private JButton fmIndexButton;
     private boolean isFmIndex = false;
+    private JButton binarySearchButton;
+    private boolean isBinarySearch = false;
+    private JButton findLPM;
+    private boolean isFindLPM;
+    private JButton find;
+    private boolean isFind;
 
     private EnhancedSuffixArray esa;
 
@@ -87,6 +98,53 @@ public class InputPanel extends JPanel {
             }
         });
         add(this.fmIndexButton);
+
+        this.binarySearchButton = new JButton("BinarySearch");
+        this.binarySearchButton.setBounds(520, 350, 150, 75);
+        this.binarySearchButton.addActionListener(e -> {
+            query = JOptionPane.showInputDialog("Enter a query");
+            if (! query.chars().allMatch(Character::isLetter)) {
+                JOptionPane.showMessageDialog(null, "Query must only contain Letters!");
+            } else {
+                BinarySearch binarySearch = new BinarySearch();
+                fm = binarySearch.search(esa, query);
+                isBinarySearch = true;
+                redo();
+            }
+        });
+        add(this.binarySearchButton);
+
+        this.findLPM = new JButton("findLPM");
+        this.findLPM.setBounds(675, 250, 150, 75);
+        this.findLPM.addActionListener(e -> {
+            query = JOptionPane.showInputDialog("Enter a query");
+            if (! query.chars().allMatch(Character::isLetter)) {
+                JOptionPane.showMessageDialog(null, "Query must only contain Letters!");
+            } else {
+                FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
+                JList list = new JList(new String[]{"DC", "No DC"});
+                JOptionPane.showMessageDialog(null, list, "Choose your searching properties", JOptionPane.PLAIN_MESSAGE);
+                fm = flpm.matching(esa, query.toCharArray(), Arrays.toString(list.getSelectedIndices()).equals("[0]"));
+                isFindLPM = true;
+                redo();
+            }
+        });
+        add(this.findLPM);
+
+        this.find = new JButton("Find Query");
+        this.find.setBounds(675, 250, 150, 75);
+        this.find.addActionListener(e -> {
+            query = JOptionPane.showInputDialog("Enter a query");
+            if (! query.chars().allMatch(Character::isLetter)) {
+                JOptionPane.showMessageDialog(null, "Query must only contain Letters!");
+            } else {
+                Find find = new Find();
+                fm = find.find(esa, query.toCharArray());
+                isFind = true;
+                redo();
+            }
+        });
+        add(this.find);
     }
 
     private void populateResults() {
@@ -108,6 +166,21 @@ public class InputPanel extends JPanel {
             if (isFmIndex) {
                 this.resultsTextArea.append("\n\n" + query + " found at suffix array positions: " + fm.toString());
                 isFmIndex = false;
+            }
+
+            if (isBinarySearch) {
+                this.resultsTextArea.append("\n\n" + query + " found at suffix array positions: " + fm.toString());
+                isBinarySearch = false;
+            }
+
+            if (isFindLPM) {
+                this.resultsTextArea.append("\n\n" + query + " found at suffix array positions: " + fm.toString());
+                isFindLPM = false;
+            }
+
+            if (isFind) {
+                this.resultsTextArea.append("\n\n" + query + " found at suffix array positions: " + fm.toString());
+                isFind = false;
             }
         }
 
