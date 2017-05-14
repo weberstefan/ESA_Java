@@ -132,7 +132,7 @@ public class InputPanel extends JPanel {
         add(this.findLPM);
 
         this.find = new JButton("Find Query");
-        this.find.setBounds(675, 250, 150, 75);
+        this.find.setBounds(675, 350, 150, 75);
         this.find.addActionListener(e -> {
             query = JOptionPane.showInputDialog("Enter a query");
             if (! query.chars().allMatch(Character::isLetter)) {
