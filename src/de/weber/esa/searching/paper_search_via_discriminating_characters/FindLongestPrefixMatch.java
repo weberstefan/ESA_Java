@@ -21,7 +21,7 @@ public class FindLongestPrefixMatch {
                                            final char[] P,
                                            final boolean isDC) {
         int c = 0;
-        final int n = esa.length - 1;
+        final int n = esa.length;
         final int m = P.length;
 //        IntervalWrapper iw = new IntervalWrapper(1, n);
         IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(P[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, P[0]));

@@ -4,7 +4,6 @@ import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.MathUtils;
 
 import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Created by Stefan on 20.01.2017.
@@ -50,7 +49,7 @@ public class LCP {
          */
         this.lcps = new short[this.length + 1];
 
-        System.out.println("Starting Lcp: " + Calendar.getInstance().getTime());
+//        System.out.println("Starting Lcp: " + Calendar.getInstance().getTime());
 
 
         int numberOfExceptions = 0;
@@ -80,7 +79,7 @@ public class LCP {
             k = Math.max(0, k - 1);
         }
 
-        System.out.println("Now fill Exception Array: " + Calendar.getInstance().getTime() + "\tnumberOfExceptions = " + numberOfExceptions);
+//        System.out.println("Now fill Exception Array: " + Calendar.getInstance().getTime() + "\tnumberOfExceptions = " + numberOfExceptions);
 
         if (numberOfExceptions > 0) {
 //        this.lcpExceptionMap = new THashMap<>(numberOfExceptions, .75f);
@@ -110,7 +109,7 @@ public class LCP {
             Arrays.sort(this.lcpExceptionArray, (o1, o2) -> Integer.compare(o1.lcpPosition, o2.lcpPosition));
         }
 
-        System.out.println("DONE Lcp: " + Calendar.getInstance().getTime());
+//        System.out.println("DONE Lcp: " + Calendar.getInstance().getTime());
 
         // for getting correct child properties
         // set lcp[length + 1] = -1

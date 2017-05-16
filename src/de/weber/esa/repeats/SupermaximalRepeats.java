@@ -33,7 +33,8 @@ public class SupermaximalRepeats {
      * @param esa : enhanced suffix array for given sequence
      * @return map of all supermaximal repeats with key: length; value: (i, j, l)
      */
-    public List<Repeats> computeSupermaximalRepeats(final EnhancedSuffixArray esa) {
+    public List<Repeats> computeSupermaximalRepeats(final EnhancedSuffixArray esa,
+                                                    final int minSizeMaxRepeats) {
         final int n = esa.length - 1;
 
         this.supermaximalRepeats = new ArrayList<>();
@@ -65,7 +66,8 @@ public class SupermaximalRepeats {
                                 esa.lcp.getCurrentLcpValue(j - 1) != 0)) {
                     i2 = i;
                     j2 = j;
-                    if (this.isBWTPairwiseDistinct(esa.bwt, i2, j2)) {
+                    if (this.isBWTPairwiseDistinct(esa.bwt, i2, j2) &&
+                            esa.lcp.getCurrentLcpValue(j2) >= minSizeMaxRepeats) {
                         Repeats.fillList(this.supermaximalRepeats, esa, i2, j2, esa.lcp.getCurrentLcpValue(j2));
                     }
                     i = j - 1;
@@ -73,7 +75,8 @@ public class SupermaximalRepeats {
             }
 
             if (i2 != i || j2 != j) {
-                if (this.isBWTPairwiseDistinct(esa.bwt, i, j)) {
+                if (this.isBWTPairwiseDistinct(esa.bwt, i, j) &&
+                        esa.lcp.getCurrentLcpValue(j) >= minSizeMaxRepeats) {
                     Repeats.fillList(this.supermaximalRepeats, esa, i, j, esa.lcp.getCurrentLcpValue(j));
                 }
             }

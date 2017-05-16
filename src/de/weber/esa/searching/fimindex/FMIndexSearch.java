@@ -72,7 +72,7 @@ public class FMIndexSearch {
         int q = k;
         int result = 0;
         while (q >= 0) {
-            result = result + ((int) esa.bwt.OCC[q][pos]);
+            result = result + (esa.bwt.OCC[q][pos] == (byte) 1 ? 1 : 0);
             q = q - 1;
         }
 

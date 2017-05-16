@@ -42,7 +42,7 @@ public class Find {
 
     public PatternMatchingWrapper find(final EnhancedSuffixArray esa,
                                        final char[] s) {
-        final int n = esa.length - 1;
+        final int n = esa.length;
         final int m = s.length;
 //        IntervalWrapper iw = new IntervalWrapper(0, n);
         IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(s[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, s[0]));

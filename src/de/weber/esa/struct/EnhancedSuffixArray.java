@@ -8,7 +8,6 @@ import de.weber.esa.utils.ESA_Utils;
 import external.sais;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,17 +125,17 @@ public class EnhancedSuffixArray {
 
         // compute the LCP array
         this.lcp = new LCP(this);
-        System.out.println("DONE LCP esa: " + Calendar.getInstance().getTime());
+//        System.out.println("DONE LCP esa: " + Calendar.getInstance().getTime());
         // deallocate the inverse table, since it is not of any use anymore
 //        this.inverse = null;
 
         // compute the child table
         this.child = new ChildTable(this.lcp);
-        System.out.println("DONE Child: " + Calendar.getInstance().getTime());
+//        System.out.println("DONE Child: " + Calendar.getInstance().getTime());
 
         // compute the BWT tables
         this.bwt = new BWT(this);
-        System.out.println("DONE Bwt: " + Calendar.getInstance().getTime());
+//        System.out.println("DONE Bwt: " + Calendar.getInstance().getTime());
     }
 
     @Override

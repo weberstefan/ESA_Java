@@ -57,7 +57,10 @@ public class Repeats {
                                          final int l) {
         int seqPosI = Math.min(esa.suffices[i], esa.suffices[j]);
         int seqPosJ = Math.max(esa.suffices[i], esa.suffices[j]);
-        list.add(new Repeats(seqPosI, seqPosJ, l));
+        if (seqPosI + l < esa.length &&
+                seqPosJ + l < esa.length) {
+            list.add(new Repeats(seqPosI, seqPosJ, l));
+        }
         return list;
     }
 

@@ -6,7 +6,6 @@ import de.weber.esa.searching.scriptum_search_via_child_table.Find;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find_2;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
-import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 
 import java.io.File;
 import java.util.Calendar;
@@ -113,9 +112,6 @@ public class MainAppl {
         end = System.currentTimeMillis();
         System.out.println("DONE in " + (end - start));
         System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
-
-        System.out.println(ObjectSizeCalculator.getObjectSize(esa) + "\tESA SIZE");
-        System.out.println(ObjectSizeCalculator.getObjectSize(esa.lcp) + "\tLCP SIZE");
     }
 
 }

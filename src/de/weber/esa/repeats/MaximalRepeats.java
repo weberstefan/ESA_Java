@@ -29,7 +29,8 @@ public class MaximalRepeats {
      * @param esa : enhanced suffix array for given sequence
      * @return map of all supermaximal repeats with key: length; value: (i, j, l)
      */
-    public List<Repeats> computeMaximalRepeats(final EnhancedSuffixArray esa) {
+    public List<Repeats> computeMaximalRepeats(final EnhancedSuffixArray esa,
+                                               final int minSizeMaxRepeats) {
         final int n = esa.length - 1;
 
         int j = 1; // 0 = $
@@ -45,12 +46,15 @@ public class MaximalRepeats {
                 if (esa.bwt.bwt[j] != esa.bwt.bwt[j + 1]) {
                     seqPosI = j;
                     seqPosJ = j + 1;
-                    Repeats.fillList(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.getCurrentLcpValue(j + 1));
+                    if (esa.lcp.getCurrentLcpValue(j + 1) >= minSizeMaxRepeats) {
+                        Repeats.fillList(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.getCurrentLcpValue(j + 1));
+                    }
 
                     while (seqPosJ < n &&
-                            esa.lcp.getCurrentLcpValue(seqPosJ) < esa.lcp.getCurrentLcpValue(seqPosJ + 1) &&
-                            esa.lcp.getCurrentLcpValue(seqPosJ + 2) < esa.lcp.getCurrentLcpValue(seqPosJ + 1)) {
-                        if (esa.bwt.bwt[seqPosJ + 1] != esa.bwt.bwt[j]) {
+                            esa.lcp.getCurrentLcpValue(seqPosJ) <= esa.lcp.getCurrentLcpValue(seqPosJ + 1) &&
+                            esa.lcp.getCurrentLcpValue(seqPosJ + 2) <= esa.lcp.getCurrentLcpValue(seqPosJ + 1)) {
+                        if (esa.bwt.bwt[seqPosJ + 1] != esa.bwt.bwt[j] &&
+                                esa.lcp.getCurrentLcpValue(seqPosI + 1) >= minSizeMaxRepeats) {
                             Repeats.fillList(this.maximalRepeats, esa, seqPosI, (seqPosJ + 1), esa.lcp.getCurrentLcpValue(seqPosI + 1));
                         }
                         seqPosJ = seqPosJ + 1;
