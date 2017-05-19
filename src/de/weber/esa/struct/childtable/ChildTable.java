@@ -28,7 +28,7 @@ public class ChildTable {
      */
     public final int[] cld; // TODO REPRESENT AS BIT ARRAY
 
-    public final boolean[] down;
+//    public final boolean[] down;
     public final boolean[] next;
 
     /**
@@ -41,7 +41,7 @@ public class ChildTable {
         this.length = lcp.length;
         // initialize the arrays
         this.cld = new int[this.length];
-        this.down = new boolean[this.length];
+//        this.down = new boolean[this.length];
 //        this.up = new boolean[this.length];
         this.next = new boolean[this.length];
 
@@ -56,7 +56,7 @@ public class ChildTable {
                 if (lcp.getCurrentLcpValue(k) <= lcp.getCurrentLcpValue(S.lastElement()) &&
                         lcp.getCurrentLcpValue(S.lastElement()) != lcp.getCurrentLcpValue(last)) {
                     this.cld[S.lastElement()] = last; /* DOWN */
-                    this.down[S.lastElement()] = true;
+//                    this.down[S.lastElement()] = true;
                 }
             }
 
@@ -81,9 +81,9 @@ public class ChildTable {
     @Override
     public String toString() {
         return "Child:\t" + Arrays.toString(this.cld)
-                + "\nDOWN: " + Arrays.toString(this.down) +
+//                + "\nDOWN: " + Arrays.toString(this.down) +
 //                "\nUP:   " + Arrays.toString(this.up) +
-                "\nNext: " + Arrays.toString(this.next);
+                + "\nNext: " + Arrays.toString(this.next);
     }
 
 }

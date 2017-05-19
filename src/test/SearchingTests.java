@@ -49,8 +49,10 @@ public class SearchingTests {
             for (int c = 1; c <= s.length() - i; c = c + 1) {
                 final PatternMatchingWrapper curBinary = binarySearch.search(esa, s.substring(i, i + c));
                 final PatternMatchingWrapper curFmIndex = fmIndexSearch.backwardSearch(esa, s.substring(i, i + c));
-                final PatternMatchingWrapper curFindLongestPrefixMatchDc = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), true);
-                final PatternMatchingWrapper curFindLongestPrefixMatchNotDc = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), false);
+                final PatternMatchingWrapper curFindLongestPrefixMatchNotDc = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), false, false, false);
+                final PatternMatchingWrapper curFindLongestPrefixMatchDc = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), true, false, false);
+                final PatternMatchingWrapper curFindLongestPrefixMatchDcNibble = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), false, true, false);
+                final PatternMatchingWrapper curFindLongestPrefixMatchDcOnTheFly = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), false, false, true);
                 final PatternMatchingWrapper curFindWithBool = findWithBool.find(esa, s.substring(i, i + c).toCharArray());
                 final PatternMatchingWrapper curFindIntArrays = findIntArrays.find(esa, s.substring(i, i + c).toCharArray());
 
@@ -68,6 +70,12 @@ public class SearchingTests {
 
                 /* find with bool table == find with int table */
                 Assert.assertEquals(curFindWithBool, curFindIntArrays);
+
+                /* find with bool table == find longest prefix match DC Nibble */
+                Assert.assertEquals(curFindWithBool, curFindLongestPrefixMatchDcNibble);
+
+                /* binary == find longest prefix match Dc on the fly */
+                Assert.assertEquals(curBinary, curFindLongestPrefixMatchDcOnTheFly);
             }
         }
     }

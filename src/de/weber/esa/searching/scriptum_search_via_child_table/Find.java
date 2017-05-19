@@ -30,8 +30,8 @@ public class Find {
             for (int c = 1; c <= s.length() - i; c = c + 1) {
                 System.out.println("F : " + (s.substring(i, i + c)) + " : " + f.find(esa, s.substring(i, i + c).toCharArray()));
                 System.out.println("F2: " + (s.substring(i, i + c)) + " : " + f2.find(esa, s.substring(i, i + c).toCharArray()));
-                System.out.println("DC: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), true));
-                System.out.println("NO: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), false));
+                System.out.println("DC: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), true, false, false));
+                System.out.println("NO: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), false, false, false));
             }
         }
 
@@ -107,7 +107,7 @@ public class Find {
             if (i == 0) {
                 return new IntervalWrapper(0, 0);
             } else {
-                return (esa.child.down[i] && this.isInterval(esa.child.cld[i], i, j)) ?
+                return (this.isInterval(esa.child.cld[i], i, j)) ?
                         new IntervalWrapper(i, esa.child.cld[i] - 1) :
                         new IntervalWrapper(i, esa.child.cld[j] - 1);
             }
@@ -125,7 +125,7 @@ public class Find {
         else if (j == esa.length - 1)
             return 0;
         else
-            return (esa.child.down[i] && this.isInterval(esa.child.cld[i], i, j)) ?
+            return (this.isInterval(esa.child.cld[i], i, j)) ?
                     esa.lcp.getCurrentLcpValue(esa.child.cld[i]) : esa.lcp.getCurrentLcpValue(esa.child.cld[j]);
     }
 

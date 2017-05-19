@@ -16,7 +16,7 @@ import java.util.Calendar;
 public class MainAppl {
 
     public static void main(String[] args) {
-//        final String s = "ACAAACATAT";
+//        final String s = "ACAAACATATACTAGCACTAGACTAGCAGCGACTAGCACAGCACTACGACGAGCATCAGCATCTACTAGCAGCATCGGGCTAGCGAT";
 //        final String s = "MISSISSIPPI";
 //        final String s = "BANANA";
 //        final String s = "AAABAABAB";
@@ -54,6 +54,14 @@ public class MainAppl {
 
         searchProperties(esa, q);
 
+
+//        DiscriminatingCharacters dc = new DiscriminatingCharacters(esa);
+//        DcPositionAlphabet dcPositionAlphabet = new DcPositionAlphabet(esa);
+//        System.out.println(ObjectSizeCalculator.getObjectSize(dc) + " Dc []");
+//        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAlphabet) + " DcPositionAlhabet");
+
+//        System.out.println(dcPosition.toString().equals(dc.toString()));
+
 //        System.out.println(esa.toString());
 //        DiscriminatingCharacters dc = new DiscriminatingCharacters(esa);
 //        System.out.println(dc.toString());
@@ -73,14 +81,26 @@ public class MainAppl {
 
 
         long start = System.currentTimeMillis();
-        System.out.println(flpm.matching(esa, q.toCharArray(), false) + " flpm NOT DC");
+        System.out.println(flpm.matching(esa, q.toCharArray(), false, false, false) + " flpm NOT DC");
         long end = System.currentTimeMillis();
         System.out.println("DONE in " + (end - start));
         System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
 
 
         start = System.currentTimeMillis();
-        System.out.println(flpm.matching(esa, q.toCharArray(), true) + " flpm DC");
+        System.out.println(flpm.matching(esa, q.toCharArray(), true, false, false) + " flpm DC Array");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, q.toCharArray(), false, true, false) + " flpm DC Nibbles");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, q.toCharArray(), false, false, true) + " flpm DC On The Fly");
         end = System.currentTimeMillis();
         System.out.println("DONE in " + (end - start));
         System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
@@ -101,17 +121,43 @@ public class MainAppl {
         System.out.println("Start searching 2 : " + Calendar.getInstance().getTime());
 
         start = System.currentTimeMillis();
-        System.out.println(flpm.matching(esa, qq.toCharArray(), false) + " flpm NOT DC");
+        System.out.println(flpm.matching(esa, qq.toCharArray(), false, false, false) + " flpm NOT DC");
         end = System.currentTimeMillis();
         System.out.println("DONE in " + (end - start));
         System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
 
 
         start = System.currentTimeMillis();
-        System.out.println(flpm.matching(esa, qq.toCharArray(), true) + " flpm DC");
+        System.out.println(flpm.matching(esa, qq.toCharArray(), true, false, false) + " flpm DC Array");
         end = System.currentTimeMillis();
         System.out.println("DONE in " + (end - start));
         System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, qq.toCharArray(), false, true, false) + " flpm DC Nibbles");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(flpm.matching(esa, qq.toCharArray(), false, false, true) + " flpm DC On The Fly");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FindLPrefixMath done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(find.find(esa, qq.toCharArray()) + " find");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FIND done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(find2.find(esa, qq.toCharArray()) + " find 2");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FIND done: " + Calendar.getInstance().getTime());
+
+//        System.out.println(ObjectSizeCalculator.getObjectSize(flpm.dc) + " DcPositions");
     }
 
 }

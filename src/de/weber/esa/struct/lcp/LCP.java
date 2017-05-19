@@ -34,6 +34,7 @@ public class LCP {
     public final short[] lcps; // TODO REPRESENT AS BIT ARRAY
 
     public LcpException[] lcpExceptionArray;
+//    public THashMap<Integer, Integer> lcpExceptionMap;
 
     /**
      * calculate the LCP table for the suffix array
@@ -148,7 +149,7 @@ public class LCP {
     @Override
     public String toString() {
         return "LCP:\t" + Arrays.toString(this.lcps) +
-                ((this.lcpExceptionArray != null) ? "\nEcArray:\t" + this.lcpExceptionArray.toString() : "");
+                ((this.lcpExceptionArray != null) ? "\nEcArray:\t" + Arrays.toString(this.lcpExceptionArray) : "");
     }
 
 }

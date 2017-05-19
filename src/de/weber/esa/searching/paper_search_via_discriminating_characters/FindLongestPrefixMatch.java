@@ -3,6 +3,7 @@ package de.weber.esa.searching.paper_search_via_discriminating_characters;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.struct.discriminatingcharacters.DcPositionAlphabet;
 import de.weber.esa.struct.discriminatingcharacters.DiscriminatingCharacters;
 import de.weber.esa.utils.ESA_Utils;
 
@@ -13,13 +14,17 @@ public class FindLongestPrefixMatch {
 
     public FindLongestPrefixMatch(final EnhancedSuffixArray esa) {
         this.dc = new DiscriminatingCharacters(esa);
+        this.dcPositionAlphabet = new DcPositionAlphabet(esa);
     }
 
-    private DiscriminatingCharacters dc;
+    public DiscriminatingCharacters dc;
+    public DcPositionAlphabet dcPositionAlphabet;
 
     public PatternMatchingWrapper matching(final EnhancedSuffixArray esa,
                                            final char[] P,
-                                           final boolean isDC) {
+                                           final boolean isDc,
+                                           final boolean isDcPositionAlphabet,
+                                           final boolean isDcOnTheFly) {
         int c = 0;
         final int n = esa.length;
         final int m = P.length;
@@ -34,11 +39,11 @@ public class FindLongestPrefixMatch {
             } else {
                 int k1 = 0;
                 if (iw.j <= n) {
-                    if (! esa.child.down[iw.j]) {
-                        k1 = esa.child.cld[iw.j];
-                    } else {
-                        k1 = esa.child.cld[iw.j + 1];
-                    }
+//                    if (! esa.child.down[iw.j]) {
+//                        k1 = esa.child.cld[iw.j];
+//                    } else {
+                    k1 = esa.child.cld[iw.j];
+//                    }
                 }
 
                 if (k1 <= iw.i || k1 > iw.j) {
@@ -55,7 +60,18 @@ public class FindLongestPrefixMatch {
                     }
                 }
 
-                IntervalWrapper iw2 = (isDC) ? this.getIntervalDC(esa, iw, lcpIJ, k1, P[c]) : this.getInterval(esa, iw, lcpIJ, k1, P[c]);
+                IntervalWrapper iw2 = null;
+
+                if (isDc) {
+                    iw2 = this.getIntervalDcArray(esa, iw, lcpIJ, k1, P[c]);
+                } else if (isDcPositionAlphabet) {
+                    iw2 = this.getIntervalDcNibbles(esa, iw, lcpIJ, k1, P[c]);
+                } else if (isDcOnTheFly) {
+                    iw2 = this.getintervalDcOnTheFly(esa, iw, lcpIJ, k1, P[c]);
+                } else {
+                    iw2 = this.getInterval(esa, iw, lcpIJ, k1, P[c]);
+                }
+
                 if (iw2 == null) {
                     return new PatternMatchingWrapper(c, iw.i, iw.j);
                 }
@@ -66,6 +82,42 @@ public class FindLongestPrefixMatch {
         return new PatternMatchingWrapper(c, iw.i, iw.j);
     }
 
+    private IntervalWrapper getintervalDcOnTheFly(final EnhancedSuffixArray esa,
+                                                  final IntervalWrapper iw,
+                                                  final int lcpIJ,
+                                                  int k1,
+                                                  final char p) {
+//        int lcp = esa.lcp.getCurrentLcpValue(k1 + 1);
+        char s1 = esa.sequence[esa.suffices[k1 - 1] + lcpIJ];
+        char s2 = esa.sequence[esa.suffices[k1] + lcpIJ];
+
+        if (p < s1) {
+            return null;
+        } else if (p == s1) {
+            return new IntervalWrapper(iw.i, k1 - 1);
+        } else if (p < s2) {
+            return null;
+        }
+
+        while (k1 <= iw.j && esa.lcp.getCurrentLcpValue(k1) == lcpIJ) {
+            int k2 = (esa.child.next[k1]) ? esa.child.cld[k1] : (iw.j < esa.length) ? iw.j + 1 : iw.j;
+            if (p == s2) {
+                return new IntervalWrapper(k1, k2 - 1);
+            } else {
+//                lcp = esa.lcp.getCurrentLcpValue(k2 + 1);
+//                s1 = esa.sequence[esa.suffices[k2] + lcp];
+                s2 = esa.sequence[esa.suffices[k2] + lcpIJ];
+
+                if (p < s2) {
+                    return null;
+                }
+                k1 = k2;
+            }
+        }
+
+        return (p == s2) ? new IntervalWrapper(k1, iw.j) : null;
+    }
+
     /**
      * @param esa
      * @param iw
@@ -74,11 +126,11 @@ public class FindLongestPrefixMatch {
      * @param p
      * @return next child interval using Discriminating Characters
      */
-    private IntervalWrapper getIntervalDC(final EnhancedSuffixArray esa,
-                                          final IntervalWrapper iw,
-                                          final int lcpIJ,
-                                          int k1,
-                                          final char p) {
+    private IntervalWrapper getIntervalDcArray(final EnhancedSuffixArray esa,
+                                               final IntervalWrapper iw,
+                                               final int lcpIJ,
+                                               int k1,
+                                               final char p) {
         char s1 = this.dc.getFirst(k1);
         char s2 = this.dc.getSecond(k1);
         if (p < s1) {
@@ -94,8 +146,50 @@ public class FindLongestPrefixMatch {
             if (p == s2) {
                 return new IntervalWrapper(k1, k2 - 1);
             } else {
-                s1 = this.dc.getFirst(k2);
+//                s1 = this.dc.getFirst(k2);
                 s2 = this.dc.getSecond(k2);
+
+                if (p < s2) {
+                    return null;
+                }
+                k1 = k2;
+            }
+        }
+
+        return (p == s2) ? new IntervalWrapper(k1, iw.j) : null;
+
+    }
+
+    /**
+     * @param esa
+     * @param iw
+     * @param lcpIJ
+     * @param k1
+     * @param p
+     * @return next child interval using Discriminating Characters
+     */
+    private IntervalWrapper getIntervalDcNibbles(final EnhancedSuffixArray esa,
+                                                 final IntervalWrapper iw,
+                                                 final int lcpIJ,
+                                                 int k1,
+                                                 final char p) {
+        char s1 = this.dcPositionAlphabet.getChars(this.dcPositionAlphabet.dcs[k1 - 1]).one;   // this.dc.getFirst(k1);
+        char s2 = this.dcPositionAlphabet.getChars(this.dcPositionAlphabet.dcs[k1 - 1]).two; // this.dc.getSecond(k1);
+        if (p < s1) {
+            return null;
+        } else if (p == s1) {
+            return new IntervalWrapper(iw.i, k1 - 1);
+        } else if (p < s2) {
+            return null;
+        }
+
+        while (k1 <= iw.j && esa.lcp.getCurrentLcpValue(k1) == lcpIJ) {
+            int k2 = (esa.child.next[k1]) ? esa.child.cld[k1] : (iw.j < esa.length) ? iw.j + 1 : iw.j;
+            if (p == s2) {
+                return new IntervalWrapper(k1, k2 - 1);
+            } else {
+//                s1 = this.dcPositionAlphabet.getChars(this.dcPositionAlphabet.dcs[k2 - 1]).one; // this.dc.getFirst(k2);
+                s2 = this.dcPositionAlphabet.getChars(this.dcPositionAlphabet.dcs[k2 - 1]).two; // this.dc.getSecond(k2);
 
                 if (p < s2) {
                     return null;
