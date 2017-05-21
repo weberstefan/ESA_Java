@@ -50,7 +50,9 @@ public class Find {
         boolean prefix = true;
         int turn = 0;
 
-        while ((iw.isNotNullInterval(n)) && p < m && prefix) {
+        while ((iw.isNotNullInterval(n)) &&
+                p < m &&
+                prefix) {
             if (iw.i < iw.j) {
                 // child interval
                 int k = Math.min(this.LCP(esa, iw.i, iw.j), m);

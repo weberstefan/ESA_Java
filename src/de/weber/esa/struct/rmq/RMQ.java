@@ -1,5 +1,6 @@
 package de.weber.esa.struct.rmq;
 
+import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
 import de.weber.esa.utils.MathUtils;
 
@@ -16,18 +17,40 @@ public class RMQ {
     public static void main(String[] args) {
 
         final short[] a = new short[]{
-//                - 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, - 1
-                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1, - 1
+                - 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, - 1
+//                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1, - 1
 //                -1, 0, 1, 1, 2, 0, 2, 3, 1, 0, 3, 1, 0, 1, -1
         };
 
-        System.out.println(a.length + " long");
+//        System.out.println(a.length + " long");
 
-        RMQ rmq = new RMQ(a);
+        final String s = "ABANANAISANANANANAS";
+
+        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
+
+        RMQ rmq = new RMQ(esa.lcp.lcps);
 //        System.out.println(rmq.toString());
+
+        for (int i = 0; i < 11; i = i + 1) {
+            for (int j = i + 1; j < 11; j = j + 1) {
+                int seq = rmq.sequentialMinimum(i, j);
+                int que = rmq.query(i, j);
+                if (seq != que) {
+                    System.out.println(i + ":" + j);
+                    System.out.println("seq min : " + rmq.sequentialMinimum(i, j));
+                    System.out.println("query   : " + rmq.query(i, j));
+                }
+            }
+        }
+
+//        int i = 3;
+//        int j = 9;
+//        System.out.println("\n\nseq min : " + rmq.sequentialMinimum(i, j));
+//        System.out.println("query   : " + rmq.query(i, j));
+//        System.out.println("answerQ : " + rmq.answerQuery(i, j));
 //
-//        System.out.println("seq min : " + rmq.sequentialMinimum(2, 10));
-        System.out.println("query   : " + rmq.query(2, 6));
+//        System.out.println(rmq.toString());
+
     }
 
     /**
@@ -45,14 +68,15 @@ public class RMQ {
      */
     private byte[] minPosBlock;
 
+    private byte[] F;
+
     /**
      * Represents internal datastructure Q' in script
      */
-    public byte[][] internalQ;
+    public int[][] internalQ;
 
     public RMQ(final short[] array) {
         this(array, MathUtils.ld(array.length));
-        System.out.println(this.blockSize + " = block size");
     }
 
     public RMQ(final short[] array,
@@ -116,27 +140,35 @@ public class RMQ {
             to = swap;
         }
 
-        int minBlock = from / this.blockSize;
-        int maxBlock = to / this.blockSize;
+        int minBlock = (from) / this.blockSize;
+        int maxBlock = (to % this.blockSize == 0 ? to - 1 : to) / this.blockSize;
 
-        final int outerLeftPosition = this.sequentialMinimum(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
-        final int outerRightPosition = this.sequentialMinimum(Math.max(maxBlock * this.blockSize, from), to);
+        final int outerPosLeft = this.sequentialMinimum(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
+        final int outerPosRight = this.sequentialMinimum(Math.max(maxBlock * this.blockSize, from), to);
 
         // blocks between left block and right block
         if (minBlock + 1 < maxBlock) {
-            minBlock = minBlock + 1;
             maxBlock = maxBlock - 1;
+            minBlock = minBlock + 1;
             final int k = MathUtils.ld(maxBlock - minBlock + 1);
             final int r = this.internalQ[minBlock][k];
             final int s = this.internalQ[maxBlock - MathUtils.pow(2, k) + 1][k];
-            final int rAbsolute = this.minPosBlock[r] + r * this.blockSize;
-            final int sAbsolute = this.minPosBlock[s] + s * this.blockSize;
-            final int minMiddlePosition = this.array[rAbsolute] <= this.array[sAbsolute] ? rAbsolute : sAbsolute;
-            int left = this.array[outerLeftPosition] <= this.array[minMiddlePosition] ? outerLeftPosition : minMiddlePosition;
-            return this.array[left] <= this.array[outerRightPosition] ? left : outerRightPosition;
+            final int rAbs = this.minPosBlock[r] + r * this.blockSize;
+            final int sAbs = this.minPosBlock[s] + s * this.blockSize;
+            final int minPosMid = this.array[rAbs] <= this.array[sAbs] ? rAbs : sAbs;
+            final int left = this.array[outerPosLeft] <= this.array[minPosMid] ? outerPosLeft : minPosMid;
+            final int right = this.array[left] <= this.array[outerPosRight] ? left : outerPosRight;
+            // due to lcp[0] = - 1, check "right" to be leftest minimum in block
+            final int rightBlock = (right % this.blockSize == 0 ? right - 1 : right) / this.blockSize;
+            if (rightBlock <= to && rightBlock >= from) {
+                final int testMinRightBlock = (rightBlock * this.blockSize + this.minPosBlock[rightBlock] + 1);
+                return this.array[testMinRightBlock] <= this.array[right] ? testMinRightBlock : right;
+            } else {
+                return right;
+            }
         }
 
-        return this.array[outerLeftPosition] <= this.array[outerRightPosition] ? outerLeftPosition : outerRightPosition;
+        return this.array[outerPosLeft] <= this.array[outerPosRight] ? outerPosLeft : outerPosRight;
     }
 
     /**
@@ -146,30 +178,26 @@ public class RMQ {
      *
      * @return Q'
      */
-    private byte[][] calcQ() {
+    private int[][] calcQ() {
         this.calcMinPosPerBlock();
         final int SIZE = this.minPosBlock.length;
         final int END = MathUtils.ld(SIZE);
 
-        this.internalQ = new byte[SIZE][END + 1];
+        this.internalQ = new int[SIZE][END + 1];
 
         for (int i = 0; i < SIZE; i = i + 1) {
-            this.internalQ[i][0] = (byte) i;
-            // init all other entries with -1 due to LCA not found there
-            for (int j = 1; j <= END; j = j + 1) {
-                this.internalQ[i][j] = - 1;
-            }
+            this.internalQ[i][0] = i;
         }
 
-        for (int k = 0, l = 1; k < END; l = l * 2, k = k + 1) {
-            for (int i = 0; i + l * 2 <= SIZE; i = i + 1) {
-                final int a = this.internalQ[i][k];
-                final int b = this.internalQ[i + l][k];
-
-                final int posA = this.minPosBlock[a] + a * this.blockSize;
-                final int posB = this.minPosBlock[b] + b * this.blockSize;
-
-                this.internalQ[i][k + 1] = (this.array[posA] <= this.array[posB]) ? (byte) a : (byte) b;
+        for (int k = 0; k < MathUtils.ld(SIZE); k = k + 1) {
+            for (int i = 1; i + MathUtils.pow(2, k) < SIZE; i = i + 1) {
+                final int a = this.minPosBlock[this.internalQ[i][k]];
+                final int b = this.internalQ[i + MathUtils.pow(2, k)][k];
+                if (a <= this.minPosBlock[b]) {
+                    this.internalQ[i][k + 1] = this.internalQ[i][k];
+                } else {
+                    this.internalQ[i][k + 1] = b;
+                }
             }
         }
 
@@ -186,6 +214,7 @@ public class RMQ {
     private byte[] calcMinPosPerBlock() {
         final int SIZE = this.array.length - 1;
         this.minPosBlock = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
+        this.F = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
         int curValue = - 1;
 
         for (int i = 1; i < SIZE; i = i + this.blockSize) {
@@ -202,17 +231,17 @@ public class RMQ {
                 }
             }
             this.minPosBlock[i / this.blockSize] = (byte) minPos;
-            System.out.print(min + "\t");
+            this.F[i / this.blockSize] = (byte) min;
         }
-        System.out.println();
         return this.minPosBlock;
     }
 
     @Override
     public String toString() {
-        return "RMQ\nA': " + Arrays.toString(this.array)
-                + "\nP': " + Arrays.toString(this.minPosBlock)
-                + "\n" + ESA_Utils.printArray(this.internalQ);
+        return "P': " + Arrays.toString(this.minPosBlock)
+                + "\nF': " + Arrays.toString(this.F)
+                + "\n" + ESA_Utils.printArray(this.internalQ) + "\nArray" +
+                Arrays.toString(this.array);
     }
 
 }

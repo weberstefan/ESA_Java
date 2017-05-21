@@ -1,10 +1,10 @@
 package de.weber.esa.repeats;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.struct.psvnsv.PsvNsv;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Created by Stefan on 16.05.2017.
@@ -23,28 +23,26 @@ public class MaxRepPsvNsv {
         MaximalRepeats maximalRepeats = new MaximalRepeats();
         System.out.println(maximalRepeats.computeMaximalRepeats(esa, minSizeMaxRepeats));
 
-        MaxRepPsvNsv maxRepChildTest = new MaxRepPsvNsv();
+        MaxRepPsvNsv maxRepChildTest = new MaxRepPsvNsv(esa);
         System.out.println(maxRepChildTest.maxRep(esa, minSizeMaxRepeats));
 
     }
 
-    private int[] P;
-    private int[] N;
-
     private List<Repeats> repeatsList;
+    private PsvNsv psvNsv;
 
-    public MaxRepPsvNsv() {
+    public MaxRepPsvNsv(final EnhancedSuffixArray esa) {
+        this.psvNsv = new PsvNsv(esa);
     }
 
     public List<Repeats> maxRep(final EnhancedSuffixArray esa,
                                  final int minSizeMaxRepeats) {
-        this.fillPsvNsv(esa);
         this.repeatsList = new ArrayList<>();
         int i = 1;
         while (i < esa.length) {
-            if (this.P[i - 1] != 0) {
-                int nsv = this.N[i - 1];
-                int psv = this.P[nsv - 2];
+            if (psvNsv.psv[i - 1] != 0) {
+                int nsv = psvNsv.nsv[i - 1];
+                int psv = psvNsv.psv[nsv - 2];
 
                 if (esa.bwt.bwt[nsv == esa.length ? esa.length - 1 : nsv] != esa.bwt.bwt[psv] &&
                         esa.bwt.bwt[i] != esa.bwt.bwt[i - 1] &&
@@ -77,33 +75,5 @@ public class MaxRepPsvNsv {
 
         return this.repeatsList;
     }
-
-    private void fillPsvNsv(final EnhancedSuffixArray esa) {
-        // first entry to be validated!!
-        Stack<Integer> S = new Stack<>();
-        P = new int[esa.length];
-        N = new int[esa.length];
-        for (int i = 1; i < esa.length; i = i + 1) {
-            while (! S.empty() && esa.lcp.getCurrentLcpValue(S.peek()) > esa.lcp.getCurrentLcpValue(i)) {
-                N[S.pop() - 1] = i;
-            }
-            S.push(i);
-        }
-        while (! S.empty()) {
-            N[S.pop() - 1] = esa.length;
-        }
-
-        S.removeAllElements();
-        for (int i = esa.length - 1; i > 0; i = i - 1) {
-            while (! S.empty() && esa.lcp.getCurrentLcpValue(S.peek()) > esa.lcp.getCurrentLcpValue(i)) {
-                P[S.pop() - 1] = i;
-            }
-            S.push(i);
-        }
-        while (! S.empty()) {
-            P[S.pop() - 1] = 0;
-        }
-    }
-
 
 }

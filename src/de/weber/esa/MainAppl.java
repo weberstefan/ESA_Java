@@ -5,7 +5,11 @@ import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLon
 import de.weber.esa.searching.scriptum_search_via_child_table.Find;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find_2;
 import de.weber.esa.struct.EnhancedSuffixArray;
+import de.weber.esa.struct.discriminatingcharacters.DcPositionAlphabet;
+import de.weber.esa.struct.discriminatingcharacters.DcPositionAminoAcidDna;
+import de.weber.esa.struct.discriminatingcharacters.DiscriminatingCharacters;
 import de.weber.esa.utils.ESA_Utils;
+import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 
 import java.io.File;
 import java.util.Calendar;
@@ -30,7 +34,7 @@ public class MainAppl {
 
 //        System.out.println("Start: " + Calendar.getInstance().getTime());
 
-        final File file = new File("res/test/english.50MB");
+        final File file = new File("res/test/proteins.50MB");
 //        final File file = new File("res/test/long_string.txt");
         final String s = Reader.readFile(file);
         System.out.println("Sequence read in: " + Calendar.getInstance().getTime());
@@ -52,13 +56,15 @@ public class MainAppl {
                 "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
 //        final String q = "NORDERTOMAKEASEPARATEPEACEWIT";
 
-        searchProperties(esa, q);
+//        searchProperties(esa, q);
 
 
-//        DiscriminatingCharacters dc = new DiscriminatingCharacters(esa);
-//        DcPositionAlphabet dcPositionAlphabet = new DcPositionAlphabet(esa);
-//        System.out.println(ObjectSizeCalculator.getObjectSize(dc) + " Dc []");
-//        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAlphabet) + " DcPositionAlhabet");
+        DiscriminatingCharacters dc = new DiscriminatingCharacters(esa);
+        DcPositionAlphabet dcPositionAlphabet = new DcPositionAlphabet(esa);
+        DcPositionAminoAcidDna dcPositionAminoAcidDna = new DcPositionAminoAcidDna(esa);
+        System.out.println(ObjectSizeCalculator.getObjectSize(dc) + " Dc []");
+        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAlphabet) + " DcPositionAlhabet");
+        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAminoAcidDna) + " DcPositionAminoAcidDna");
 
 //        System.out.println(dcPosition.toString().equals(dc.toString()));
 

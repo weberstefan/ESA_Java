@@ -3,6 +3,7 @@ package test;
 import de.weber.esa.searching.binarysearch.BinarySearch;
 import de.weber.esa.searching.fimindex.FMIndexSearch;
 import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
+import de.weber.esa.searching.rmqfind.RmqFind;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find_2;
 import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
@@ -35,7 +36,9 @@ public class SearchingTests {
 
         final Find_2 findIntArrays = new Find_2(esa);
 
-        testAllPrefix(s, esa, binarySearch, fmIndexSearch, findLongestPrefixMatch, findWithBool, findIntArrays);
+        final RmqFind rmqFind = new RmqFind(esa);
+
+        testAllPrefix(s, esa, binarySearch, fmIndexSearch, findLongestPrefixMatch, findWithBool, findIntArrays, rmqFind);
 
     }
 
@@ -44,7 +47,8 @@ public class SearchingTests {
                                FMIndexSearch fmIndexSearch,
                                FindLongestPrefixMatch findLongestPrefixMatch,
                                Find findWithBool,
-                               Find_2 findIntArrays) {
+                               Find_2 findIntArrays,
+                               RmqFind rmqFind) {
         for (int i = 0; i < s.length(); i = i + 1) {
             for (int c = 1; c <= s.length() - i; c = c + 1) {
                 final PatternMatchingWrapper curBinary = binarySearch.search(esa, s.substring(i, i + c));
@@ -55,6 +59,7 @@ public class SearchingTests {
                 final PatternMatchingWrapper curFindLongestPrefixMatchDcOnTheFly = findLongestPrefixMatch.matching(esa, s.substring(i, i + c).toCharArray(), false, false, true);
                 final PatternMatchingWrapper curFindWithBool = findWithBool.find(esa, s.substring(i, i + c).toCharArray());
                 final PatternMatchingWrapper curFindIntArrays = findIntArrays.find(esa, s.substring(i, i + c).toCharArray());
+                final PatternMatchingWrapper curRmqFind = rmqFind.find(esa, s.substring(i, i + c).toCharArray());
 
                 /* binary == fmIndex */
                 Assert.assertEquals(curBinary, curFmIndex);
@@ -76,6 +81,9 @@ public class SearchingTests {
 
                 /* binary == find longest prefix match Dc on the fly */
                 Assert.assertEquals(curBinary, curFindLongestPrefixMatchDcOnTheFly);
+
+                /* rmq find == find longest prefix match DC */
+                Assert.assertEquals(curRmqFind, curFindLongestPrefixMatchDc);
             }
         }
     }

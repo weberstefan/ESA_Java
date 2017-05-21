@@ -2,14 +2,12 @@ package de.weber.esa.gui;
 
 import de.weber.esa.searching.binarysearch.BinarySearch;
 import de.weber.esa.searching.fimindex.FMIndexSearch;
-import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find;
 import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 /**
  * Created by Stefan on 11.02.2017.
@@ -114,22 +112,22 @@ public class InputPanel extends JPanel {
         });
         add(this.binarySearchButton);
 
-        this.findLPM = new JButton("findLPM");
-        this.findLPM.setBounds(675, 250, 150, 75);
-        this.findLPM.addActionListener(e -> {
-            query = JOptionPane.showInputDialog("Enter a query");
-            if (! query.chars().allMatch(Character::isLetter)) {
-                JOptionPane.showMessageDialog(null, "Query must only contain Letters!");
-            } else {
-                FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
-                JList list = new JList(new String[]{"DC", "No DC"});
-                JOptionPane.showMessageDialog(null, list, "Choose your searching properties", JOptionPane.PLAIN_MESSAGE);
-                fm = flpm.matching(esa, query.toCharArray(), Arrays.toString(list.getSelectedIndices()).equals("[0]"));
-                isFindLPM = true;
-                redo();
-            }
-        });
-        add(this.findLPM);
+//        this.findLPM = new JButton("findLPM");
+//        this.findLPM.setBounds(675, 250, 150, 75);
+//        this.findLPM.addActionListener(e -> {
+//            query = JOptionPane.showInputDialog("Enter a query");
+//            if (! query.chars().allMatch(Character::isLetter)) {
+//                JOptionPane.showMessageDialog(null, "Query must only contain Letters!");
+//            } else {
+//                FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
+//                JList list = new JList(new String[]{"DC", "No DC"});
+//                JOptionPane.showMessageDialog(null, list, "Choose your searching properties", JOptionPane.PLAIN_MESSAGE);
+//                fm = flpm.matching(esa, query.toCharArray(), Arrays.toString(list.getSelectedIndices()).equals("[0]"));
+//                isFindLPM = true;
+//                redo();
+//            }
+//        });
+//        add(this.findLPM);
 
         this.find = new JButton("Find Query");
         this.find.setBounds(675, 350, 150, 75);
