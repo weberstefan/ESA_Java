@@ -1,10 +1,14 @@
 package de.weber.esa.struct.rmq;
 
+import de.weber.esa.io.Reader;
+import de.weber.esa.searching.rmqfind.RmqFind;
 import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
 import de.weber.esa.utils.MathUtils;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  * Created by Stefan on 22.01.2017.
@@ -22,35 +26,36 @@ public class RMQ {
 //                -1, 0, 1, 1, 2, 0, 2, 3, 1, 0, 3, 1, 0, 1, -1
         };
 
-//        System.out.println(a.length + " long");
-
-        final String s = "ABANANAISANANANANAS";
+        final String s = Reader.readFile(new File("res/test/english.50MB"));
+        System.out.println("sequence : " + s.length());
 
         final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
 
-        RMQ rmq = new RMQ(esa.lcp.lcps);
-//        System.out.println(rmq.toString());
+        System.out.println("ESA created: " + Calendar.getInstance().getTime());
 
-        for (int i = 0; i < 11; i = i + 1) {
-            for (int j = i + 1; j < 11; j = j + 1) {
-                int seq = rmq.sequentialMinimum(i, j);
-                int que = rmq.query(i, j);
-                if (seq != que) {
-                    System.out.println(i + ":" + j);
-                    System.out.println("seq min : " + rmq.sequentialMinimum(i, j));
-                    System.out.println("query   : " + rmq.query(i, j));
-                }
-            }
-        }
+        RmqFind rmqFind = new RmqFind(esa);
+        System.out.println("Rmq created: " + Calendar.getInstance().getTime());
 
-//        int i = 3;
-//        int j = 9;
-//        System.out.println("\n\nseq min : " + rmq.sequentialMinimum(i, j));
-//        System.out.println("query   : " + rmq.query(i, j));
-//        System.out.println("answerQ : " + rmq.answerQuery(i, j));
-//
-//        System.out.println(rmq.toString());
+        final String q = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
+                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
+                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
+                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
+                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
+                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
+                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
 
+        long start = System.currentTimeMillis();
+        System.out.println(rmqFind.find(esa, q.toCharArray()));
+        long end = System.currentTimeMillis();
+        System.out.println("took "  + (end -start) + " ms");
+
+        final String qq = ESA_Utils.getCurrentSuffix(esa, 17391043, esa.length);
+        System.out.println("Start searching 2 : " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(rmqFind.find(esa, qq.toCharArray()));
+        end = System.currentTimeMillis();
+        System.out.println("took "  + (end -start) + " ms");
     }
 
     /**
@@ -68,7 +73,7 @@ public class RMQ {
      */
     private byte[] minPosBlock;
 
-    private byte[] F;
+//    private byte[] F;
 
     /**
      * Represents internal datastructure Q' in script
@@ -77,6 +82,7 @@ public class RMQ {
 
     public RMQ(final short[] array) {
         this(array, MathUtils.ld(array.length));
+        System.out.println("block size: " + this.blockSize);
     }
 
     public RMQ(final short[] array,
@@ -214,7 +220,7 @@ public class RMQ {
     private byte[] calcMinPosPerBlock() {
         final int SIZE = this.array.length - 1;
         this.minPosBlock = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
-        this.F = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
+//        this.F = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
         int curValue = - 1;
 
         for (int i = 1; i < SIZE; i = i + this.blockSize) {
@@ -231,7 +237,7 @@ public class RMQ {
                 }
             }
             this.minPosBlock[i / this.blockSize] = (byte) minPos;
-            this.F[i / this.blockSize] = (byte) min;
+//            this.F[i / this.blockSize] = (byte) min;
         }
         return this.minPosBlock;
     }
@@ -239,9 +245,10 @@ public class RMQ {
     @Override
     public String toString() {
         return "P': " + Arrays.toString(this.minPosBlock)
-                + "\nF': " + Arrays.toString(this.F)
-                + "\n" + ESA_Utils.printArray(this.internalQ) + "\nArray" +
-                Arrays.toString(this.array);
+//                + "\nF': " + Arrays.toString(this.F)
+                + "\n" + ESA_Utils.printArray(this.internalQ);
+//                + "\nArray" +
+//                Arrays.toString(this.array);
     }
 
 }

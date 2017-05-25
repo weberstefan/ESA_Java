@@ -28,7 +28,6 @@ public class Find_2 {
         IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(s[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, s[0]));
         int p = 0;
         boolean prefix = true;
-        int turn = 0;
 
         while ((iw.isNotNullInterval(n)) &&
                 p < m &&
@@ -39,17 +38,13 @@ public class Find_2 {
 
                 prefix = this.isPrefix(esa, s, esa.suffices[iw.i] + p, esa.suffices[iw.i] + k - 1, p + 1, k);
 
-                final int curPosToCompare = Math.max(turn, k);
-
-                if (turn == m || curPosToCompare == m) {
+                if (k == m) {
                     break;
                 }
 
-                iw = this.getChildIntervalByChar(esa, iw.i, iw.j, s[curPosToCompare], curPosToCompare);
+                iw = this.getChildIntervalByChar(esa, iw.i, iw.j, s[k], k);
 
                 p = k;
-
-                turn = turn + 1;
             } else if (iw.i == iw.j) {
                 prefix = this.isPrefix(esa, s, esa.suffices[iw.i] + p, esa.suffices[iw.i] + m - 1, p + 1, m);
                 p = m;
@@ -80,7 +75,8 @@ public class Find_2 {
 
     private IntervalWrapper getChildIntervalByChar(EnhancedSuffixArray esa, int i, int j, char c, int turn) {
         if (esa.sequence[esa.suffices[i] + turn] == esa.sequence[esa.suffices[j] + turn] &&
-                esa.sequence[esa.suffices[i] + turn] == c) {
+                esa.sequence[esa.suffices[i] + turn] == c &&
+                turn != 0) {
             return new IntervalWrapper(i, j);
         }
         IntervalWrapper iw = this.getNextChildInterval(esa, i, j, i);
@@ -113,7 +109,7 @@ public class Find_2 {
     }
 
     private int LCP(EnhancedSuffixArray esa, int i, int j) {
-        return (i == 0 || j == esa.length - 1) ?
+        return (i == 0) ?
                 0 : (this.isInInterval(this.c.DOWN[i], i, j)) ?
                 esa.lcp.getCurrentLcpValue(this.c.DOWN[i]) : esa.lcp.getCurrentLcpValue(this.c.UP[j + 1]);
     }

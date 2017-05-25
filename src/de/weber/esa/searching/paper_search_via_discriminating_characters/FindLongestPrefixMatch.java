@@ -257,7 +257,8 @@ public class FindLongestPrefixMatch {
 
         while (startSeq <= endSeq &&
                 startPattern <= endPattern &&
-                startPattern <= p.length) {
+                startPattern <= p.length &&
+                startSeq < esa.length) {
             if (esa.sequence[startSeq] == p[startPattern]) {
                 matches = matches + 1;
             }

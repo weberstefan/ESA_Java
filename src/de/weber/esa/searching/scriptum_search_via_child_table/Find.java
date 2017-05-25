@@ -18,9 +18,13 @@ public class Find {
         final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
 
 
-        final String testQuery = "ACA";
+        final String testQuery = "TAT";
+
 
         Find f = new Find();
+
+//        System.out.println(f.find(esa, testQuery.toCharArray()));
+
         Find_2 f2 = new Find_2(esa);
         FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
 
@@ -28,10 +32,12 @@ public class Find {
 
         for (int i = 0; i < s.length(); i = i + 1) {
             for (int c = 1; c <= s.length() - i; c = c + 1) {
-                System.out.println("F : " + (s.substring(i, i + c)) + " : " + f.find(esa, s.substring(i, i + c).toCharArray()));
+                System.out.print("F : " + (s.substring(i, i + c)) + " : ");
+                System.out.println(f.find(esa, s.substring(i, i + c).toCharArray()));
                 System.out.println("F2: " + (s.substring(i, i + c)) + " : " + f2.find(esa, s.substring(i, i + c).toCharArray()));
-                System.out.println("DC: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), true, false, false));
-                System.out.println("NO: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), false, false, false));
+//                System.out.println("DC: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), true, false, false));
+//                System.out.println("NO: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), false, false, false));
+//                System.out.println();
             }
         }
 
@@ -42,13 +48,14 @@ public class Find {
 
     public PatternMatchingWrapper find(final EnhancedSuffixArray esa,
                                        final char[] s) {
+        IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(s[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, s[0]));
+        if (s.length == 1) {
+            return new PatternMatchingWrapper(1, iw.i, iw.j);
+        }
         final int n = esa.length;
         final int m = s.length;
-//        IntervalWrapper iw = new IntervalWrapper(0, n);
-        IntervalWrapper iw = new IntervalWrapper(esa.bwtCMap.get(s[0]).getPosSequence(), ESA_Utils.getCharEndPosSA(esa, s[0]));
         int p = 0;
         boolean prefix = true;
-        int turn = 0;
 
         while ((iw.isNotNullInterval(n)) &&
                 p < m &&
@@ -59,16 +66,12 @@ public class Find {
 
                 prefix = this.isPrefix(esa, s, esa.suffices[iw.i] + p, esa.suffices[iw.i] + k - 1, p + 1, k);
 
-                final int curPosToCompare = Math.max(turn, k);
-
-                if (turn == m || curPosToCompare == m) {
+                if (k == m) {
                     break;
                 }
 
-                iw = this.getChildIntervalByChar(esa, iw.i, iw.j, s[curPosToCompare], curPosToCompare);
+                iw = this.getChildIntervalByChar(esa, iw.i, iw.j, s[k], k);
                 p = k;
-
-                turn = curPosToCompare + 1;
             } else if (iw.i == iw.j) {
                 prefix = this.isPrefix(esa, s, esa.suffices[iw.i] + p, esa.suffices[iw.i] + m - 1, p + 1, m);
                 p = m;
@@ -87,7 +90,8 @@ public class Find {
                                                    final int turn) {
 
         if (esa.sequence[esa.suffices[i] + turn] == esa.sequence[esa.suffices[j] + turn] &&
-                esa.sequence[esa.suffices[i] + turn] == c) {
+                esa.sequence[esa.suffices[i] + turn] == c &&
+                turn != 0) {
             return new IntervalWrapper(i, j);
         }
         IntervalWrapper iw = this.getNextChildInterval(esa, i, j, i);
@@ -124,8 +128,8 @@ public class Find {
                     final int j) {
         if (i == 0)
             return 0;
-        else if (j == esa.length - 1)
-            return 0;
+//        else if (j == esa.length - 1)
+//            return 0;
         else
             return (this.isInterval(esa.child.cld[i], i, j)) ?
                     esa.lcp.getCurrentLcpValue(esa.child.cld[i]) : esa.lcp.getCurrentLcpValue(esa.child.cld[j]);
