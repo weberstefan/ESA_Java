@@ -1,14 +1,9 @@
 package de.weber.esa.struct.rmq;
 
-import de.weber.esa.io.Reader;
-import de.weber.esa.searching.rmqfind.RmqFind;
-import de.weber.esa.struct.EnhancedSuffixArray;
 import de.weber.esa.utils.ESA_Utils;
 import de.weber.esa.utils.MathUtils;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * Created by Stefan on 22.01.2017.
@@ -17,46 +12,6 @@ import java.util.Calendar;
  * <p>Algorithm 4.17 in Scriptum: Algorithmns and Sequences by Prof. Heun</p>
  */
 public class RMQ {
-
-    public static void main(String[] args) {
-
-        final short[] a = new short[]{
-                - 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, 1, 2, 1, 2, 3, 2, 3, 2, 3, 2, 1, 2, 1, 0, - 1
-//                - 1, 0, 2, 1, 3, 1, 2, 0, 2, 0, 1, - 1
-//                -1, 0, 1, 1, 2, 0, 2, 3, 1, 0, 3, 1, 0, 1, -1
-        };
-
-        final String s = Reader.readFile(new File("res/test/english.50MB"));
-        System.out.println("sequence : " + s.length());
-
-        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
-
-        System.out.println("ESA created: " + Calendar.getInstance().getTime());
-
-        RmqFind rmqFind = new RmqFind(esa);
-        System.out.println("Rmq created: " + Calendar.getInstance().getTime());
-
-        final String q = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
-                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
-                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
-                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
-                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
-                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
-                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
-
-        long start = System.currentTimeMillis();
-        System.out.println(rmqFind.find(esa, q.toCharArray()));
-        long end = System.currentTimeMillis();
-        System.out.println("took "  + (end -start) + " ms");
-
-        final String qq = ESA_Utils.getCurrentSuffix(esa, 17391043, esa.length);
-        System.out.println("Start searching 2 : " + Calendar.getInstance().getTime());
-
-        start = System.currentTimeMillis();
-        System.out.println(rmqFind.find(esa, qq.toCharArray()));
-        end = System.currentTimeMillis();
-        System.out.println("took "  + (end -start) + " ms");
-    }
 
     /**
      * Represents the array, which will be used for calculating RMQ

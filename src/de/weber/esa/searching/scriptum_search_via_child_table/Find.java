@@ -1,6 +1,5 @@
 package de.weber.esa.searching.scriptum_search_via_child_table;
 
-import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
 import de.weber.esa.searching.wrapper.IntervalWrapper;
 import de.weber.esa.searching.wrapper.PatternMatchingWrapper;
 import de.weber.esa.struct.EnhancedSuffixArray;
@@ -12,39 +11,6 @@ import de.weber.esa.utils.ESA_Utils;
  * Find pattern p using child table with int[] child and bool[] next, down (up not needed)
  */
 public class Find {
-
-    public static void main(String[] args) {
-        final String s = "ACAAACATAT";
-        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
-
-
-        final String testQuery = "TAT";
-
-
-        Find f = new Find();
-
-//        System.out.println(f.find(esa, testQuery.toCharArray()));
-
-        Find_2 f2 = new Find_2(esa);
-        FindLongestPrefixMatch flpm = new FindLongestPrefixMatch(esa);
-
-//        System.out.println(f.find(esa, testQuery.toCharArray()));
-
-        for (int i = 0; i < s.length(); i = i + 1) {
-            for (int c = 1; c <= s.length() - i; c = c + 1) {
-                System.out.print("F : " + (s.substring(i, i + c)) + " : ");
-                System.out.println(f.find(esa, s.substring(i, i + c).toCharArray()));
-                System.out.println("F2: " + (s.substring(i, i + c)) + " : " + f2.find(esa, s.substring(i, i + c).toCharArray()));
-//                System.out.println("DC: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), true, false, false));
-//                System.out.println("NO: " + (s.substring(i, i + c)) + " : " + flpm.matching(esa, s.substring(i, i + c).toCharArray(), false, false, false));
-//                System.out.println();
-            }
-        }
-
-    }
-
-    public Find() {
-    }
 
     public PatternMatchingWrapper find(final EnhancedSuffixArray esa,
                                        final char[] s) {
