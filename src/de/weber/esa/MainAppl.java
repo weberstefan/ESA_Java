@@ -1,15 +1,11 @@
 package de.weber.esa;
 
-import de.weber.esa.io.Reader;
 import de.weber.esa.searching.paper_search_via_discriminating_characters.FindLongestPrefixMatch;
+import de.weber.esa.searching.rmqfind.RmqFind;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find;
 import de.weber.esa.searching.scriptum_search_via_child_table.Find_2;
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.discriminatingcharacters.DcPositionAlphabet;
-import de.weber.esa.struct.discriminatingcharacters.DcPositionAminoAcidDna;
-import de.weber.esa.struct.discriminatingcharacters.DiscriminatingCharacters;
 import de.weber.esa.utils.ESA_Utils;
-import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator;
 
 import java.io.File;
 import java.util.Calendar;
@@ -20,7 +16,7 @@ import java.util.Calendar;
 public class MainAppl {
 
     public static void main(String[] args) {
-//        final String s = "ACAAACATATACTAGCACTAGACTAGCAGCGACTAGCACAGCACTACGACGAGCATCAGCATCTACTAGCAGCATCGGGCTAGCGAT";
+        final String s = "ACAAACATAT";
 //        final String s = "MISSISSIPPI";
 //        final String s = "BANANA";
 //        final String s = "AAABAABAB";
@@ -34,37 +30,37 @@ public class MainAppl {
 
 //        System.out.println("Start: " + Calendar.getInstance().getTime());
 
-        final File file = new File("res/test/proteins.50MB");
+        final File file = new File("res/test/english.50MB");
 //        final File file = new File("res/test/long_string.txt");
-        final String s = Reader.readFile(file);
+//        final String s = Reader.readFile(file);
         System.out.println("Sequence read in: " + Calendar.getInstance().getTime());
 
         final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
         System.out.println("ESArray built: " + Calendar.getInstance().getTime());
         System.out.println(esa.length);
 
-//        System.out.println(esa.toString());
+        System.out.println(esa.toString());
 //
 //        System.out.println("LCP int array: " + ObjectSizeCalculator.getObjectSize(esa.lcp.lcps));
 
-        final String q = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
-                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
-                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
-                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
-                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
-                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
-                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
+//        final String q = "INCONSIDERINGTHERISEOFTHEBOLSHEVIKIITISNECESSARYTOUNDERSTANDTHATRUSSIA" +
+//                "NECONOMICLIFEANDTHERUSSIANARMYWERENOTDISORGANISEDONNOVEMBERTHBUTMANYMONTHSBEFOREASTHELOG" +
+//                "ICALRESULTOFAPROCESSWHICHBEGANASFARBACKASTHECORRUPTREACTIONARIESINCONTROLOFTHETSARSCOURT" +
+//                "DELIBERATELYUNDERTOOKTOWRECKRUSSIAINORDERTOMAKEASEPARATEPEACEWITHGERMANYTHELACKOFARMSONT" +
+//                "HEFRONTWHICHHADCAUSEDTHEGREATRETREATOFTHESUMMEROFTHELACKOFFOODINTHEARMYANDINTHEGREATCITI" +
+//                "ESTHEBREAKDOWNOFMANUFACTURESANDTRANSPORTATIONINALLTHESEWEKNOWNOWWEREPARTOFAGIGANTICCAMPA" +
+//                "IGNOFSABOTAGETHISWASHALTEDJUSTINTIMEBYTHEMARCHREVOLUTION";
 //        final String q = "NORDERTOMAKEASEPARATEPEACEWIT";
 
 //        searchProperties(esa, q);
 
 
-        DiscriminatingCharacters dc = new DiscriminatingCharacters(esa);
-        DcPositionAlphabet dcPositionAlphabet = new DcPositionAlphabet(esa);
-        DcPositionAminoAcidDna dcPositionAminoAcidDna = new DcPositionAminoAcidDna(esa);
-        System.out.println(ObjectSizeCalculator.getObjectSize(dc) + " Dc []");
-        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAlphabet) + " DcPositionAlhabet");
-        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAminoAcidDna) + " DcPositionAminoAcidDna");
+//        DiscriminatingCharacters dc = new DiscriminatingCharacters(esa);
+//        DcPositionAlphabet dcPositionAlphabet = new DcPositionAlphabet(esa);
+//        DcPositionAminoAcidDna dcPositionAminoAcidDna = new DcPositionAminoAcidDna(esa);
+//        System.out.println(ObjectSizeCalculator.getObjectSize(dc) + " Dc []");
+//        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAlphabet) + " DcPositionAlhabet");
+//        System.out.println(ObjectSizeCalculator.getObjectSize(dcPositionAminoAcidDna) + " DcPositionAminoAcidDna");
 
 //        System.out.println(dcPosition.toString().equals(dc.toString()));
 
@@ -82,6 +78,8 @@ public class MainAppl {
 
         Find find = new Find();
         Find_2 find2 = new Find_2(esa);
+
+        RmqFind rmqFind = new RmqFind(esa);
 
         System.out.println("Start searching : " + Calendar.getInstance().getTime());
 
@@ -123,6 +121,12 @@ public class MainAppl {
         System.out.println("DONE in " + (end - start));
         System.out.println("FIND done: " + Calendar.getInstance().getTime());
 
+        start = System.currentTimeMillis();
+        System.out.println(rmqFind.find(esa, q.toCharArray()) + " rmq find");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FIND RMQ done: " + Calendar.getInstance().getTime());
+
         final String qq = ESA_Utils.getCurrentSuffix(esa, 17391043, esa.length);
         System.out.println("Start searching 2 : " + Calendar.getInstance().getTime());
 
@@ -162,6 +166,12 @@ public class MainAppl {
         end = System.currentTimeMillis();
         System.out.println("DONE in " + (end - start));
         System.out.println("FIND done: " + Calendar.getInstance().getTime());
+
+        start = System.currentTimeMillis();
+        System.out.println(rmqFind.find(esa, qq.toCharArray()) + " rmq find");
+        end = System.currentTimeMillis();
+        System.out.println("DONE in " + (end - start));
+        System.out.println("FIND RMQ done: " + Calendar.getInstance().getTime());
 
 //        System.out.println(ObjectSizeCalculator.getObjectSize(flpm.dc) + " DcPositions");
     }

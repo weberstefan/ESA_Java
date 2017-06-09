@@ -56,7 +56,7 @@ public class EnhancedSuffixArray {
      * The inverse of the suffix array length N, that is important only for calculating LCP values in O(N)
      * <p>12 + (N * 4[bytes per int]) -> Round up to next multiple of 8</p>
      */
-    public final int[] inverse;
+    public int[] inverse;
 
     /**
      * Represents the LCP array
