@@ -25,23 +25,28 @@ public class BWT {
      * Represents the OCC(*,*) Function in byte arrays
      * <p>O(n * n)</p>
      */
-    public final byte[][] OCC;
+    public byte[][] OCC;
 
     /**
      * Calculating the BWT and the OCC table for a given enhanced suffix array
      *
      * @param esa : enhanced suffix array with LCP for given string
      */
-    public BWT(final EnhancedSuffixArray esa) {
+    public BWT(final EnhancedSuffixArray esa,
+               boolean isFmSearch) {
         this.length = esa.length;
         this.bwt = new char[this.length];
-        this.OCC = new byte[this.length][esa.numberOfDistinctCharacters];
+        if (isFmSearch) {
+            this.OCC = new byte[this.length][esa.numberOfDistinctCharacters];
+        }
 
         for (int i = 0; i < this.length; i = i + 1) {
             final int p = esa.suffices[i];
             this.bwt[i] = (p - 1 < 0) ? esa.sequence[this.length - 1] : esa.sequence[p - 1];
-            final int pos = esa.bwtCMap.get(this.bwt[i]).getPosMap();
-            this.OCC[i][pos] = (byte) 1;
+            if (isFmSearch) {
+                final int pos = esa.bwtCMap.get(this.bwt[i]).getPosMap();
+                this.OCC[i][pos] = (byte) 1;
+            }
         }
     }
 

@@ -96,17 +96,22 @@ public class SupermaximalRepeats {
      * @return true if BWT[i:j] pairwise distinct, else false
      */
     private final boolean isBWTPairwiseDistinct(final BWT bwt,
-                                                final int i,
+                                                int i,
                                                 final int j) {
-        if (i == j) {
+        if (i == j)
             return false;
-        }
-        for (int k = i; k < j; k = k + 1) {
-            if (bwt.bwt[k] == bwt.bwt[k + 1]) {
-                return false;
-            }
-        }
 
+        while (i <= j) {
+            int x = i + 1;
+
+            while (x <= j) {
+                if (bwt.bwt[i] == bwt.bwt[x]) {
+                    return false;
+                }
+                x = x + 1;
+            }
+            i = i + 1;
+        }
         return true;
     }
 

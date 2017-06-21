@@ -17,11 +17,13 @@ public class RmqFind {
 
         RmqFind rmqFind = new RmqFind(esa);
 
-        final char[] p = "AC".toCharArray();
+        System.out.println(rmqFind.rmq.toString());
+
+        final char[] p = "ACAA".toCharArray();
         System.out.println(rmqFind.find(esa, p));
     }
 
-    private RMQ rmq;
+    public RMQ rmq;
 
     public RmqFind(final EnhancedSuffixArray esa) {
         this.rmq = new RMQ(esa.lcp.lcps);
@@ -41,7 +43,7 @@ public class RmqFind {
                 p < m &&
                 prefix) {
             if (iw.i < iw.j) {
-                k = Math.min(esa.lcp.getCurrentLcpValue(this.rmq.sequentialMinimum(iw.i + 1, iw.j)), m);
+                k = Math.min(esa.lcp.getCurrentLcpValue(this.rmq.query(iw.i + 1, iw.j)), m);
             } else if (iw.i == iw.j) {
                 k = m;
             } else {
@@ -63,7 +65,7 @@ public class RmqFind {
                                                    final int i,
                                                    final int j,
                                                    final char c) {
-        final int l = esa.lcp.getCurrentLcpValue(this.rmq.sequentialMinimum(i + 1, j));
+        final int l = esa.lcp.getCurrentLcpValue(this.rmq.query(i + 1, j));
 
         IntervalWrapper iw = this.getNextChildInterval(esa, i, j, i);
 
@@ -79,12 +81,12 @@ public class RmqFind {
                                                  final int i,
                                                  final int j,
                                                  final int k) {
-        final int l = esa.lcp.getCurrentLcpValue(this.rmq.sequentialMinimum(i + 1, j));
+        final int l = esa.lcp.getCurrentLcpValue(this.rmq.query(i + 1, j));
 
         int jStroke = 0;
 
         if (k < j) {
-            jStroke = this.rmq.sequentialMinimum(k + 1, j);
+            jStroke = this.rmq.query(k + 1, j);
         }
 
         return (k == j || esa.lcp.getCurrentLcpValue(jStroke) > l) ? new IntervalWrapper(k, j) : new IntervalWrapper(k, jStroke - 1);

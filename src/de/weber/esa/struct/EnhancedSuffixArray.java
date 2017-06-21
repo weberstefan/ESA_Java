@@ -84,7 +84,7 @@ public class EnhancedSuffixArray {
     /**
      * Represents the BWT tables
      */
-    public final BWT bwt;
+    public BWT bwt;
 
     /**
      * calculate the enhaced suffix array for a given input sequence
@@ -134,7 +134,7 @@ public class EnhancedSuffixArray {
 //        System.out.println("DONE Child: " + Calendar.getInstance().getTime());
 
         // compute the BWT tables
-        this.bwt = new BWT(this);
+        this.bwt = null; //new BWT(this, true);
 //        System.out.println("DONE Bwt: " + Calendar.getInstance().getTime());
     }
 

@@ -25,7 +25,7 @@ public class LCP {
      * <p>Either Byte or Short border</p>
      * <p>16 bit</p>
      */
-    public final int BORDER_FOR_EXCEPTION = MathUtils.SHORT_MAXIMUM_LCP;
+    public final int BORDER_FOR_EXCEPTION = MathUtils.BYTE_MAXIMUM_LCP;
 
     /**
      * Represents the LCP table
@@ -34,6 +34,7 @@ public class LCP {
     public final short[] lcps; // TODO REPRESENT AS BIT ARRAY
 
     public LcpException[] lcpExceptionArray;
+//    public TIntObjectMap<Integer> lcpExcMap;
 //    public THashMap<Integer, Integer> lcpExceptionMap;
 
     /**
@@ -85,6 +86,7 @@ public class LCP {
         if (numberOfExceptions > 0) {
 //        this.lcpExceptionMap = new THashMap<>(numberOfExceptions, .75f);
             this.lcpExceptionArray = new LcpException[numberOfExceptions];
+//            this.lcpExcMap = new TIntObjectHashMap<>(numberOfExceptions, .75f);
             int pos = 0;
 
             for (int i = 0; i < this.length - 1; i = i + 1) {
@@ -99,6 +101,7 @@ public class LCP {
 
                 if (k >= this.BORDER_FOR_EXCEPTION) {
                     this.lcpExceptionArray[pos] = new LcpException(a, k);
+//                    this.lcpExcMap.put(a, k);
                     pos = pos + 1;
                 }
 
