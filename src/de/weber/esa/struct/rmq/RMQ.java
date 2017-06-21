@@ -13,6 +13,17 @@ import java.util.Arrays;
  */
 public class RMQ {
 
+    public static void main(String[] args) {
+        final short[] shorts = new short[]{ - 1, 12, 2, 3, 4, 5, 1, 2, 3, 0, 1, 2, 3, 4 };
+        RMQ rmq = new RMQ(shorts);
+
+        final int l = 2;
+        final int r = 10;
+
+        System.out.println(rmq.query(l, r));
+        System.out.println(rmq.sequentialMin(l, r));
+    }
+
     /**
      * Represents the array, which will be used for calculating RMQ
      */
@@ -56,7 +67,7 @@ public class RMQ {
      * @param to   : ending position
      * @return position of minimum entry in array
      */
-    public int sequentialMinimum(int from,
+    public int sequentialMin(int from,
                                  int to) {
         if (to == from) {
             return to;
@@ -101,41 +112,33 @@ public class RMQ {
             to = swap;
         }
 
-        int minBlock = (from) / this.blockSize;
-        int maxBlock = (to % this.blockSize == 0 ? to - 1 : to) / this.blockSize;
+        int minBlock = from / this.blockSize;
+        int maxBlock = to  / this.blockSize;
 
-        final int outerPosLeft = this.sequentialMinimum(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
-        final int outerPosRight = this.sequentialMinimum(Math.max(maxBlock * this.blockSize, from), to);
+        final int outerLeftPosition = this.sequentialMin(from, Math.min(((minBlock + 1) * this.blockSize) - 1, to));
+        final int outerRightPosition = this.sequentialMin(Math.max(maxBlock * this.blockSize, from), to);
 
-        // blocks between left block and right block
+        // If true there are blocks between left and right block
         if (minBlock + 1 < maxBlock) {
-            maxBlock = maxBlock - 1;
             minBlock = minBlock + 1;
+            maxBlock = maxBlock - 1;
             final int k = MathUtils.ld(maxBlock - minBlock + 1);
             final int r = this.internalQ[minBlock][k];
             final int s = this.internalQ[maxBlock - MathUtils.pow(2, k) + 1][k];
             final int rAbs = this.minPosBlock[r] + r * this.blockSize;
             final int sAbs = this.minPosBlock[s] + s * this.blockSize;
-            final int minPosMid = this.array[rAbs] <= this.array[sAbs] ? rAbs : sAbs;
-            final int left = this.array[outerPosLeft] <= this.array[minPosMid] ? outerPosLeft : minPosMid;
-            final int right = this.array[left] <= this.array[outerPosRight] ? left : outerPosRight;
-            // due to lcp[0] = - 1, check "right" to be leftest minimum in block
-            final int rightBlock = (right % this.blockSize == 0 ? right - 1 : right) / this.blockSize;
-            if (rightBlock <= to && rightBlock >= from) {
-                final int testMinRightBlock = (rightBlock * this.blockSize + this.minPosBlock[rightBlock] + 1);
-                return this.array[testMinRightBlock] <= this.array[right] ? testMinRightBlock : right;
-            } else {
-                return right;
-            }
+            final int minPositionMid =  this.array[rAbs] <= this.array[sAbs] ? rAbs : sAbs;
+            int left = this.array[outerLeftPosition] <= this.array[minPositionMid] ? outerLeftPosition : minPositionMid;
+            return this.array[left] <= this.array[outerRightPosition] ? left : outerRightPosition;
         }
 
-        return this.array[outerPosLeft] <= this.array[outerPosRight] ? outerPosLeft : outerPosRight;
+        return this.array[outerLeftPosition] <= this.array[outerRightPosition] ? outerLeftPosition : outerRightPosition;
     }
 
     /**
      * Caclulating the minimum between 2 blocks
      * <p>
-     * Representing the Q' in the script (RMQ2 - Abbildung 4.4 Page 144)
+     * Representing the Q' in the script (RMQ - Abbildung 4.4 Page 144)
      *
      * @return Q'
      */
@@ -143,22 +146,24 @@ public class RMQ {
         this.calcMinPosPerBlock();
         final int SIZE = this.minPosBlock.length;
         final int END = MathUtils.ld(SIZE);
-
         this.internalQ = new int[SIZE][END + 1];
 
-        for (int i = 0; i < SIZE; i = i + 1) {
+        for (int i = 0; i < SIZE; i++) {
             this.internalQ[i][0] = i;
+            for (int k = 1; k < END; k++) {
+                this.internalQ[i][k] = -1;
+            }
         }
 
-        for (int k = 0; k < MathUtils.ld(SIZE); k = k + 1) {
-            for (int i = 1; i + MathUtils.pow(2, k) < SIZE; i = i + 1) {
-                final int a = this.minPosBlock[this.internalQ[i][k]];
-                final int b = this.internalQ[i + MathUtils.pow(2, k)][k];
-                if (a <= this.minPosBlock[b]) {
-                    this.internalQ[i][k + 1] = this.internalQ[i][k];
-                } else {
-                    this.internalQ[i][k + 1] = b;
-                }
+        for (int k = 0, l = 1; k < END; k++, l *= 2) {
+            for (int i = 0; i + l*2 <= SIZE; i++) {
+                final int a = this.internalQ[i][k];
+                final int b = this.internalQ[i + l][k];
+
+                final int posA = this.minPosBlock[a] + a * this.blockSize;
+                final int posB = this.minPosBlock[b] + b * this.blockSize;
+
+                this.internalQ[i][k + 1] = (this.array[posA] <= this.array[posB]) ? a : b;
             }
         }
 
@@ -173,27 +178,27 @@ public class RMQ {
      * @return minimum positions per block
      */
     private byte[] calcMinPosPerBlock() {
-        final int SIZE = this.array.length - 1;
-        this.minPosBlock = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
-//        this.F = new byte[(this.blockSize + SIZE - 1) / this.blockSize];
-        int curValue = - 1;
+        final int SIZE = this.array.length;
 
-        for (int i = 1; i < SIZE; i = i + this.blockSize) {
-            // are we out of array length?
-            final int END = Math.min(i + this.blockSize, SIZE);
+        // Round to the next integer
+        this.minPosBlock = new byte[(SIZE + this.blockSize - 1) / this.blockSize];
+
+        for (int i = 0; i < SIZE; i += this.blockSize) {
+            final int end = Math.min(i + this.blockSize, SIZE);
+
             int min = Integer.MAX_VALUE;
-            int minPos = - 1;
+            int minPosition = -1;
 
-            for (int j = i; j < END; j = j + 1) {
-                curValue = this.array[j];
-                if (curValue < min) {
-                    min = curValue;
-                    minPos = j - i;
+            for (int j = i; j < end; j++) {
+                int value = this.array[j];
+                if (value < min) {
+                    min = value;
+                    minPosition = j - i;
                 }
             }
-            this.minPosBlock[i / this.blockSize] = (byte) minPos;
-//            this.F[i / this.blockSize] = (byte) min;
+            this.minPosBlock[i/this.blockSize] = (byte) minPosition;
         }
+
         return this.minPosBlock;
     }
 
