@@ -17,10 +17,10 @@ public class MaximalRepeats_Updated {
 
         MaximalRepeats_Updated mr = new MaximalRepeats_Updated();
 
-        System.out.println(mr.computeMaximalRepeats(esa, 3));
+        System.out.println(mr.computeMaximalRepeats(esa, 0));
     }
 
-    public MaximalRepeats_Updated(){
+    public MaximalRepeats_Updated() {
 
     }
 
@@ -40,7 +40,7 @@ public class MaximalRepeats_Updated {
                 while (j > 0 && esa.plcp.getLcp(esa.suffices, i) >= esa.plcp.getLcp(esa.suffices, j)) {
                     j = j - 1;
 
-                    if (esa.plcp.getLcp(esa.suffices, j) >= esa.plcp.getLcp(esa.suffices, j + 1)) {
+                    if (j == 0 || esa.plcp.getLcp(esa.suffices, j) >= esa.plcp.getLcp(esa.suffices, j + 1)) {
                         j = j + 1;
                         break;
                     }
@@ -61,20 +61,23 @@ public class MaximalRepeats_Updated {
 
     private List<Repeats> fillList(List<Repeats> list,
                                    final EnhancedSuffixArray esa,
-                                   final int i,
+                                   int i,
                                    final int j,
                                    final int l) {
-        int seqPosI = Math.min(esa.suffices[i], esa.suffices[j]);
-        int seqPosJ = Math.max(esa.suffices[i], esa.suffices[j]);
+        if (i + 1 == j) {
+            list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[j]), Math.max(esa.suffices[i], esa.suffices[j]), l));
+            return list;
+        }
 
-        while (seqPosI <= seqPosJ) {
-            int x = seqPosI + 1;
+        while (i <= j) {
+            int x = i + 1;
 
-            while (x <= seqPosJ) {
-                list.add(new Repeats(seqPosI, x, l));
+            while (x <= j) {
+                list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[j]), Math.max(esa.suffices[i], esa.suffices[j]), l));
+
                 x = x + 1;
             }
-            seqPosI = seqPosI + 1;
+            i = i + 1;
         }
 
         return list;
