@@ -11,8 +11,8 @@ import java.util.List;
 public class MaximalRepeats_Updated {
 
     public static void main(String[] args) {
-//        final String s = "ACAAACATAT";
-        final String s = "ABAABABA";
+        final String s = "ACAAACATAT";
+//        final String s = "ABAABABA";
         final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
 
         MaximalRepeats_Updated mr = new MaximalRepeats_Updated();
@@ -73,7 +73,7 @@ public class MaximalRepeats_Updated {
             int x = i + 1;
 
             while (x <= j) {
-                list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[j]), Math.max(esa.suffices[i], esa.suffices[j]), l));
+                list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[x]), Math.max(esa.suffices[i], esa.suffices[x]), l));
 
                 x = x + 1;
             }
