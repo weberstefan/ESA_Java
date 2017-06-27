@@ -8,30 +8,16 @@ import java.util.List;
 
 /**
  * Created by Stefan on 27.06.2017.
+ *
+ * VALIDATE
+ *
  */
 public class MaximalRepeatsPsvNsv_Updated {
 
-    public static void main(String[] args) {
-        final String s = "ACAAACATAT";
-//        final String s = "ABAABABA";
-        final EnhancedSuffixArray esa = new EnhancedSuffixArray(s);
-
-        MaximalRepeatsPsvNsv_Updated mrPsv = new MaximalRepeatsPsvNsv_Updated();
-
-        System.out.println(mrPsv.computeMaximalRepeats(esa, 0));
-
-        MaximalRepeats_Updated mr = new MaximalRepeats_Updated();
-
-        System.out.println(mr.computeMaximalRepeats(esa, 0));
-
-        MaximalRepeats mrOne = new MaximalRepeats();
-
-        System.out.println(mrOne.computeMaximalRepeats(esa, 0));
-    }
-
     private List<Repeats> maxRepeatList;
 
-    public MaximalRepeatsPsvNsv_Updated() {}
+    public MaximalRepeatsPsvNsv_Updated() {
+    }
 
     public List<Repeats> computeMaximalRepeats(final EnhancedSuffixArray esa,
                                                final int minimumLength) {

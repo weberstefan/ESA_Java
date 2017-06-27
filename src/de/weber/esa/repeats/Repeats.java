@@ -74,7 +74,14 @@ public class Repeats {
         return list;
     }
 
-
+    /**
+     * check for BWT[i:j] to be pairswise distinct
+     *
+     * @param esa : enhanced suffix array for current sequence
+     * @param i   : starting index
+     * @param j   : ending index
+     * @return true if BWT[i:j] pairwise distinct, else false
+     */
     public static final boolean isPairwiseDistinctBwt(final EnhancedSuffixArray esa,
                                                       int i,
                                                       final int j) {

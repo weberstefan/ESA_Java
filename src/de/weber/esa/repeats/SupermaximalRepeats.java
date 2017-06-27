@@ -1,7 +1,6 @@
 package de.weber.esa.repeats;
 
 import de.weber.esa.struct.EnhancedSuffixArray;
-import de.weber.esa.struct.bwt.BWT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,7 @@ public class SupermaximalRepeats {
                                 esa.lcp.getCurrentLcpValue(j - 1) != 0)) {
                     i2 = i;
                     j2 = j;
-                    if (this.isBWTPairwiseDistinct(esa.bwt, i2, j2) &&
+                    if (Repeats.isPairwiseDistinctBwt(esa, i2, j2) &&
                             esa.lcp.getCurrentLcpValue(j2) >= minSizeMaxRepeats) {
                         Repeats.fillList(this.supermaximalRepeats, esa, i2, j2, esa.lcp.getCurrentLcpValue(j2));
                     }
@@ -75,7 +74,7 @@ public class SupermaximalRepeats {
             }
 
             if (i2 != i || j2 != j) {
-                if (this.isBWTPairwiseDistinct(esa.bwt, i, j) &&
+                if (Repeats.isPairwiseDistinctBwt(esa, i, j) &&
                         esa.lcp.getCurrentLcpValue(j) >= minSizeMaxRepeats) {
                     Repeats.fillList(this.supermaximalRepeats, esa, i, j, esa.lcp.getCurrentLcpValue(j));
                 }
@@ -87,33 +86,26 @@ public class SupermaximalRepeats {
         return this.supermaximalRepeats;
     }
 
-    /**
-     * check for BWT[i:j] to be pairswise distinct
-     *
-     * @param bwt : BWT for sequence
-     * @param i   : starting index
-     * @param j   : ending index
-     * @return true if BWT[i:j] pairwise distinct, else false
-     */
-    private final boolean isBWTPairwiseDistinct(final BWT bwt,
-                                                int i,
-                                                final int j) {
-        if (i == j)
-            return false;
-
-        while (i <= j) {
-            int x = i + 1;
-
-            while (x <= j) {
-                if (bwt.bwt[i] == bwt.bwt[x]) {
-                    return false;
-                }
-                x = x + 1;
-            }
-            i = i + 1;
-        }
-        return true;
-    }
+//
+//    private final boolean isBWTPairwiseDistinct(final BWT bwt,
+//                                                int i,
+//                                                final int j) {
+//        if (i == j)
+//            return false;
+//
+//        while (i <= j) {
+//            int x = i + 1;
+//
+//            while (x <= j) {
+//                if (bwt.bwt[i] == bwt.bwt[x]) {
+//                    return false;
+//                }
+//                x = x + 1;
+//            }
+//            i = i + 1;
+//        }
+//        return true;
+//    }
 
     public List<Repeats> getSupermaximalRepeats() {
         return this.supermaximalRepeats;
