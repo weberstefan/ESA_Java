@@ -23,6 +23,10 @@ public class MaximalRepeatsPsvNsv_Updated {
         MaximalRepeats_Updated mr = new MaximalRepeats_Updated();
 
         System.out.println(mr.computeMaximalRepeats(esa, 0));
+
+        MaximalRepeats mrOne = new MaximalRepeats();
+
+        System.out.println(mrOne.computeMaximalRepeats(esa, 0));
     }
 
     private List<Repeats> maxRepeatList;
@@ -48,58 +52,14 @@ public class MaximalRepeatsPsvNsv_Updated {
             }
 
             if (esa.plcp.getLcp(esa.suffices, i) > minimumLength &&
-                    this.isPairwiseDistinctBwt(esa, j, i)) {
-                this.fillList(this.maxRepeatList, esa, j, i, esa.plcp.getLcp(esa.suffices, i));
+                    Repeats.isPairwiseDistinctBwt(esa, j, i)) {
+                Repeats.fillList(this.maxRepeatList, esa, j, i, esa.plcp.getLcp(esa.suffices, i));
             }
 
             i = j - 1;
         }
 
         return this.maxRepeatList;
-    }
-
-    private List<Repeats> fillList(List<Repeats> list,
-                                   final EnhancedSuffixArray esa,
-                                   int i,
-                                   final int j,
-                                   final int l) {
-        if (i + 1 == j) {
-            list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[j]), Math.max(esa.suffices[i], esa.suffices[j]), l));
-            return list;
-        }
-
-        while (i <= j) {
-            int x = i + 1;
-
-            while (x <= j) {
-                list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[x]), Math.max(esa.suffices[i], esa.suffices[x]), l));
-
-                x = x + 1;
-            }
-            i = i + 1;
-        }
-
-        return list;
-    }
-
-    private final boolean isPairwiseDistinctBwt(final EnhancedSuffixArray esa,
-                                                int i,
-                                                final int j) {
-        if (i == j)
-            return false;
-
-        while (i <= j) {
-            int x = i + 1;
-
-            while (x <= j) {
-                if (esa.bwt.bwt[i] == esa.bwt.bwt[x]) {
-                    return false;
-                }
-                x = x + 1;
-            }
-            i = i + 1;
-        }
-        return true;
     }
 
 }

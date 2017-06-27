@@ -46,18 +46,17 @@ public class MaximalRepeats {
                 if (esa.bwt.bwt[j] != esa.bwt.bwt[j + 1]) {
                     seqPosI = j;
                     seqPosJ = j + 1;
-                    if (esa.lcp.getCurrentLcpValue(j + 1) >= minSizeMaxRepeats) {
-                        Repeats.fillList(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.getCurrentLcpValue(j + 1));
-                    }
 
                     while (seqPosJ < n &&
                             esa.lcp.getCurrentLcpValue(seqPosJ) <= esa.lcp.getCurrentLcpValue(seqPosJ + 1) &&
                             esa.lcp.getCurrentLcpValue(seqPosJ + 2) <= esa.lcp.getCurrentLcpValue(seqPosJ + 1)) {
-                        if (esa.bwt.bwt[seqPosJ + 1] != esa.bwt.bwt[j] &&
-                                esa.lcp.getCurrentLcpValue(seqPosI + 1) >= minSizeMaxRepeats) {
-                            Repeats.fillList(this.maximalRepeats, esa, seqPosI, (seqPosJ + 1), esa.lcp.getCurrentLcpValue(seqPosI + 1));
-                        }
                         seqPosJ = seqPosJ + 1;
+                    }
+
+                    // pairwise distinct
+                    if (Repeats.isPairwiseDistinctBwt(esa, seqPosI, seqPosJ) &&
+                            esa.lcp.getCurrentLcpValue(j + 1) >= minSizeMaxRepeats ) {
+                        Repeats.fillList(this.maximalRepeats, esa, seqPosI, seqPosJ, esa.lcp.getCurrentLcpValue(j + 1));
                     }
                 }
 

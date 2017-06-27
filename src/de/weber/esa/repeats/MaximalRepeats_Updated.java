@@ -46,8 +46,8 @@ public class MaximalRepeats_Updated {
                     }
                 }
 
-                if (this.isPairwiseDistinctBwt(esa, j, i)) {
-                    this.fillList(this.maxRepeatList, esa, j, i, esa.plcp.getLcp(esa.suffices, i));
+                if (Repeats.isPairwiseDistinctBwt(esa, j, i)) {
+                    Repeats.fillList(this.maxRepeatList, esa, j, i, esa.plcp.getLcp(esa.suffices, i));
                 }
 
                 i = j;
@@ -57,50 +57,6 @@ public class MaximalRepeats_Updated {
         }
 
         return this.maxRepeatList;
-    }
-
-    private List<Repeats> fillList(List<Repeats> list,
-                                   final EnhancedSuffixArray esa,
-                                   int i,
-                                   final int j,
-                                   final int l) {
-        if (i + 1 == j) {
-            list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[j]), Math.max(esa.suffices[i], esa.suffices[j]), l));
-            return list;
-        }
-
-        while (i <= j) {
-            int x = i + 1;
-
-            while (x <= j) {
-                list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[x]), Math.max(esa.suffices[i], esa.suffices[x]), l));
-
-                x = x + 1;
-            }
-            i = i + 1;
-        }
-
-        return list;
-    }
-
-    private final boolean isPairwiseDistinctBwt(final EnhancedSuffixArray esa,
-                                                int i,
-                                                final int j) {
-        if (i == j)
-            return false;
-
-        while (i <= j) {
-            int x = i + 1;
-
-            while (x <= j) {
-                if (esa.bwt.bwt[i] == esa.bwt.bwt[x]) {
-                    return false;
-                }
-                x = x + 1;
-            }
-            i = i + 1;
-        }
-        return true;
     }
 
 }

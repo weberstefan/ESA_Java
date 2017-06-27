@@ -52,17 +52,47 @@ public class Repeats {
      */
     public static List<Repeats> fillList(List<Repeats> list,
                                          final EnhancedSuffixArray esa,
-                                         final int i,
+                                         int i,
                                          final int j,
                                          final int l) {
-        int seqPosI = Math.min(esa.suffices[i], esa.suffices[j]);
-        int seqPosJ = Math.max(esa.suffices[i], esa.suffices[j]);
-        if (seqPosI + l <= esa.length &&
-                seqPosJ + l <= esa.length &&
-                ! list.contains(new Repeats(seqPosI, seqPosJ, l))) {
-            list.add(new Repeats(seqPosI, seqPosJ, l));
+        if (i + 1 == j) {
+            list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[j]), Math.max(esa.suffices[i], esa.suffices[j]), l));
+            return list;
         }
+
+        while (i <= j) {
+            int x = i + 1;
+
+            while (x <= j) {
+                list.add(new Repeats(Math.min(esa.suffices[i], esa.suffices[x]), Math.max(esa.suffices[i], esa.suffices[x]), l));
+
+                x = x + 1;
+            }
+            i = i + 1;
+        }
+
         return list;
+    }
+
+
+    public static final boolean isPairwiseDistinctBwt(final EnhancedSuffixArray esa,
+                                                      int i,
+                                                      final int j) {
+        if (i == j)
+            return false;
+
+        while (i <= j) {
+            int x = i + 1;
+
+            while (x <= j) {
+                if (esa.bwt.bwt[i] == esa.bwt.bwt[x]) {
+                    return false;
+                }
+                x = x + 1;
+            }
+            i = i + 1;
+        }
+        return true;
     }
 
     public final int getI() {
